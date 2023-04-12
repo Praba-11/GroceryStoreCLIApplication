@@ -14,8 +14,8 @@ public class JdbcProductDAO implements ProductDAO {
 
         // Storing Product in Database table
         ConnectionDB connectionDB = new ConnectionDB();
-        String sql = "INSERT INTO products (code, name, unit_code, type, price, stock) VALUES (?, ?, ?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(sql);
+        String query = "INSERT INTO products (code, name, unit_code, type, price, stock) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.setString(1, product.getCode());
         preparedStatement.setString(2, product.getName());
         preparedStatement.setString(3, product.getUnitCode());
@@ -34,6 +34,9 @@ public class JdbcProductDAO implements ProductDAO {
 
         ConnectionDB connectionDB = new ConnectionDB();
 
+        String query = "UPDATE products SET name = 'water' WHERE code = '101a'";
+
+
     }
 
 
@@ -42,8 +45,8 @@ public class JdbcProductDAO implements ProductDAO {
 
         // Delete Product in Database table
         ConnectionDB connectionDB = new ConnectionDB();
-        String sql = "DELETE FROM products WHERE code = '" + code + "'";
-        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(sql);
+        String query = "DELETE FROM products WHERE code = '" + code + "'";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.executeUpdate();
         preparedStatement.close();
 
