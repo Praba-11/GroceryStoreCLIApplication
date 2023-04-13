@@ -2,7 +2,16 @@ package com.billing.app.domain.entity;
 
 public class Store {
     private String name;
-    private int phoneNumber;
+    private long phoneNumber;
+    private String address;
+    private long gstNumber;
+
+    public Store(String name, long phoneNumber, String address, long gstNumber) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.gstNumber = gstNumber;
+    }
 
     public String getName() {
         return name;
@@ -12,11 +21,11 @@ public class Store {
         this.name = name;
     }
 
-    public int getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -28,14 +37,12 @@ public class Store {
         this.address = address;
     }
 
-    public int getGstNumber() {
+    public long getGstNumber() {
         return gstNumber;
     }
 
-    public void setGstNumber(int gstNumber) {
+    public void setGstNumber(long gstNumber) {
         this.gstNumber = gstNumber;
     }
 
-    private String address;
-    private int gstNumber;
 }

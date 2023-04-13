@@ -6,6 +6,13 @@ public class Unit {
     private String description;
     private boolean isDividable;
 
+    public Unit(String name, String code, String description, boolean isDividable) {
+        this.name = name;
+        this.code = code;
+        this.description = description;
+        this.isDividable = isDividable;
+    }
+
     public String getName() {
         return name;
     }

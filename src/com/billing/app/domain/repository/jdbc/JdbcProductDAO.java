@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import com.billing.app.domain.entity.repository.jdbc.ProductDAO;
 
 public class JdbcProductDAO implements ProductDAO {
 
@@ -33,11 +32,16 @@ public class JdbcProductDAO implements ProductDAO {
     @Override
     public void edit(String code, ArrayList arrayList) throws SQLException, ClassNotFoundException {
 
+        // Edit Product in Database table
         ConnectionDB connectionDB = new ConnectionDB();
+        Statement statement = connectionDB.getConnection().createStatement();
+        for (int index = 0; index < arrayList.size()-1; index++) {
+            String query = "UPDATE products SET " + arrayList.get(index) + " = '" + arrayList.get(index + 1) + "' WHERE code = '" + code + "'";
+            statement.executeUpdate(query);
+            index = index + 1;
 
-        String query = "UPDATE products SET name = 'water' WHERE code = '101a'";
-
-
+        }
+        System.out.println("Product edited.");
     }
 
 

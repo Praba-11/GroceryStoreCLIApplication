@@ -1,25 +1,23 @@
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.repository.jdbc.JdbcProductDAO;
-
+import com.billing.app.domain.entity.Store;
+import com.billing.app.domain.entity.Unit;
+import com.billing.app.domain.repository.jdbc.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
-        // Creating Product Object
-        Product product = new Product("101vvv", "apple", "kg", "fruits", 10);
+        Product product = new Product("101v", "apple", "kg", "fruits", 10);
+        Unit unit = new Unit("piece", "pc", "quantity", true);
 
-        JdbcProductDAO jdbcProductDAO = new JdbcProductDAO();
+        ProductDAO productDAO = new JdbcProductDAO();
+        UnitDAO unitDAO = new JdbcUnitDAO();
 
-        ArrayList arrayList = new ArrayList();
-        arrayList.add("name");
-        arrayList.add("water");
-        arrayList.add("unitCode");
-        arrayList.add("l");
-        arrayList.add("type");
-        arrayList.add("drinks");
+        Store store = new Store("Kannan Departmental Store", 8254387976L, "Surveyor Colony, Madurai", 123456789123456L);
+        StoreDAO storeDAO = new JdbcStoreDAO();
 
-        jdbcProductDAO.list(3, 5);
+        storeDAO.create(store);
+
     }
+
 }
