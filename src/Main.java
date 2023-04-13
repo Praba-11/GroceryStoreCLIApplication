@@ -1,5 +1,5 @@
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.entity.repository.jdbc.JdbcProductDAO;
+import com.billing.app.domain.repository.jdbc.JdbcProductDAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +20,6 @@ public class Main {
         arrayList.add("type");
         arrayList.add("drinks");
 
-        jdbcProductDAO.edit("101a", arrayList);
+        jdbcProductDAO.list(3, 5);
     }
 }
