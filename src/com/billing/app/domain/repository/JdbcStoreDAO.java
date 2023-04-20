@@ -1,4 +1,4 @@
-package com.billing.app.domain.repository.jdbc;
+package com.billing.app.domain.repository;
 
 import com.billing.app.domain.entity.Store;
 import java.sql.PreparedStatement;
@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class JdbcStoreDAO implements StoreDAO {
+    DatabaseSchemaDAO databaseSchemaDAO = new JdbcDatabaseSchemaDAO();
 
     @Override
     public void create(Store store) throws SQLException, ClassNotFoundException {
@@ -20,6 +21,7 @@ public class JdbcStoreDAO implements StoreDAO {
         preparedStatement.setString(3, store.getAddress());
         preparedStatement.setLong(4, store.getGstNumber());
         preparedStatement.executeUpdate();
+        databaseSchemaDAO.create();
         preparedStatement.close();
 
         System.out.println("Store created.");
@@ -49,6 +51,7 @@ public class JdbcStoreDAO implements StoreDAO {
         Statement statement = connectionDB.getConnection().createStatement();
         String query = "Drop table Store";
         statement.executeQuery(query);
+        databaseSchemaDAO.delete();
         statement.close();
 
         System.out.println("Store Deleted.");

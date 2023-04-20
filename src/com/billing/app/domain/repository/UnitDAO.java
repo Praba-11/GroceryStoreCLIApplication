@@ -1,6 +1,5 @@
-package com.billing.app.domain.repository.jdbc;
+package com.billing.app.domain.repository;
 
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
 
 import java.sql.SQLException;

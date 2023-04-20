@@ -1,4 +1,4 @@
-package com.billing.app.domain.repository.jdbc;
+package com.billing.app.domain.repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
