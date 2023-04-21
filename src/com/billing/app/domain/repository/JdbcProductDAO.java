@@ -1,6 +1,8 @@
 package com.billing.app.domain.repository;
 
 import com.billing.app.domain.entity.Product;
+
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,54 +12,70 @@ import java.util.ArrayList;
 public class JdbcProductDAO implements ProductDAO {
     ConnectionDB connectionDB = new ConnectionDB();
 
+
     @Override
-    public void create(Product product) throws Throwable {
+    public Product create(Product product) throws CustomException {
 
         // Storing Product in Database table
         try {
-            String query = "INSERT INTO products (code, name, unit_code, type, price, stock) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO products (code, name, unitCode, type, price, stock, isDeleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
             preparedStatement.setString(1, product.getCode());
             preparedStatement.setString(2, product.getName());
             preparedStatement.setString(3, product.getUnitCode());
             preparedStatement.setString(4, product.getType());
             preparedStatement.setFloat(5, product.getPrice());
-            preparedStatement.setInt(6, 0);
+            preparedStatement.setInt(6, product.getStock());
+            preparedStatement.setBoolean(7, product.isDeleted());
             int rowsAffected = preparedStatement.executeUpdate();
             preparedStatement.close();
-            if (rowsAffected > 0) throw new CustomException("Product created successfully!");
-            else throw new CustomException("Product creation failed");
+            if (rowsAffected > 0) return product;
         }
-        catch (SQLException exception) {
-            throw new CustomException("Error creating record into database: " + exception.getMessage());
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException("Error creating record into database. " + exception.getMessage());
         }
-
+        return null;
     }
 
+
+
     @Override
-    public void edit(String code, ArrayList arrayList) throws SQLException, ClassNotFoundException {
+    public Product edit(Product product) throws CustomException, SQLException, ClassNotFoundException, IllegalAccessException {
 
         // Edit Product in Database table
         Statement statement = connectionDB.getConnection().createStatement();
-        for (int index = 0; index < arrayList.size()-1; index++) {
-            String query = "UPDATE products SET " + arrayList.get(index) + " = '" + arrayList.get(index + 1) + "' WHERE code = '" + code + "'";
-            statement.executeUpdate(query);
-            index = index + 1;
+        int rowsAffected = 0;
+        Field[] fields = product.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            Object value = field.get(product);
+            if (value != product.getCode() && value != null) {
+                System.out.println(field.getName() + " : " + value);
+                String query = "UPDATE products SET " + field.getName() + " = '" + value + "' WHERE code = '" + product.getCode() + "'";
+                rowsAffected = statement.executeUpdate(query);
+            }
         }
+        if (rowsAffected > 0) return product;
+        else throw new CustomException("No records edited in database.");
     }
 
 
+
     @Override
-    public void delete(String code) throws SQLException, ClassNotFoundException {
+    public void delete(String code) throws SQLException, ClassNotFoundException, CustomException {
 
         // Delete Product in Database table
+        int rowsAffected = 0;
         String query = "DELETE FROM products WHERE code = '" + code + "'";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.executeUpdate();
         preparedStatement.close();
-
-        System.out.println("Product deleted.");
+        rowsAffected = preparedStatement.executeUpdate();
+        if (rowsAffected > 0) throw new CustomException("Product deleted successfully!");
+        else throw new CustomException("No records deleted in database.");
     }
+
+
 
     @Override
     public void list(int range) throws SQLException, ClassNotFoundException {
@@ -76,8 +94,9 @@ public class JdbcProductDAO implements ProductDAO {
             int stock = resultSet.getInt(6);
             System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
         }
-
     }
+
+
 
     @Override
     public void list(int range, int page) throws SQLException, ClassNotFoundException {
@@ -95,8 +114,11 @@ public class JdbcProductDAO implements ProductDAO {
             int stock = resultSet.getInt(6);
             System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
         }
-
     }
+
+
+
+
 
     @Override
     public void list(String searchText) throws SQLException, ClassNotFoundException {
@@ -114,8 +136,11 @@ public class JdbcProductDAO implements ProductDAO {
             int stock = resultSet.getInt(6);
             System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
         }
-
     }
+
+
+
+
 
     @Override
     public void list(String attribute, String searchText) throws SQLException, ClassNotFoundException {
@@ -133,8 +158,11 @@ public class JdbcProductDAO implements ProductDAO {
             int stock = resultSet.getInt(6);
             System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
         }
-
     }
+
+
+
+
 
     @Override
     public void list(String attribute, String searchText, int range, int page) throws SQLException, ClassNotFoundException {
@@ -152,7 +180,5 @@ public class JdbcProductDAO implements ProductDAO {
             int stock = resultSet.getInt(6);
             System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
         }
-
     }
-
 }

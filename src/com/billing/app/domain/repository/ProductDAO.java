@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface ProductDAO {
-    void create(Product product) throws Throwable;
-    void edit(String code, ArrayList arrayList) throws SQLException, ClassNotFoundException;
-    void delete(String code) throws SQLException, ClassNotFoundException;
+    Product create(Product product) throws Throwable;
+    Product edit(Product product) throws Throwable;
+    void delete(String code) throws SQLException, ClassNotFoundException, CustomException;
     void list(int range) throws SQLException, ClassNotFoundException;
     void list(int range, int page) throws SQLException, ClassNotFoundException;
     void list(String searchText) throws SQLException, ClassNotFoundException;

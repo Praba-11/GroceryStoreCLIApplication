@@ -9,13 +9,6 @@ public class Product {
     private int stock;
     private boolean isDeleted;
 
-    public Product(String code, String name, String unitCode, String type, float price) {
-        this.code = code;
-        this.name = name;
-        this.unitCode = unitCode;
-        this.type = type;
-        this.price = price;
-    }
 
     public boolean isDeleted() {
         return isDeleted;
@@ -71,5 +64,18 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", unitCode='" + unitCode + '\'' +
+                ", type='" + type + '\'' +
+                ", price=" + price +
+                ", stock=" + stock +
+                ", isDeleted=" + isDeleted +
+                '}';
     }
 }
