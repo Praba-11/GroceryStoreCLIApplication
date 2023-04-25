@@ -8,7 +8,19 @@ public class Product {
     private float price;
     private int stock;
     private boolean isDeleted;
+    public Product() {
 
+    }
+
+    public Product(String code, String name, String unitCode, String type, float price, int stock, boolean isDeleted) {
+        this.code = code;
+        this.name = name;
+        this.unitCode = unitCode;
+        this.type = type;
+        this.price = price;
+        this.stock = stock;
+        this.isDeleted = isDeleted;
+    }
 
     public boolean isDeleted() {
         return isDeleted;

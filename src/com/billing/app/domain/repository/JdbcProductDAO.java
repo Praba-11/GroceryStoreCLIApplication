@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 public class JdbcProductDAO implements ProductDAO {
     ConnectionDB connectionDB = new ConnectionDB();
-
-
+    ArrayList arrayList = new ArrayList<Product>();
+    Product product;
     @Override
     public Product create(Product product) throws CustomException {
 
@@ -50,7 +50,6 @@ public class JdbcProductDAO implements ProductDAO {
             field.setAccessible(true);
             Object value = field.get(product);
             if (value != product.getCode() && value != null) {
-                System.out.println(field.getName() + " : " + value);
                 String query = "UPDATE products SET " + field.getName() + " = '" + value + "' WHERE code = '" + product.getCode() + "'";
                 rowsAffected = statement.executeUpdate(query);
             }
@@ -62,23 +61,23 @@ public class JdbcProductDAO implements ProductDAO {
 
 
     @Override
-    public void delete(String code) throws SQLException, ClassNotFoundException, CustomException {
+    public boolean delete(String code) throws SQLException, ClassNotFoundException, CustomException {
 
         // Delete Product in Database table
         int rowsAffected = 0;
-        String query = "DELETE FROM products WHERE code = '" + code + "'";
+        String query = "UPDATE products SET isDeleted = " + true + " WHERE code = '" + code + "'";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.executeUpdate();
-        preparedStatement.close();
         rowsAffected = preparedStatement.executeUpdate();
-        if (rowsAffected > 0) throw new CustomException("Product deleted successfully!");
+        preparedStatement.close();
+        if (rowsAffected > 0) return true;
         else throw new CustomException("No records deleted in database.");
     }
 
 
 
     @Override
-    public void list(int range) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(int range) throws SQLException, ClassNotFoundException {
 
         // List's range of Products as default in Database table
         String query = "SELECT * FROM products LIMIT '" + range + "'";
@@ -92,14 +91,17 @@ public class JdbcProductDAO implements ProductDAO {
             String type = resultSet.getString(4);
             float price = resultSet.getFloat(5);
             int stock = resultSet.getInt(6);
-            System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
+            boolean isDeleted = resultSet.getBoolean(7);
+            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+            arrayList.add(product);
         }
+        return arrayList;
     }
 
 
 
     @Override
-    public void list(int range, int page) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(int range, int page) throws SQLException, ClassNotFoundException {
 
         // List's range of Products by pagination in Database table
         String query = "SELECT * FROM products OFFSET '" + (range * (page - 1)) + "'" + "LIMIT '" + range + "'";
@@ -112,8 +114,11 @@ public class JdbcProductDAO implements ProductDAO {
             String type = resultSet.getString(4);
             float price = resultSet.getFloat(5);
             int stock = resultSet.getInt(6);
-            System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
+            boolean isDeleted = resultSet.getBoolean(7);
+            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+            arrayList.add(product);
         }
+        return arrayList;
     }
 
 
@@ -121,7 +126,7 @@ public class JdbcProductDAO implements ProductDAO {
 
 
     @Override
-    public void list(String searchText) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(String searchText) throws SQLException, ClassNotFoundException {
 
         // Search for instances of searchText in Database table
         String query = "SELECT * FROM products WHERE code || name || unit_code || type || price || stock LIKE '%" + searchText + "%'";
@@ -134,8 +139,11 @@ public class JdbcProductDAO implements ProductDAO {
             String type = resultSet.getString(4);
             float price = resultSet.getFloat(5);
             int stock = resultSet.getInt(6);
-            System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
+            boolean isDeleted = resultSet.getBoolean(7);
+            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+            arrayList.add(product);
         }
+        return arrayList;
     }
 
 
@@ -143,7 +151,7 @@ public class JdbcProductDAO implements ProductDAO {
 
 
     @Override
-    public void list(String attribute, String searchText) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(String attribute, String searchText) throws SQLException, ClassNotFoundException {
 
         // Search for instances of searchText using attribute in the Database table
         String query = "SELECT * FROM products WHERE " + attribute + " LIKE '%" + searchText + "%'";
@@ -156,16 +164,18 @@ public class JdbcProductDAO implements ProductDAO {
             String type = resultSet.getString(4);
             float price = resultSet.getFloat(5);
             int stock = resultSet.getInt(6);
-            System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
+            boolean isDeleted = resultSet.getBoolean(7);
+            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+            arrayList.add(product);
         }
+        return arrayList;
     }
 
 
 
 
-
     @Override
-    public void list(String attribute, String searchText, int range, int page) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws SQLException, ClassNotFoundException {
 
         // Search for instances of searchText using attribute, range and pagination
         String query = "SELECT * FROM (SELECT * FROM products OFFSET " + range + " * (" + page + " - 1) LIMIT " + range + " ) subquery WHERE " + attribute + " = '" + searchText + "'";
@@ -178,7 +188,10 @@ public class JdbcProductDAO implements ProductDAO {
             String type = resultSet.getString(4);
             float price = resultSet.getFloat(5);
             int stock = resultSet.getInt(6);
-            System.out.println(code + ": " + name + ": " + unitCode + ": " + type + ": " + price + ": " + stock);
+            boolean isDeleted = resultSet.getBoolean(7);
+            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+            arrayList.add(product);
         }
+        return arrayList;
     }
 }

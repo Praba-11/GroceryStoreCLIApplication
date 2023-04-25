@@ -1,5 +1,18 @@
 package com.billing.app.domain.presentation;
 
-public class Router {
 
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Router {
+    public void module(ArrayList<String> arrayList) {
+        ProductRouter productRouter = new ProductRouter();
+        String module = arrayList.get(0).toString();
+        
+        switch (module) {
+            case "product":
+                productRouter.parseAction(arrayList);
+                
+        }
+    }
 }

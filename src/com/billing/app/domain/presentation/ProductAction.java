@@ -1,19 +1,18 @@
-package com.billing.app.domain.application;
+package com.billing.app.domain.presentation;
 
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.repository.CustomException;
 import com.billing.app.domain.repository.JdbcProductDAO;
 import com.billing.app.domain.repository.ProductDAO;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ProductManager {
+public class ProductAction {
     private ProductDAO productDAO;
-    private Product product;
+
     public Product create(ArrayList arrayList) throws Throwable {
         try {
-            product = new Product();
+            Product product = new Product();
             product.setCode(arrayList.get(2).toString());
             product.setName(arrayList.get(3).toString());
             product.setUnitCode(arrayList.get(4).toString());
@@ -21,17 +20,17 @@ public class ProductManager {
             product.setPrice(Float.parseFloat(arrayList.get(6).toString()));
             productDAO = new JdbcProductDAO();
             productDAO.create(product);
+            return product;
         }
         catch (Throwable exception) {
             throw new CustomException(exception.getMessage());
         }
-        return product;
     }
 
     public Product edit(ArrayList arrayList) throws Throwable {
         try {
             ArrayList editArrayList;
-            editArrayList = new ArrayList<>(arrayList.subList(2, arrayList.size()));
+            editArrayList = new ArrayList<Product>(arrayList.subList(2, arrayList.size()));
             Product product = new Product();
 
             for (int index = 0; index < editArrayList.size(); index+=2) {
@@ -45,19 +44,20 @@ public class ProductManager {
                 }
             }
             productDAO = new JdbcProductDAO();
-            System.out.println(productDAO.edit(product));
+            productDAO.edit(product);
+            return product;
         }
         catch (Throwable exception) {
             throw new CustomException(exception.getMessage());
         }
-        return null;
     }
 
-    public void delete(ArrayList arrayList) throws Throwable {
+    public boolean delete(ArrayList arrayList) throws Throwable {
         try {
-            String code = arrayList.get(3).toString();
+            String code = arrayList.get(2).toString();
             productDAO = new JdbcProductDAO();
             productDAO.delete(code);
+            return true;
         }
         catch (Throwable exception) {
             throw new CustomException(exception.getMessage());
