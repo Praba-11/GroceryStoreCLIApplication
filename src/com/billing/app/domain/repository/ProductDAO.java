@@ -8,6 +8,7 @@ public interface ProductDAO {
     Product create(Product product) throws Throwable;
     Product edit(Product product) throws Throwable;
     boolean delete(String code) throws SQLException, ClassNotFoundException, CustomException;
+    ArrayList<Product> list() throws SQLException, ClassNotFoundException;
     ArrayList<Product> list(int range) throws SQLException, ClassNotFoundException;
     ArrayList<Product> list(int range, int page) throws SQLException, ClassNotFoundException;
     ArrayList<Product> list(String searchText) throws SQLException, ClassNotFoundException;

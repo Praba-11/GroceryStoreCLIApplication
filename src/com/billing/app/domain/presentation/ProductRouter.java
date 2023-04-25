@@ -46,6 +46,14 @@ public class ProductRouter {
                     System.out.println(exception.getMessage());
                 }
                 break;
+
+            case "list":
+                try {
+
+                }
+                catch (Throwable exception) {
+                    System.out.println(exception.getMessage());
+                }
         }
     }
 }

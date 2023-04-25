@@ -1,6 +1,7 @@
 package com.billing.app.domain.repository;
 
 import com.billing.app.domain.entity.Product;
+import org.checkerframework.checker.units.qual.A;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -75,6 +76,25 @@ public class JdbcProductDAO implements ProductDAO {
     }
 
 
+    public ArrayList<Product> list() throws SQLException, ClassNotFoundException {
+        String query = "SELECT * FROM products LIMIT 20";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+
+        while (resultSet.next()) {
+            String code = resultSet.getString(1);
+            String name = resultSet.getString(2);
+            String unitCode = resultSet.getString(3);
+            String type = resultSet.getString(4);
+            float price = resultSet.getFloat(5);
+            int stock = resultSet.getInt(6);
+            boolean isDeleted = resultSet.getBoolean(7);
+            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+            arrayList.add(product);
+        }
+        return arrayList;
+
+    }
 
     @Override
     public ArrayList<Product> list(int range) throws SQLException, ClassNotFoundException {

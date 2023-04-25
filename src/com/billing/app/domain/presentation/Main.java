@@ -16,7 +16,8 @@ public class Main {
         arrayList.add("product");
 //        arrayList.add("create");
 //        arrayList.add("edit");
-//        arrayList.add(("list"));
+        arrayList.add(("list"));
+        arrayList.add(4);
 //        arrayList.add("delete");
 //        arrayList.add("code");
 //        arrayList.add("101g");

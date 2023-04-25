@@ -5,6 +5,7 @@ import com.billing.app.domain.repository.CustomException;
 import com.billing.app.domain.repository.JdbcProductDAO;
 import com.billing.app.domain.repository.ProductDAO;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ProductAction {
@@ -58,6 +59,22 @@ public class ProductAction {
             productDAO = new JdbcProductDAO();
             productDAO.delete(code);
             return true;
+        }
+        catch (Throwable exception) {
+            throw new CustomException(exception.getMessage());
+        }
+    }
+
+    public ArrayList<Product> list(ArrayList arrayList) throws SQLException, ClassNotFoundException{
+        try {
+            if (arrayList.size() == 2)
+                productDAO.list();
+            else if (arrayList.get(2).equals("-p")) {
+
+            }
+            else if (arrayList.get(2).equals("-s")) {
+
+            }
         }
         catch (Throwable exception) {
             throw new CustomException(exception.getMessage());
