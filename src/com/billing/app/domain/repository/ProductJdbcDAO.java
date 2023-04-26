@@ -1,21 +1,17 @@
 package com.billing.app.domain.repository;
 
 import com.billing.app.domain.entity.Product;
-import org.checkerframework.checker.units.qual.A;
 
 import java.lang.reflect.Field;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
-public class JdbcProductDAO implements ProductDAO {
+public class ProductJdbcDAO implements ProductDAO {
     ConnectionDB connectionDB = new ConnectionDB();
     ArrayList arrayList = new ArrayList<Product>();
     Product product;
     @Override
-    public Product create(Product product) throws CustomException {
+    public boolean create(Product product) throws CustomException {
 
         // Storing Product in Database table
         try {
@@ -30,53 +26,70 @@ public class JdbcProductDAO implements ProductDAO {
             preparedStatement.setBoolean(7, product.isDeleted());
             int rowsAffected = preparedStatement.executeUpdate();
             preparedStatement.close();
-            if (rowsAffected > 0) return product;
+            if (rowsAffected > 0)
+                return true;
+            else
+                return false;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException("Error creating record into database. " + exception.getMessage());
+            throw new CustomException(exception.getMessage());
         }
-        return null;
     }
 
 
 
     @Override
-    public Product edit(Product product) throws CustomException, SQLException, ClassNotFoundException, IllegalAccessException {
+    public boolean edit(Product product) throws CustomException {
 
         // Edit Product in Database table
-        Statement statement = connectionDB.getConnection().createStatement();
-        int rowsAffected = 0;
-        Field[] fields = product.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Object value = field.get(product);
-            if (value != product.getCode() && value != null) {
+        try {
+            Statement statement = connectionDB.getConnection().createStatement();
+            int rowsAffected = 0;
+            Field[] fields = product.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object value = field.get(product);
                 String query = "UPDATE products SET " + field.getName() + " = '" + value + "' WHERE code = '" + product.getCode() + "'";
                 rowsAffected = statement.executeUpdate(query);
             }
+            if (rowsAffected > 0)
+                return true;
+            else
+                return false;
         }
-        if (rowsAffected > 0) return product;
-        else throw new CustomException("No records edited in database.");
+        catch (SQLException | ClassNotFoundException | IllegalAccessException exception) {
+            throw new CustomException("No records edited in database.");
+        }
+
     }
 
 
 
     @Override
-    public boolean delete(String code) throws SQLException, ClassNotFoundException, CustomException {
+    public boolean delete(String code) throws CustomException {
 
         // Delete Product in Database table
-        int rowsAffected = 0;
-        String query = "UPDATE products SET isDeleted = " + true + " WHERE code = '" + code + "'";
-        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-        preparedStatement.executeUpdate();
-        rowsAffected = preparedStatement.executeUpdate();
-        preparedStatement.close();
-        if (rowsAffected > 0) return true;
-        else throw new CustomException("No records deleted in database.");
+        try {
+            int rowsAffected = 0;
+            String query = "UPDATE products SET isDeleted = " + true + " WHERE code = '" + code;
+            PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+            preparedStatement.executeUpdate();
+            rowsAffected = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            if (rowsAffected > 0)
+                return true;
+            else
+                return false;
+        }
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException("Invalid product code for deletion.");
+        }
     }
 
 
     public ArrayList<Product> list() throws SQLException, ClassNotFoundException {
+
+        // List's first 20 Products from Database table
         String query = "SELECT * FROM products LIMIT 20";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -99,7 +112,7 @@ public class JdbcProductDAO implements ProductDAO {
     @Override
     public ArrayList<Product> list(int range) throws SQLException, ClassNotFoundException {
 
-        // List's range of Products as default in Database table
+        // List's number of Products over a specified range from Database table
         String query = "SELECT * FROM products LIMIT '" + range + "'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -123,7 +136,7 @@ public class JdbcProductDAO implements ProductDAO {
     @Override
     public ArrayList<Product> list(int range, int page) throws SQLException, ClassNotFoundException {
 
-        // List's range of Products by pagination in Database table
+        // List's range of Products by pagination from Database table
         String query = "SELECT * FROM products OFFSET '" + (range * (page - 1)) + "'" + "LIMIT '" + range + "'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -213,5 +226,44 @@ public class JdbcProductDAO implements ProductDAO {
             arrayList.add(product);
         }
         return arrayList;
+    }
+
+    public int getStock(String code) throws SQLException, ClassNotFoundException {
+
+        int stock = 0;
+        String query = "SELECT stock FROM products WHERE code = '" + code + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            stock = resultSet.getInt(1);
+        }
+        return stock;
+    }
+
+    public Product getProduct(String code) throws SQLException, ClassNotFoundException {
+        String query = "SELECT * FROM products WHERE code = '" + code + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            String id = resultSet.getString(1);
+            String name = resultSet.getString(2);
+            String unitCode = resultSet.getString(3);
+            String type = resultSet.getString(4);
+            float price = resultSet.getFloat(5);
+            int stock = resultSet.getInt(6);
+            boolean isDeleted = resultSet.getBoolean(7);
+            product = new Product(id, name, unitCode, type, price, stock, isDeleted);
+        }
+        return product;
+    }
+
+    public int getCount() throws SQLException, ClassNotFoundException {
+        int count = 0;
+        String query = "SELECT COUNT(code) FROM products";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next())
+            count = resultSet.getInt(1);
+        return count;
     }
 }

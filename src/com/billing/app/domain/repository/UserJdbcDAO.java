@@ -1,5 +1,5 @@
 package com.billing.app.domain.repository;
 
-public class JdbcUserDAO {
+public class UserJdbcDAO {
 
 }

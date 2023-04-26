@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class JdbcStoreDAO implements StoreDAO {
-    DatabaseSchemaDAO databaseSchemaDAO = new JdbcDatabaseSchemaDAO();
+public class StoreJdbcDAO implements StoreDAO {
+    DatabaseSchemaDAO databaseSchemaDAO = new DatabaseSchemaJdbcDAO();
 
     @Override
     public void create(Store store) throws SQLException, ClassNotFoundException {
