@@ -14,8 +14,8 @@ public interface ProductDAO {
     ArrayList<Product> list(String searchText) throws SQLException, ClassNotFoundException;
     ArrayList<Product> list(String attribute, String searchText) throws SQLException, ClassNotFoundException;
     ArrayList<Product> list(String attribute, String searchText, int range, int page) throws SQLException, ClassNotFoundException;
-    int getStock(String code) throws SQLException, ClassNotFoundException;
-    Product getProduct(String code) throws SQLException, ClassNotFoundException;
-    int getCount() throws SQLException, ClassNotFoundException;
+    int getStock(String code) throws SQLException, ClassNotFoundException, CustomException;
+    Product getProduct(String code) throws SQLException, ClassNotFoundException, CustomException;
+    int getCount() throws SQLException, ClassNotFoundException, CustomException;
 
 }

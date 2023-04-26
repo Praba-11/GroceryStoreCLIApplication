@@ -35,9 +35,10 @@ public class ProductService implements ProductServiceInterface {
 
     public boolean delete(String code) throws SQLException, CustomException, ClassNotFoundException {
         productDAO = new ProductJdbcDAO();
-        if (productDAO.delete(code))
-            return true;
-        else
-            throw new CustomException("Product delete unsuccessful.");
+        if (productDAO.getStock(code) != 0) {
+            return productDAO.delete(code);
+        } else {
+            throw new CustomException("Product stock not zero.");
+        }
     }
 }

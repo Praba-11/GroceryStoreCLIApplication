@@ -58,7 +58,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 return false;
         }
         catch (SQLException | ClassNotFoundException | IllegalAccessException exception) {
-            throw new CustomException("No records edited in database.");
+            throw new CustomException(exception.getMessage());
         }
 
     }
@@ -82,7 +82,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 return false;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException("Invalid product code for deletion.");
+            throw new CustomException(exception.getMessage());
         }
     }
 
@@ -228,42 +228,61 @@ public class ProductJdbcDAO implements ProductDAO {
         return arrayList;
     }
 
-    public int getStock(String code) throws SQLException, ClassNotFoundException {
 
-        int stock = 0;
-        String query = "SELECT stock FROM products WHERE code = '" + code + "'";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            stock = resultSet.getInt(1);
+    public int getStock(String code) throws CustomException {
+
+        try {
+            int stock = 0;
+            String query = "SELECT stock FROM products WHERE code = '" + code + "'";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                stock = resultSet.getInt(1);
+            }
+            return stock;
         }
-        return stock;
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
 
-    public Product getProduct(String code) throws SQLException, ClassNotFoundException {
-        String query = "SELECT * FROM products WHERE code = '" + code + "'";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            String id = resultSet.getString(1);
-            String name = resultSet.getString(2);
-            String unitCode = resultSet.getString(3);
-            String type = resultSet.getString(4);
-            float price = resultSet.getFloat(5);
-            int stock = resultSet.getInt(6);
-            boolean isDeleted = resultSet.getBoolean(7);
-            product = new Product(id, name, unitCode, type, price, stock, isDeleted);
+
+    public Product getProduct(String code) throws CustomException {
+
+        try {
+            String query = "SELECT * FROM products WHERE code = '" + code + "'";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String id = resultSet.getString(1);
+                String name = resultSet.getString(2);
+                String unitCode = resultSet.getString(3);
+                String type = resultSet.getString(4);
+                float price = resultSet.getFloat(5);
+                int stock = resultSet.getInt(6);
+                boolean isDeleted = resultSet.getBoolean(7);
+                product = new Product(id, name, unitCode, type, price, stock, isDeleted);
+            }
+            return product;
         }
-        return product;
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
 
-    public int getCount() throws SQLException, ClassNotFoundException {
-        int count = 0;
-        String query = "SELECT COUNT(code) FROM products";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next())
-            count = resultSet.getInt(1);
-        return count;
+
+    public int getCount() throws CustomException {
+        try {
+            int count = 0;
+            String query = "SELECT COUNT(code) FROM products";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+                count = resultSet.getInt(1);
+            return count;
+        }
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
 }

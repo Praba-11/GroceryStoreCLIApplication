@@ -8,7 +8,7 @@ public class ProductRouter {
     public void parse(ArrayList<String> arrayList) throws Throwable {
         String action = arrayList.get(1);
         Scanner scanner = new Scanner(System.in);
-        ProductAction productAction = new ProductAction();
+        ProductActionBuilder productAction = new ProductActionBuilder();
 
         switch (action) {
 
@@ -21,6 +21,7 @@ public class ProductRouter {
                 }
                 break;
 
+
             case "edit":
                 try {
                     if (productAction.edit(arrayList) != null)
@@ -29,6 +30,7 @@ public class ProductRouter {
                     System.out.println("Error editing record into database. " + exception.getMessage());
                 }
                 break;
+
 
             case "delete":
                 try {
@@ -46,13 +48,6 @@ public class ProductRouter {
                 }
                 break;
 
-            case "list":
-                try {
-
-                }
-                catch (Throwable exception) {
-                    System.out.println(exception.getMessage());
-                }
         }
     }
 }
