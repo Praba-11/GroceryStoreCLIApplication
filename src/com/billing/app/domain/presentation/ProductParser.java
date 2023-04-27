@@ -67,27 +67,33 @@ public class ProductParser {
             productServiceInterface = new ProductService();
             if (arrayList.size() == 2) {
                 return productServiceInterface.list();
-            } else if (arrayList.get(2).toString().equals("-p") && arrayList.size() == 4) {
+            }
+            else if (arrayList.get(2).toString().equals("-p") && arrayList.size() == 4) {
                 int range = Integer.parseInt(arrayList.get(3).toString());
                 return productServiceInterface.list(range);
-            } else if (arrayList.get(2).toString().equals("-p") && arrayList.size() == 5) {
+            }
+            else if (arrayList.get(2).toString().equals("-p") && arrayList.size() == 5) {
                 int range = Integer.parseInt(arrayList.get(3).toString());
                 int page = Integer.parseInt(arrayList.get(4).toString());
                 return productServiceInterface.list(range, page);
-            } else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 4) {
+            }
+            else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 4) {
                 String searchText = arrayList.get(3).toString();
                 return productServiceInterface.list(searchText);
-            } else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 5) {
+            }
+            else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 5) {
                 String searchText = arrayList.get(4).toString();
                 String attribute = arrayList.get(3).toString();
                 return productServiceInterface.list(attribute, searchText);
-            } else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 7) {
+            }
+            else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 7) {
                 String searchText = arrayList.get(4).toString();
                 String attribute = arrayList.get(3).toString();
                 int range = Integer.parseInt(arrayList.get(5).toString());
                 int page = Integer.parseInt(arrayList.get(6).toString());
                 return productServiceInterface.list(attribute, searchText, range, page);
-            } else {
+            }
+            else {
                 throw new CustomException("Template mismatch.");
             }
         }

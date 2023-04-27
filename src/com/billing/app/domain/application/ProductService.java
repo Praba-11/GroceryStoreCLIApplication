@@ -10,44 +10,59 @@ import java.util.ArrayList;
 
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;
-    public Product create(Product product) throws Throwable {
-        productDAO = new ProductJdbcDAO();
-        if (validate(product)) {
-            if (productDAO.create(product))
-                return productDAO.getProduct(product.getCode());
-            else
-                throw new CustomException("Product creation unsuccessful.");
+    public Product create(Product product) throws SQLException, CustomException, ClassNotFoundException {
+        try {
+            productDAO = new ProductJdbcDAO();
+            if (validate(product)) {
+                if (productDAO.create(product))
+                    return productDAO.getProduct(product.getCode());
+                else
+                    throw new CustomException("Product creation unsuccessful.");
+            }
+            else {
+                throw new CustomException("Product validation failed.");
+            }
         }
-        else {
-            throw new CustomException("Product validation failed.");
+        catch (Throwable exception) {
+            throw new CustomException("Error while creating product in database. " + exception.getMessage());
         }
     }
 
 
 
-    public Product edit(Product product, ArrayList arrayList) throws Throwable {
-        productDAO = new ProductJdbcDAO();
-        for (int index = 0; index < arrayList.size(); index+=2) {
-            String name = arrayList.get(index).toString();
-            Object values = arrayList.get(index+1);
-            Field field = Product.class.getDeclaredField(name);
-            field.setAccessible(true);
-            field.set(product, values);
+    public Product edit(Product product, ArrayList arrayList) throws SQLException, CustomException, ClassNotFoundException {
+        try {
+            productDAO = new ProductJdbcDAO();
+            for (int index = 0; index < arrayList.size(); index+=2) {
+                String name = arrayList.get(index).toString();
+                Object values = arrayList.get(index+1);
+                Field field = Product.class.getDeclaredField(name);
+                field.setAccessible(true);
+                field.set(product, values);
+            }
+            if (productDAO.edit(product))
+                return productDAO.getProduct(product.getCode());
+            else
+                throw new CustomException("Product edit unsuccessful.");
         }
-        if (productDAO.edit(product))
-            return productDAO.getProduct(product.getCode());
-        else
-            throw new CustomException("Product edit unsuccessful.");
+        catch (Throwable exception) {
+            throw new CustomException("Error while editing product in database. Incompatible edit attributes (or) code not found." + exception.getMessage());
+        }
     }
 
 
 
     public boolean delete(String code) throws SQLException, CustomException, ClassNotFoundException {
-        productDAO = new ProductJdbcDAO();
-        if (productDAO.getStock(code) != 0) {
-            return productDAO.delete(code);
-        } else {
-            throw new CustomException("Product stock not zero.");
+        try {
+            productDAO = new ProductJdbcDAO();
+            if (productDAO.getStock(code) != 0) {
+                return productDAO.delete(code);
+            } else {
+                throw new CustomException("Product stock not zero.");
+            }
+        }
+        catch (Throwable exception) {
+            throw new CustomException("Error while deleting product in database. " + exception.getMessage());
         }
     }
 
@@ -56,8 +71,13 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ArrayList<Product> list() throws Throwable {
-        productDAO = new ProductJdbcDAO();
-        return productDAO.list();
+        try {
+            productDAO = new ProductJdbcDAO();
+            return productDAO.list();
+        }
+        catch (Throwable exception) {
+            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+        }
     }
 
 
@@ -65,8 +85,13 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ArrayList<Product> list(int range) throws Throwable {
-        productDAO = new ProductJdbcDAO();
-        return productDAO.list(range);
+        try {
+            productDAO = new ProductJdbcDAO();
+            return productDAO.list(range);
+        }
+        catch (Throwable exception) {
+            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+        }
     }
 
 
@@ -74,8 +99,13 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ArrayList<Product> list(int range, int page) throws Throwable {
-        productDAO = new ProductJdbcDAO();
-        return productDAO.list(range, page);
+        try {
+            productDAO = new ProductJdbcDAO();
+            return productDAO.list(range, page);
+        }
+        catch (Throwable exception) {
+            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+        }
     }
 
 
@@ -83,8 +113,13 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ArrayList<Product> list(String searchText) throws Throwable {
-        productDAO = new ProductJdbcDAO();
-        return productDAO.list(searchText);
+        try {
+            productDAO = new ProductJdbcDAO();
+            return productDAO.list(searchText);
+        }
+        catch (Throwable exception) {
+            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+        }
     }
 
 
@@ -92,8 +127,13 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ArrayList<Product> list(String attribute, String searchText) throws Throwable {
-        productDAO = new ProductJdbcDAO();
-        return productDAO.list(attribute, searchText);
+        try {
+            productDAO = new ProductJdbcDAO();
+            return productDAO.list(attribute, searchText);
+        }
+        catch (Throwable exception) {
+            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+        }
     }
 
 
@@ -101,29 +141,40 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws Throwable {
-        productDAO = new ProductJdbcDAO();
-        return productDAO.list(attribute, searchText, range, page);
+        try {
+            productDAO = new ProductJdbcDAO();
+            return productDAO.list(attribute, searchText, range, page);
+        }
+        catch (Throwable exception) {
+            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+        }
     }
 
 
 
 
     public boolean validate(Product product) throws CustomException {
+        if (product == null) {
+            throw new CustomException("Product cannot be null");
+        }
         if (product.getCode() == null && product.getCode().length() > 6) {
-            throw new CustomException("Incompatible product code (or) product code out of bound.");
-        } else if (product.getName() == null) {
-            throw new CustomException("Incompatible product name.");
-        } else if (product.getUnitCode() == null) {
-            throw new CustomException("Incompatible product unit code.");
-        } else if (product.getType() == null) {
-            throw new CustomException("Incompatible product type.");
-        } else if (product.getPrice() == 0) {
-            throw new CustomException("Incompatible product price");
-        } else if (product.isDeleted() == true) {
-            throw new CustomException("Incompatible isDeleted assigned.");
+            throw new CustomException("Product code cannot be null or empty (or) Product code out of bound.");
         }
-        else {
-            return true;
+        if (product.getName() == null) {
+            throw new CustomException("Product name cannot be null or empty.");
         }
+        if (product.getUnitCode() == null) {
+            throw new CustomException("Product unit code cannot be null or empty.");
+        }
+        if (product.getType() == null) {
+            throw new CustomException("Product type cannot be null or empty.");
+        }
+        if (product.getPrice() == 0) {
+            throw new CustomException("Product price cannot be 0.");
+        }
+        if (product.isDeleted() == true) {
+            throw new CustomException("Product isDeleted condition cannot be true.");
+        }
+        return true;
     }
 }
