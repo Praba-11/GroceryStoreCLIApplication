@@ -11,7 +11,7 @@ public class Router {
         
         switch (module) {
             case "product":
-                productRouter.parse(arrayList);
+                productRouter.execute(arrayList);
                 
         }
     }

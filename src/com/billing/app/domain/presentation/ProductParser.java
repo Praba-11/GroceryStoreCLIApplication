@@ -8,7 +8,7 @@ import com.billing.app.domain.repository.ProductJdbcDAO;
 import com.billing.app.domain.repository.ProductDAO;
 import java.util.ArrayList;
 
-public class ProductActionBuilder {
+public class ProductParser {
     private Product product;
     private ProductDAO productDAO;
     private ProductServiceInterface productServiceInterface;
@@ -54,6 +54,42 @@ public class ProductActionBuilder {
             String code = arrayList.get(2).toString();
             productServiceInterface = new ProductService();
             return productServiceInterface.delete(code);
+        }
+        catch (Throwable exception) {
+            throw new CustomException(exception.getMessage());
+        }
+    }
+
+
+
+    public ArrayList<Product> list(ArrayList arrayList) throws Throwable {
+        try {
+            productServiceInterface = new ProductService();
+            if (arrayList.size() == 2) {
+                return productServiceInterface.list();
+            } else if (arrayList.get(2).toString().equals("-p") && arrayList.size() == 4) {
+                int range = Integer.parseInt(arrayList.get(3).toString());
+                return productServiceInterface.list(range);
+            } else if (arrayList.get(2).toString().equals("-p") && arrayList.size() == 5) {
+                int range = Integer.parseInt(arrayList.get(3).toString());
+                int page = Integer.parseInt(arrayList.get(4).toString());
+                return productServiceInterface.list(range, page);
+            } else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 4) {
+                String searchText = arrayList.get(3).toString();
+                return productServiceInterface.list(searchText);
+            } else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 5) {
+                String searchText = arrayList.get(4).toString();
+                String attribute = arrayList.get(3).toString();
+                return productServiceInterface.list(attribute, searchText);
+            } else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 7) {
+                String searchText = arrayList.get(4).toString();
+                String attribute = arrayList.get(3).toString();
+                int range = Integer.parseInt(arrayList.get(5).toString());
+                int page = Integer.parseInt(arrayList.get(6).toString());
+                return productServiceInterface.list(attribute, searchText, range, page);
+            } else {
+                throw new CustomException("Template mismatch.");
+            }
         }
         catch (Throwable exception) {
             throw new CustomException(exception.getMessage());

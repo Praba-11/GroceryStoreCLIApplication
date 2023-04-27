@@ -105,8 +105,8 @@ public class ProductJdbcDAO implements ProductDAO {
             product = new Product(code, name, unitCode, type, price, stock, isDeleted);
             arrayList.add(product);
         }
-        return arrayList;
 
+        return arrayList;
     }
 
     @Override
@@ -231,6 +231,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
     public int getStock(String code) throws CustomException {
 
+        // Returns the stock of the product based on product code provided
         try {
             int stock = 0;
             String query = "SELECT stock FROM products WHERE code = '" + code + "'";
@@ -249,6 +250,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
     public Product getProduct(String code) throws CustomException {
 
+        // Returns the product based on the product code provided
         try {
             String query = "SELECT * FROM products WHERE code = '" + code + "'";
             Statement statement = connectionDB.getConnection().createStatement();
@@ -272,6 +274,8 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     public int getCount() throws CustomException {
+
+        // Returns the count of the products in the database table
         try {
             int count = 0;
             String query = "SELECT COUNT(code) FROM products";
