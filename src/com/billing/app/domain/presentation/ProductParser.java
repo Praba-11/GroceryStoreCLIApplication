@@ -37,7 +37,7 @@ public class ProductParser {
         try {
             productDAO = new ProductJdbcDAO();
             String code = arrayList.get(3).toString();
-            ArrayList editArrayList = new ArrayList<>(arrayList.subList(4, arrayList.size()));
+            ArrayList<String> editArrayList = new ArrayList<>(arrayList.subList(4, arrayList.size()));
             product = productDAO.getProduct(code);
             productServiceInterface = new ProductService();
             return productServiceInterface.edit(product, editArrayList);

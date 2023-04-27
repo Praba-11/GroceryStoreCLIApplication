@@ -30,11 +30,11 @@ public class ProductService implements ProductServiceInterface {
 
 
 
-    public Product edit(Product product, ArrayList arrayList) throws SQLException, CustomException, ClassNotFoundException {
+    public Product edit(Product product, ArrayList<String> arrayList) throws SQLException, CustomException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
             for (int index = 0; index < arrayList.size(); index+=2) {
-                String name = arrayList.get(index).toString();
+                String name = arrayList.get(index);
                 Object values = arrayList.get(index+1);
                 Field field = Product.class.getDeclaredField(name);
                 field.setAccessible(true);
@@ -55,7 +55,7 @@ public class ProductService implements ProductServiceInterface {
     public boolean delete(String code) throws SQLException, CustomException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
-            if (productDAO.getStock(code) != 0) {
+            if (productDAO.getStock(code) == 0) {
                 return productDAO.delete(code);
             } else {
                 throw new CustomException("Product stock not zero.");
@@ -172,7 +172,7 @@ public class ProductService implements ProductServiceInterface {
         if (product.getPrice() == 0) {
             throw new CustomException("Product price cannot be 0.");
         }
-        if (product.isDeleted() == true) {
+        if (product.isDeleted()) {
             throw new CustomException("Product isDeleted condition cannot be true.");
         }
         return true;

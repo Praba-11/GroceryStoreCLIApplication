@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class ProductJdbcDAO implements ProductDAO {
     ConnectionDB connectionDB = new ConnectionDB();
-    ArrayList arrayList = new ArrayList<Product>();
+    ArrayList<Product> arrayList = new ArrayList<>();
     Product product;
     @Override
     public boolean create(Product product) throws CustomException {
@@ -26,10 +26,7 @@ public class ProductJdbcDAO implements ProductDAO {
             preparedStatement.setBoolean(7, product.isDeleted());
             int rowsAffected = preparedStatement.executeUpdate();
             preparedStatement.close();
-            if (rowsAffected > 0)
-                return true;
-            else
-                return false;
+            return rowsAffected > 0;
         }
         catch (SQLException | ClassNotFoundException exception) {
             throw new CustomException(exception.getMessage());
@@ -52,10 +49,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 String query = "UPDATE products SET " + field.getName() + " = '" + value + "' WHERE code = '" + product.getCode() + "'";
                 rowsAffected = statement.executeUpdate(query);
             }
-            if (rowsAffected > 0)
-                return true;
-            else
-                return false;
+            return rowsAffected > 0;
         }
         catch (SQLException | ClassNotFoundException | IllegalAccessException exception) {
             throw new CustomException(exception.getMessage());
@@ -70,16 +64,13 @@ public class ProductJdbcDAO implements ProductDAO {
 
         // Delete Product in Database table
         try {
-            int rowsAffected = 0;
-            String query = "UPDATE products SET isDeleted = " + true + " WHERE code = '" + code;
+            int rowsAffected;
+            String query = "UPDATE products SET isDeleted = " + true + " WHERE code = '" + code + "'";
             PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
             preparedStatement.executeUpdate();
             rowsAffected = preparedStatement.executeUpdate();
             preparedStatement.close();
-            if (rowsAffected > 0)
-                return true;
-            else
-                return false;
+            return rowsAffected > 0;
         }
         catch (SQLException | ClassNotFoundException exception) {
             throw new CustomException(exception.getMessage());
@@ -87,71 +78,91 @@ public class ProductJdbcDAO implements ProductDAO {
     }
 
 
-    public ArrayList<Product> list() throws SQLException, ClassNotFoundException {
+
+
+    public ArrayList<Product> list() throws CustomException {
 
         // List's first 20 Products from Database table
-        String query = "SELECT * FROM products LIMIT 20";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
+        try {
+            String query = "SELECT * FROM products LIMIT 20";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
 
-        while (resultSet.next()) {
-            String code = resultSet.getString(1);
-            String name = resultSet.getString(2);
-            String unitCode = resultSet.getString(3);
-            String type = resultSet.getString(4);
-            float price = resultSet.getFloat(5);
-            int stock = resultSet.getInt(6);
-            boolean isDeleted = resultSet.getBoolean(7);
-            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
-            arrayList.add(product);
+            while (resultSet.next()) {
+                String code = resultSet.getString(1);
+                String name = resultSet.getString(2);
+                String unitCode = resultSet.getString(3);
+                String type = resultSet.getString(4);
+                float price = resultSet.getFloat(5);
+                int stock = resultSet.getInt(6);
+                boolean isDeleted = resultSet.getBoolean(7);
+                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                arrayList.add(product);
+            }
+
+            return arrayList;
         }
-
-        return arrayList;
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
 
+
+
+
     @Override
-    public ArrayList<Product> list(int range) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(int range) throws CustomException {
 
         // List's number of Products over a specified range from Database table
-        String query = "SELECT * FROM products LIMIT '" + range + "'";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
+        try {
+            String query = "SELECT * FROM products LIMIT '" + range + "'";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
 
-        while (resultSet.next()) {
-            String code = resultSet.getString(1);
-            String name = resultSet.getString(2);
-            String unitCode = resultSet.getString(3);
-            String type = resultSet.getString(4);
-            float price = resultSet.getFloat(5);
-            int stock = resultSet.getInt(6);
-            boolean isDeleted = resultSet.getBoolean(7);
-            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
-            arrayList.add(product);
+            while (resultSet.next()) {
+                String code = resultSet.getString(1);
+                String name = resultSet.getString(2);
+                String unitCode = resultSet.getString(3);
+                String type = resultSet.getString(4);
+                float price = resultSet.getFloat(5);
+                int stock = resultSet.getInt(6);
+                boolean isDeleted = resultSet.getBoolean(7);
+                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                arrayList.add(product);
+            }
+            return arrayList;
         }
-        return arrayList;
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
 
 
 
-    @Override
-    public ArrayList<Product> list(int range, int page) throws SQLException, ClassNotFoundException {
 
+    @Override
+    public ArrayList<Product> list(int range, int page) throws CustomException {
         // List's range of Products by pagination from Database table
-        String query = "SELECT * FROM products OFFSET '" + (range * (page - 1)) + "'" + "LIMIT '" + range + "'";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            String code = resultSet.getString(1);
-            String name = resultSet.getString(2);
-            String unitCode = resultSet.getString(3);
-            String type = resultSet.getString(4);
-            float price = resultSet.getFloat(5);
-            int stock = resultSet.getInt(6);
-            boolean isDeleted = resultSet.getBoolean(7);
-            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
-            arrayList.add(product);
+        try {
+            String query = "SELECT * FROM products OFFSET '" + (range * (page - 1)) + "'" + "LIMIT '" + range + "'";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String code = resultSet.getString(1);
+                String name = resultSet.getString(2);
+                String unitCode = resultSet.getString(3);
+                String type = resultSet.getString(4);
+                float price = resultSet.getFloat(5);
+                int stock = resultSet.getInt(6);
+                boolean isDeleted = resultSet.getBoolean(7);
+                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                arrayList.add(product);
+            }
+            return arrayList;
         }
-        return arrayList;
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
 
 
@@ -159,24 +170,29 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public ArrayList<Product> list(String searchText) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(String searchText) throws CustomException {
 
         // Search for instances of searchText in Database table
-        String query = "SELECT * FROM products WHERE code || name || unit_code || type || price || stock LIKE '%" + searchText + "%'";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            String code = resultSet.getString(1);
-            String name = resultSet.getString(2);
-            String unitCode = resultSet.getString(3);
-            String type = resultSet.getString(4);
-            float price = resultSet.getFloat(5);
-            int stock = resultSet.getInt(6);
-            boolean isDeleted = resultSet.getBoolean(7);
-            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
-            arrayList.add(product);
+        try {
+            String query = "SELECT * FROM products WHERE code || name || unit_code || type || price || stock LIKE '%" + searchText + "%'";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String code = resultSet.getString(1);
+                String name = resultSet.getString(2);
+                String unitCode = resultSet.getString(3);
+                String type = resultSet.getString(4);
+                float price = resultSet.getFloat(5);
+                int stock = resultSet.getInt(6);
+                boolean isDeleted = resultSet.getBoolean(7);
+                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                arrayList.add(product);
+            }
+            return arrayList;
         }
-        return arrayList;
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
 
 
@@ -184,49 +200,61 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public ArrayList<Product> list(String attribute, String searchText) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(String attribute, String searchText) throws CustomException {
 
         // Search for instances of searchText using attribute in the Database table
-        String query = "SELECT * FROM products WHERE " + attribute + " LIKE '%" + searchText + "%'";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            String code = resultSet.getString(1);
-            String name = resultSet.getString(2);
-            String unitCode = resultSet.getString(3);
-            String type = resultSet.getString(4);
-            float price = resultSet.getFloat(5);
-            int stock = resultSet.getInt(6);
-            boolean isDeleted = resultSet.getBoolean(7);
-            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
-            arrayList.add(product);
+        try {
+            String query = "SELECT * FROM products WHERE " + attribute + " LIKE '%" + searchText + "%'";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String code = resultSet.getString(1);
+                String name = resultSet.getString(2);
+                String unitCode = resultSet.getString(3);
+                String type = resultSet.getString(4);
+                float price = resultSet.getFloat(5);
+                int stock = resultSet.getInt(6);
+                boolean isDeleted = resultSet.getBoolean(7);
+                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                arrayList.add(product);
+            }
+            return arrayList;
         }
-        return arrayList;
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
 
 
 
 
     @Override
-    public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws CustomException {
 
         // Search for instances of searchText using attribute, range and pagination
-        String query = "SELECT * FROM (SELECT * FROM products OFFSET " + range + " * (" + page + " - 1) LIMIT " + range + " ) subquery WHERE " + attribute + " = '" + searchText + "'";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            String code = resultSet.getString(1);
-            String name = resultSet.getString(2);
-            String unitCode = resultSet.getString(3);
-            String type = resultSet.getString(4);
-            float price = resultSet.getFloat(5);
-            int stock = resultSet.getInt(6);
-            boolean isDeleted = resultSet.getBoolean(7);
-            product = new Product(code, name, unitCode, type, price, stock, isDeleted);
-            arrayList.add(product);
+        try {
+            String query = "SELECT * FROM (SELECT * FROM products OFFSET " + range + " * (" + page + " - 1) LIMIT " + range + " ) subquery WHERE " + attribute + " = '" + searchText + "'";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String code = resultSet.getString(1);
+                String name = resultSet.getString(2);
+                String unitCode = resultSet.getString(3);
+                String type = resultSet.getString(4);
+                float price = resultSet.getFloat(5);
+                int stock = resultSet.getInt(6);
+                boolean isDeleted = resultSet.getBoolean(7);
+                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                arrayList.add(product);
+            }
+            return arrayList;
         }
-        return arrayList;
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
     }
+
+
 
 
     public int getStock(String code) throws CustomException {
@@ -246,6 +274,8 @@ public class ProductJdbcDAO implements ProductDAO {
             throw new CustomException(exception.getMessage());
         }
     }
+
+
 
 
     public Product getProduct(String code) throws CustomException {
@@ -273,6 +303,8 @@ public class ProductJdbcDAO implements ProductDAO {
     }
 
 
+
+
     public int getCount() throws CustomException {
 
         // Returns the count of the products in the database table
@@ -289,4 +321,5 @@ public class ProductJdbcDAO implements ProductDAO {
             throw new CustomException(exception.getMessage());
         }
     }
+
 }
