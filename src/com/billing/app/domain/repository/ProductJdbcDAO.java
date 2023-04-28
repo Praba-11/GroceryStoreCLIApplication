@@ -28,7 +28,7 @@ public class ProductJdbcDAO implements ProductDAO {
             preparedStatement.close();
             return rowsAffected > 0;
         }
-        catch (SQLException | ClassNotFoundException exception) {
+        catch (ClassNotFoundException | SQLException exception) {
             throw new CustomException(exception.getMessage());
         }
     }

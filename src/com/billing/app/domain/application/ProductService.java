@@ -4,16 +4,20 @@ import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.repository.CustomException;
 import com.billing.app.domain.repository.ProductDAO;
 import com.billing.app.domain.repository.ProductJdbcDAO;
+
+
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;
-    public Product create(Product product) throws SQLException, CustomException, ClassNotFoundException {
+    private ProductValidator productValidator;
+    public Product create(Product product) throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
-            if (validate(product)) {
+            productValidator = new ProductValidator();
+            if (productValidator.validate(product)) {
                 if (productDAO.create(product))
                     return productDAO.getProduct(product.getCode());
                 else
@@ -23,14 +27,25 @@ public class ProductService implements ProductServiceInterface {
                 throw new CustomException("Product validation failed.");
             }
         }
-        catch (Throwable exception) {
-            throw new CustomException("Error while creating product in database. " + exception.getMessage());
+        catch (SQLException exception) {
+            if (exception.getSQLState().equals("23505")) {
+                throw new CustomException("Primary key cannot be modified." + exception.getMessage());
+            }
+            else if (exception.getSQLState().equals("23502")) {
+                throw new CustomException("Provided constraint cannot be null in relational table." + exception.getMessage());
+            }
+            else if (exception.getSQLState().equals("23503")) {
+                throw new CustomException("Provided unit not present in Unit relation table." + exception.getMessage());
+            }
+            else {
+                throw new CustomException(exception.getMessage());
+            }
         }
     }
 
 
 
-    public Product edit(Product product, ArrayList<String> arrayList) throws SQLException, CustomException, ClassNotFoundException {
+    public Product edit(Product product, ArrayList<String> arrayList) throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
             for (int index = 0; index < arrayList.size(); index+=2) {
@@ -45,8 +60,8 @@ public class ProductService implements ProductServiceInterface {
             else
                 throw new CustomException("Product edit unsuccessful.");
         }
-        catch (Throwable exception) {
-            throw new CustomException("Error while editing product in database. Incompatible edit attributes (or) code not found." + exception.getMessage());
+        catch (SQLException | CustomException | ClassNotFoundException | NoSuchFieldException | IllegalAccessException exception) {
+            throw new CustomException("Incompatible edit attributes (or) code not found." + exception.getMessage());
         }
     }
 
@@ -55,14 +70,20 @@ public class ProductService implements ProductServiceInterface {
     public boolean delete(String code) throws SQLException, CustomException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
-            if (productDAO.getStock(code) == 0) {
-                return productDAO.delete(code);
-            } else {
-                throw new CustomException("Product stock not zero.");
+            if (productDAO.getProduct(code).isDeleted()) {
+                throw new CustomException("Product has already been deleted.");
+            }
+            else {
+                if (productDAO.getStock(code) == 0) {
+                    return productDAO.delete(code);
+                }
+                else {
+                    throw new CustomException("Product stock not zero.");
+                }
             }
         }
         catch (Throwable exception) {
-            throw new CustomException("Error while deleting product in database. " + exception.getMessage());
+            throw new CustomException(exception.getMessage());
         }
     }
 
@@ -75,10 +96,10 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list();
             if (productArrayList.isEmpty()) {
-                return productArrayList;
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                return productArrayList;
             }
         }
         catch (Throwable exception) {
@@ -95,10 +116,10 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(range);
             if (productArrayList.isEmpty()) {
-                return productArrayList;
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                return productArrayList;
             }
         }
         catch (Throwable exception) {
@@ -115,10 +136,10 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(range, page);
             if (productArrayList.isEmpty()) {
-                return productArrayList;
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                return productArrayList;
             }
         }
         catch (Throwable exception) {
@@ -135,10 +156,10 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(searchText);
             if (productArrayList.isEmpty()) {
-                return productArrayList;
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                return productArrayList;
             }
         }
         catch (Throwable exception) {
@@ -155,10 +176,10 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(attribute, searchText);
             if (productArrayList.isEmpty()) {
-                return productArrayList;
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                return productArrayList;
             }
         }
         catch (Throwable exception) {
@@ -175,10 +196,10 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(attribute, searchText, range, page);
             if (productArrayList.isEmpty()) {
-                return productArrayList;
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                return productArrayList;
             }
         }
         catch (Throwable exception) {
@@ -186,31 +207,4 @@ public class ProductService implements ProductServiceInterface {
         }
     }
 
-
-
-
-    public boolean validate(Product product) throws CustomException {
-        if (product == null) {
-            throw new CustomException("Product cannot be null");
-        }
-        if (product.getCode() == null && product.getCode().length() > 6) {
-            throw new CustomException("Product code cannot be null or empty (or) Product code out of bound.");
-        }
-        if (product.getName() == null) {
-            throw new CustomException("Product name cannot be null or empty.");
-        }
-        if (product.getUnitCode() == null) {
-            throw new CustomException("Product unit code cannot be null or empty.");
-        }
-        if (product.getType() == null) {
-            throw new CustomException("Product type cannot be null or empty.");
-        }
-        if (product.getPrice() == 0) {
-            throw new CustomException("Product price cannot be 0.");
-        }
-        if (product.isDeleted()) {
-            throw new CustomException("Product isDeleted condition cannot be true.");
-        }
-        return true;
-    }
 }

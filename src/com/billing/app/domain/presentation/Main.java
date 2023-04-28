@@ -9,24 +9,24 @@ public class Main {
         ArrayList arrayList = new ArrayList();
 
         arrayList.add("product");
-//        arrayList.add("create");
+        arrayList.add("create");
 //        arrayList.add("edit");
-        arrayList.add(("list"));
+//        arrayList.add(("list"));
 //        arrayList.add("-s");
-        arrayList.add("-p");
-        arrayList.add(4);
-        arrayList.add(5);
+//        arrayList.add("-p");
+//        arrayList.add(4);
+//        arrayList.add(1);
 //        arrayList.add("delete");
 //        arrayList.add("code");
-//        arrayList.add("101m");
+        arrayList.add("101mmm");
 //        arrayList.add("name");
-//        arrayList.add("tablet");
+        arrayList.add("paracetamol");
 //        arrayList.add("unitCode");
-//        arrayList.add("pc");
+        arrayList.add("praba");
 //        arrayList.add("type");
-//        arrayList.add("Medical");
+        arrayList.add("medical");
 //        arrayList.add("price");
-//        arrayList.add(9);
+        arrayList.add(5);
 
         Router router  = new Router();
         router.module(arrayList);

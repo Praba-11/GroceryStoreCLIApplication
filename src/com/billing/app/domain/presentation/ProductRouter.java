@@ -17,7 +17,9 @@ public class ProductRouter {
 
             case "create":
                 try {
-                    if (productParser.create(arrayList) != null)
+//                    if (productParser.create(arrayList) != null)
+                    System.out.println(arrayList);
+                    System.out.println(productParser.create(arrayList));
                         System.out.println("Product created successfully!");
                 } catch (Throwable exception) {
                     System.out.println("Error creating record into database. \n" + exception.getMessage());
@@ -56,10 +58,10 @@ public class ProductRouter {
                 try {
                     ArrayList<Product> productArray = productParser.list(arrayList);
                     System.out.println("List returned successfully.");
-                    formatter.format("%-10s %10s %15s %15s %10s %10s\n", "Code", "Name", "Unit Code", "Type", "Price", "Stock");
-                    formatter.format("%-10s %10s %15s %15s %10s %10s\n", "----", "----", "---------", "----", "-----", "-----");
+                    formatter.format("%-15s %15s %15s %15s %15s %15s\n", "Code", "Name", "Unit Code", "Type", "Price", "Stock");
+                    formatter.format("%-15s %15s %15s %15s %15s %15s\n", "----", "----", "---------", "----", "-----", "-----");
                     for (Product products : productArray) {
-                        formatter.format("%-10s %10s %15s %15s %10.2f %10d\n", products.getCode(), products.getName(), products.getUnitCode(), products.getType(), products.getPrice(), products.getStock());
+                        formatter.format("%-15s %15s %15s %15s %15.2f %15d\n", products.getCode(), products.getName(), products.getUnitCode(), products.getType(), products.getPrice(), products.getStock());
                     }
                     System.out.println(formatter.toString());
                 }

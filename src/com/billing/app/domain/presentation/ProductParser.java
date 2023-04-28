@@ -12,19 +12,26 @@ public class ProductParser {
     private Product product;
     private ProductDAO productDAO;
     private ProductServiceInterface productServiceInterface;
-
-
+    private Validator validator;
 
     public Product create(ArrayList arrayList) throws Throwable {
         try {
-            Product product = new Product();
-            product.setCode(arrayList.get(2).toString());
-            product.setName(arrayList.get(3).toString());
-            product.setUnitCode(arrayList.get(4).toString());
-            product.setType(arrayList.get(5).toString());
-            product.setPrice(Float.parseFloat(arrayList.get(6).toString()));
-            productServiceInterface = new ProductService();
-            return productServiceInterface.create(product);
+            validator = new Validator();
+            if (validator.isValidConstraints(arrayList)) {
+                System.out.println(arrayList);
+                Product product = new Product();
+                product.setCode(arrayList.get(2).toString());
+                product.setName(arrayList.get(3).toString());
+                product.setUnitCode(arrayList.get(4).toString());
+                product.setType(arrayList.get(5).toString());
+                product.setPrice(Float.parseFloat(arrayList.get(6).toString()));
+                productServiceInterface = new ProductService();
+                return productServiceInterface.create(product);
+            }
+            else {
+                throw new CustomException("Invalid constraint length provided, please provide valid constraints");
+            }
+
         }
         catch (Throwable exception) {
             throw new CustomException(exception.getMessage());
@@ -49,6 +56,7 @@ public class ProductParser {
 
 
 
+
     public boolean delete(ArrayList arrayList) throws Throwable {
         try {
             String code = arrayList.get(2).toString();
@@ -59,6 +67,7 @@ public class ProductParser {
             throw new CustomException(exception.getMessage());
         }
     }
+
 
 
 
