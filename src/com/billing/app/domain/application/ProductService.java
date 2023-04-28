@@ -73,7 +73,13 @@ public class ProductService implements ProductServiceInterface {
     public ArrayList<Product> list() throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
-            return productDAO.list();
+            ArrayList<Product> productArrayList = productDAO.list();
+            if (productArrayList.isEmpty()) {
+                return productArrayList;
+            }
+            else {
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+            }
         }
         catch (Throwable exception) {
             throw new CustomException("Error while listing the products from database. " + exception.getMessage());
@@ -87,7 +93,13 @@ public class ProductService implements ProductServiceInterface {
     public ArrayList<Product> list(int range) throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
-            return productDAO.list(range);
+            ArrayList<Product> productArrayList = productDAO.list(range);
+            if (productArrayList.isEmpty()) {
+                return productArrayList;
+            }
+            else {
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+            }
         }
         catch (Throwable exception) {
             throw new CustomException("Error while listing the products from database. " + exception.getMessage());
@@ -101,7 +113,13 @@ public class ProductService implements ProductServiceInterface {
     public ArrayList<Product> list(int range, int page) throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
-            return productDAO.list(range, page);
+            ArrayList<Product> productArrayList = productDAO.list(range, page);
+            if (productArrayList.isEmpty()) {
+                return productArrayList;
+            }
+            else {
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+            }
         }
         catch (Throwable exception) {
             throw new CustomException("Error while listing the products from database. " + exception.getMessage());
@@ -115,7 +133,13 @@ public class ProductService implements ProductServiceInterface {
     public ArrayList<Product> list(String searchText) throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
-            return productDAO.list(searchText);
+            ArrayList<Product> productArrayList = productDAO.list(searchText);
+            if (productArrayList.isEmpty()) {
+                return productArrayList;
+            }
+            else {
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+            }
         }
         catch (Throwable exception) {
             throw new CustomException("Error while listing the products from database. " + exception.getMessage());
@@ -129,7 +153,13 @@ public class ProductService implements ProductServiceInterface {
     public ArrayList<Product> list(String attribute, String searchText) throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
-            return productDAO.list(attribute, searchText);
+            ArrayList<Product> productArrayList = productDAO.list(attribute, searchText);
+            if (productArrayList.isEmpty()) {
+                return productArrayList;
+            }
+            else {
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+            }
         }
         catch (Throwable exception) {
             throw new CustomException("Error while listing the products from database. " + exception.getMessage());
@@ -143,7 +173,13 @@ public class ProductService implements ProductServiceInterface {
     public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
-            return productDAO.list(attribute, searchText, range, page);
+            ArrayList<Product> productArrayList = productDAO.list(attribute, searchText, range, page);
+            if (productArrayList.isEmpty()) {
+                return productArrayList;
+            }
+            else {
+                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+            }
         }
         catch (Throwable exception) {
             throw new CustomException("Error while listing the products from database. " + exception.getMessage());
