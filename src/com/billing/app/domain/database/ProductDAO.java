@@ -1,4 +1,4 @@
-package com.billing.app.domain.repository;
+package com.billing.app.domain.database;
 
 import com.billing.app.domain.entity.Product;
 
@@ -17,5 +17,6 @@ public interface ProductDAO {
     int getStock(String code) throws CustomException;
     Product getProduct(String code) throws CustomException;
     int getCount() throws CustomException;
+    boolean isCodePresent(String code) throws CustomException;
 
 }

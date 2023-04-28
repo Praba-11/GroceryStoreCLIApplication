@@ -1,9 +1,9 @@
-package com.billing.app.domain.application;
+package com.billing.app.domain.service;
 
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.repository.CustomException;
-import com.billing.app.domain.repository.ProductDAO;
-import com.billing.app.domain.repository.ProductJdbcDAO;
+import com.billing.app.domain.database.CustomException;
+import com.billing.app.domain.database.ProductDAO;
+import com.billing.app.domain.database.ProductJdbcDAO;
 
 
 import java.lang.reflect.Field;
@@ -12,16 +12,18 @@ import java.util.ArrayList;
 
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;
-    private ProductValidator productValidator;
+
     public Product create(Product product) throws Throwable {
         try {
             productDAO = new ProductJdbcDAO();
-            productValidator = new ProductValidator();
+            ProductValidator productValidator = new ProductValidator();
             if (productValidator.validate(product)) {
-                if (productDAO.create(product))
+                if (productDAO.create(product)) {
                     return productDAO.getProduct(product.getCode());
-                else
+                }
+                else {
                     throw new CustomException("Product creation unsuccessful.");
+                }
             }
             else {
                 throw new CustomException("Product validation failed.");
@@ -29,19 +31,19 @@ public class ProductService implements ProductServiceInterface {
         }
         catch (SQLException exception) {
             if (exception.getSQLState().equals("23505")) {
-                throw new CustomException("Primary key cannot be modified." + exception.getMessage());
+                throw new CustomException("Primary key cannot be modified. " + exception.getMessage());
             }
             else if (exception.getSQLState().equals("23502")) {
-                throw new CustomException("Provided constraint cannot be null in relational table." + exception.getMessage());
+                throw new CustomException("Provided constraint cannot be null in relational table. " + exception.getMessage());
             }
             else if (exception.getSQLState().equals("23503")) {
-                throw new CustomException("Provided unit not present in Unit relation table." + exception.getMessage());
+                throw new CustomException("Provided unit not present in Unit relation table. " + exception.getMessage());
             }
-            else {
-                throw new CustomException(exception.getMessage());
-            }
+            throw new CustomException(exception.getMessage());
         }
     }
+
+
 
 
 
@@ -55,13 +57,26 @@ public class ProductService implements ProductServiceInterface {
                 field.setAccessible(true);
                 field.set(product, values);
             }
-            if (productDAO.edit(product))
-                return productDAO.getProduct(product.getCode());
-            else
-                throw new CustomException("Product edit unsuccessful.");
+            if (productDAO.isCodePresent(product.getCode())) {
+                if (productDAO.edit(product)) {
+                    return productDAO.getProduct(product.getCode());
+                }
+                else {
+                    throw new CustomException("Product edit unsuccessful.");
+                }
+            }
+            else {
+                throw new CustomException("Code not present in product relation table.");
+            }
         }
-        catch (SQLException | CustomException | ClassNotFoundException | NoSuchFieldException | IllegalAccessException exception) {
-            throw new CustomException("Incompatible edit attributes (or) code not found." + exception.getMessage());
+        catch (SQLException exception) {
+            if (exception.getSQLState().equals("23502")) {
+                throw new CustomException("Provided constraint cannot be null. " + exception.getMessage());
+            }
+            else if (exception.getSQLState().equals("23503")) {
+                throw new CustomException("Provided unit not present in Unit relation table. " + exception.getMessage());
+            }
+            throw new CustomException("Incompatible edit attributes. " + exception.getMessage());
         }
     }
 
@@ -70,16 +85,21 @@ public class ProductService implements ProductServiceInterface {
     public boolean delete(String code) throws SQLException, CustomException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
-            if (productDAO.getProduct(code).isDeleted()) {
-                throw new CustomException("Product has already been deleted.");
-            }
-            else {
-                if (productDAO.getStock(code) == 0) {
-                    return productDAO.delete(code);
+            if (productDAO.isCodePresent(code)) {
+                if (productDAO.getProduct(code).isDeleted()) {
+                    throw new CustomException("Product has already been deleted.");
                 }
                 else {
-                    throw new CustomException("Product stock not zero.");
+                    if (productDAO.getStock(code) == 0) {
+                        return productDAO.delete(code);
+                    }
+                    else {
+                        throw new CustomException("Product stock not zero.");
+                    }
                 }
+            }
+            else  {
+                throw new CustomException("Code not present in product relation table.");
             }
         }
         catch (Throwable exception) {

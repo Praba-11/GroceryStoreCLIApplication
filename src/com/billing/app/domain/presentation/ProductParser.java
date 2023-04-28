@@ -1,11 +1,11 @@
 package com.billing.app.domain.presentation;
 
-import com.billing.app.domain.application.ProductService;
-import com.billing.app.domain.application.ProductServiceInterface;
+import com.billing.app.domain.service.ProductService;
+import com.billing.app.domain.service.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.repository.CustomException;
-import com.billing.app.domain.repository.ProductJdbcDAO;
-import com.billing.app.domain.repository.ProductDAO;
+import com.billing.app.domain.database.CustomException;
+import com.billing.app.domain.database.ProductJdbcDAO;
+import com.billing.app.domain.database.ProductDAO;
 import java.util.ArrayList;
 
 public class ProductParser {
@@ -31,7 +31,6 @@ public class ProductParser {
             else {
                 throw new CustomException("Invalid constraint length provided, please provide valid constraints");
             }
-
         }
         catch (Throwable exception) {
             throw new CustomException(exception.getMessage());

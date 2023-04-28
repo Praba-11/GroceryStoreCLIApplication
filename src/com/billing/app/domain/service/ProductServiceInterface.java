@@ -1,4 +1,4 @@
-package com.billing.app.domain.application;
+package com.billing.app.domain.service;
 
 import com.billing.app.domain.entity.Product;
 import java.util.ArrayList;

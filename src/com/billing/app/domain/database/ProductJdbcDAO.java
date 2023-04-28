@@ -1,4 +1,4 @@
-package com.billing.app.domain.repository;
+package com.billing.app.domain.database;
 
 import com.billing.app.domain.entity.Product;
 
@@ -322,4 +322,21 @@ public class ProductJdbcDAO implements ProductDAO {
         }
     }
 
+
+
+    public boolean isCodePresent(String code) throws CustomException {
+        try {
+            boolean flag = false;
+            String query = "SELECT EXISTS(SELECT 1 FROM products WHERE code = '" + product.getCode() + "')";
+            Statement statement = connectionDB.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+                flag = resultSet.getBoolean(1);
+            return flag;
+        }
+        catch (SQLException | ClassNotFoundException exception) {
+            throw new CustomException(exception.getMessage());
+        }
+
+    }
 }

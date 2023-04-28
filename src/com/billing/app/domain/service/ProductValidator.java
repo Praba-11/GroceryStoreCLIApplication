@@ -1,11 +1,8 @@
-package com.billing.app.domain.application;
+package com.billing.app.domain.service;
 
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.repository.CustomException;
-import com.billing.app.domain.repository.ProductDAO;
-import org.checkerframework.checker.units.qual.C;
-
-import java.util.ArrayList;
+import com.billing.app.domain.database.CustomException;
+import com.billing.app.domain.database.ProductDAO;
 
 public class ProductValidator {
     ProductDAO productDAO;
