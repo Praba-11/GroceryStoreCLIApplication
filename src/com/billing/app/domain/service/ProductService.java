@@ -1,9 +1,10 @@
 package com.billing.app.domain.service;
 
+import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.database.CustomException;
-import com.billing.app.domain.database.ProductDAO;
-import com.billing.app.domain.database.ProductJdbcDAO;
+import com.billing.app.domain.exceptions.CodeNotFoundException;
+import com.billing.app.domain.exceptions.CustomException;
+import com.billing.app.domain.exceptions.NullPageException;
 
 
 import java.lang.reflect.Field;
@@ -66,7 +67,7 @@ public class ProductService implements ProductServiceInterface {
                 }
             }
             else {
-                throw new CustomException("Code not present in product relation table.");
+                throw new CodeNotFoundException("Code not present in product relation table.");
             }
         }
         catch (SQLException exception) {
@@ -99,7 +100,7 @@ public class ProductService implements ProductServiceInterface {
                 }
             }
             else  {
-                throw new CustomException("Code not present in product relation table.");
+                throw new CodeNotFoundException("Code not present in product relation table.");
             }
         }
         catch (Throwable exception) {
@@ -116,14 +117,14 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list();
             if (productArrayList.isEmpty()) {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
                 return productArrayList;
             }
         }
         catch (Throwable exception) {
-            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+            throw new CustomException(exception.getMessage());
         }
     }
 
@@ -136,14 +137,14 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(range);
             if (productArrayList.isEmpty()) {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
                 return productArrayList;
             }
         }
         catch (Throwable exception) {
-            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+            throw new CustomException(exception.getMessage());
         }
     }
 
@@ -156,14 +157,14 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(range, page);
             if (productArrayList.isEmpty()) {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
                 return productArrayList;
             }
         }
         catch (Throwable exception) {
-            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+            throw new CustomException(exception.getMessage());
         }
     }
 
@@ -176,14 +177,14 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(searchText);
             if (productArrayList.isEmpty()) {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
                 return productArrayList;
             }
         }
         catch (Throwable exception) {
-            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+            throw new CustomException(exception.getMessage());
         }
     }
 
@@ -196,14 +197,14 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(attribute, searchText);
             if (productArrayList.isEmpty()) {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
                 return productArrayList;
             }
         }
         catch (Throwable exception) {
-            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+            throw new CustomException(exception.getMessage());
         }
     }
 
@@ -216,14 +217,14 @@ public class ProductService implements ProductServiceInterface {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(attribute, searchText, range, page);
             if (productArrayList.isEmpty()) {
-                throw new CustomException("Pagination (or) search text failed. Cannot return any list of products.");
+                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
             }
             else {
                 return productArrayList;
             }
         }
         catch (Throwable exception) {
-            throw new CustomException("Error while listing the products from database. " + exception.getMessage());
+            throw new CustomException(exception.getMessage());
         }
     }
 

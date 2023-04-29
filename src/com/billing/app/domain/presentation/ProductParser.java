@@ -3,7 +3,7 @@ package com.billing.app.domain.presentation;
 import com.billing.app.domain.service.ProductService;
 import com.billing.app.domain.service.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.database.CustomException;
+import com.billing.app.domain.exceptions.CustomException;
 import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.database.ProductDAO;
 import java.util.ArrayList;

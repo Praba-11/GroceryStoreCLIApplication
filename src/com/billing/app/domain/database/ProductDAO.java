@@ -1,6 +1,7 @@
 package com.billing.app.domain.database;
 
 import com.billing.app.domain.entity.Product;
+import com.billing.app.domain.exceptions.CustomException;
 
 import java.util.ArrayList;
 
