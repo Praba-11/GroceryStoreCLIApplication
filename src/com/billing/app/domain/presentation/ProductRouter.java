@@ -17,9 +17,7 @@ public class ProductRouter {
 
             case "create":
                 try {
-//                    if (productParser.create(arrayList) != null)
-                    System.out.println(arrayList);
-                    System.out.println(productParser.create(arrayList));
+                    if (productParser.create(arrayList) != null)
                         System.out.println("Product created successfully!");
                 } catch (Throwable exception) {
                     System.out.println("Error creating record into database. \n" + exception.getMessage());
