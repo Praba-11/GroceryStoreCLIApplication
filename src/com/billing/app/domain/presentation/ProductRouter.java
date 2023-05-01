@@ -12,6 +12,7 @@ public class ProductRouter {
         String action = arrayList.get(1);
         Scanner scanner = new Scanner(System.in);
         ProductParser productParser = new ProductParser();
+        String output;
 
         switch (action) {
 

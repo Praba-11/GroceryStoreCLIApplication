@@ -13,6 +13,10 @@ public class Unit {
         this.isDividable = isDividable;
     }
 
+    public Unit() {
+
+    }
+
     public String getName() {
         return name;
     }

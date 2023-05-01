@@ -7,7 +7,8 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.ideaLibSources/postgresql-42.6.0-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/postgresql/postgresql/42.6.0/postgresql-42.6.0-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/checkerframework/checker-qual/3.31.0/checker-qual-3.31.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
