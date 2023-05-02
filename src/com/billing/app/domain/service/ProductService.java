@@ -3,25 +3,26 @@ package com.billing.app.domain.service;
 import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.*;
-
-
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;
 
-    public Product create(Product product) throws Throwable {
+    public Product create(Product product) throws ProductException, ClassNotFoundException {
         productDAO = new ProductJdbcDAO();
         ProductValidator productValidator = new ProductValidator();
         if (productValidator.validate(product)) {
             if (productDAO.create(product)) {
                 return productDAO.getProduct(product.getCode());
-            } else {
+            }
+            else {
                 throw new ProductCreationException("Product creation unsuccessful.");
             }
-        } else {
+        }
+        else {
             throw new ProductValidationException("Product validation failed.");
         }
     }
@@ -29,20 +30,13 @@ public class ProductService implements ProductServiceInterface {
 
 
 
-
-
-    public Product edit(Product product, ArrayList<String> arrayList) throws Throwable {
+    public Product edit(Product product, HashMap<String, String> map) throws ProductException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
         productDAO = new ProductJdbcDAO();
-        for (int index = 0; index < arrayList.size(); index+=2) {
-            String name = arrayList.get(index);
-            Object values = arrayList.get(index+1);
-            Field field = Product.class.getDeclaredField(name);
-            field.setAccessible(true);
-            field.set(product, values);
-        }
-        if (productDAO.isCodePresent(product.getCode())) {
-            if (productDAO.edit(product)) {
-                return productDAO.getProduct(product.getCode());
+        ProductValidator productValidator = new ProductValidator();
+        Product editedProduct = productValidator.editByValidation(product, map);
+        if (productDAO.isCodePresent(editedProduct.getCode())) {
+            if (productDAO.edit(editedProduct)) {
+                return productDAO.getProduct(editedProduct.getCode());
             }
             else {
                 throw new ProductException("Product edit unsuccessful.");
@@ -55,19 +49,19 @@ public class ProductService implements ProductServiceInterface {
 
 
 
-    public boolean delete(String code) throws SQLException, CustomException, ClassNotFoundException {
+    public boolean delete(String code) throws ClassNotFoundException, ProductException {
         try {
             productDAO = new ProductJdbcDAO();
             if (productDAO.isCodePresent(code)) {
                 if (productDAO.getProduct(code).isDeleted()) {
-                    throw new CustomException("Product has already been deleted.");
+                    throw new ProductException("Product has already been deleted.");
                 }
                 else {
                     if (productDAO.getStock(code) == 0) {
                         return productDAO.delete(code);
                     }
                     else {
-                        throw new CustomException("Product stock not zero.");
+                        throw new ProductException("Product stock not zero.");
                     }
                 }
             }
@@ -75,8 +69,8 @@ public class ProductService implements ProductServiceInterface {
                 throw new CodeNotFoundException("Code not present in product relation table.");
             }
         }
-        catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
+        catch (ProductException exception) {
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -84,7 +78,7 @@ public class ProductService implements ProductServiceInterface {
 
 
     @Override
-    public ArrayList<Product> list() throws Throwable {
+    public ArrayList<Product> list() throws ProductException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list();
@@ -96,7 +90,7 @@ public class ProductService implements ProductServiceInterface {
             }
         }
         catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -104,7 +98,7 @@ public class ProductService implements ProductServiceInterface {
 
 
     @Override
-    public ArrayList<Product> list(int range) throws Throwable {
+    public ArrayList<Product> list(int range) throws ProductException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(range);
@@ -116,7 +110,7 @@ public class ProductService implements ProductServiceInterface {
             }
         }
         catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -124,7 +118,7 @@ public class ProductService implements ProductServiceInterface {
 
 
     @Override
-    public ArrayList<Product> list(int range, int page) throws Throwable {
+    public ArrayList<Product> list(int range, int page) throws ProductException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(range, page);
@@ -136,7 +130,7 @@ public class ProductService implements ProductServiceInterface {
             }
         }
         catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -144,7 +138,7 @@ public class ProductService implements ProductServiceInterface {
 
 
     @Override
-    public ArrayList<Product> list(String searchText) throws Throwable {
+    public ArrayList<Product> list(String searchText) throws ProductException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(searchText);
@@ -156,7 +150,7 @@ public class ProductService implements ProductServiceInterface {
             }
         }
         catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -164,7 +158,7 @@ public class ProductService implements ProductServiceInterface {
 
 
     @Override
-    public ArrayList<Product> list(String attribute, String searchText) throws Throwable {
+    public ArrayList<Product> list(String attribute, String searchText) throws ProductException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(attribute, searchText);
@@ -176,7 +170,7 @@ public class ProductService implements ProductServiceInterface {
             }
         }
         catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -184,7 +178,7 @@ public class ProductService implements ProductServiceInterface {
 
 
     @Override
-    public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws Throwable {
+    public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws ProductException, ClassNotFoundException {
         try {
             productDAO = new ProductJdbcDAO();
             ArrayList<Product> productArrayList = productDAO.list(attribute, searchText, range, page);
@@ -196,7 +190,7 @@ public class ProductService implements ProductServiceInterface {
             }
         }
         catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 

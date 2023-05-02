@@ -7,6 +7,7 @@ import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.database.ProductDAO;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProductParser {
     private Product product;
@@ -14,15 +15,15 @@ public class ProductParser {
     private ProductServiceInterface productServiceInterface;
     private Validator validator;
 
-    public Product create(ArrayList arrayList) throws Throwable {
+    public Product create(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException {
         validator = new Validator();
         if (validator.isValidConstraints(arrayList)) {
             Product product = new Product();
-            product.setCode(arrayList.get(2).toString());
-            product.setName(arrayList.get(3).toString());
-            product.setUnitCode(arrayList.get(4).toString());
-            product.setType(arrayList.get(5).toString());
-            product.setPrice(Float.parseFloat(arrayList.get(6).toString()));
+            product.setCode(arrayList.get(2));
+            product.setName(arrayList.get(3));
+            product.setUnitCode(arrayList.get(4));
+            product.setType(arrayList.get(5));
+            product.setPrice(Float.parseFloat(arrayList.get(6)));
             productServiceInterface = new ProductService();
             return productServiceInterface.create(product);
         }
@@ -34,13 +35,19 @@ public class ProductParser {
 
 
 
-    public Product edit(ArrayList arrayList) throws Throwable {
+    public Product edit(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException {
         productDAO = new ProductJdbcDAO();
-        String code = arrayList.get(3).toString();
-        ArrayList<String> editArrayList = new ArrayList<>(arrayList.subList(4, arrayList.size()));
+        String code = arrayList.get(3);
+        ArrayList<String> keyValues = new ArrayList<>(arrayList.subList(4, arrayList.size()));
+        HashMap<String, String> map = new HashMap<>();
+        for (int i = 0; i < keyValues.size(); i += 2) {
+            String key = keyValues.get(i);
+            String value = keyValues.get(i + 1);
+            map.put(key, value);
+        }
         product = productDAO.getProduct(code);
         productServiceInterface = new ProductService();
-        return productServiceInterface.edit(product, editArrayList);
+        return productServiceInterface.edit(product, map);
     }
 
 

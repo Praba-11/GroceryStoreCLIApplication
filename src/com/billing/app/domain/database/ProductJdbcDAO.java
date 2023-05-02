@@ -28,15 +28,12 @@ public class ProductJdbcDAO implements ProductDAO {
             int rowsAffected = preparedStatement.executeUpdate();
             preparedStatement.close();
             return rowsAffected > 0;
-        }
-        catch (SQLException exception) {
+        } catch (SQLException exception) {
             if (exception.getSQLState().equals("23505")) {
-                throw new ProductPrimaryKeyException("Primary key cannot be modified. " + exception.getMessage());
-            }
-            else if (exception.getSQLState().equals("23502")) {
+                throw new ProductPrimaryKeyException("Unable to modify the primary key. " + exception.getMessage());
+            } else if (exception.getSQLState().equals("23502")) {
                 throw new ProductNullConstraintException("Provided constraint cannot be null in relational table. " + exception.getMessage());
-            }
-            else if (exception.getSQLState().equals("23503")) {
+            } else if (exception.getSQLState().equals("23503")) {
                 throw new ProductUnitException("Provided unit not present in Unit relation table. " + exception.getMessage());
             }
             throw new ProductException(exception.getMessage());
@@ -46,7 +43,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public boolean edit(Product product) throws CustomException, ClassNotFoundException, IllegalAccessException, ProductException {
+    public boolean edit(Product product) throws ProductException, ClassNotFoundException, IllegalAccessException {
 
         // Edit Product in Database table
         try {
@@ -64,19 +61,17 @@ public class ProductJdbcDAO implements ProductDAO {
         catch (SQLException exception) {
             if (exception.getSQLState().equals("23502")) {
                 throw new ProductNullConstraintException("Provided constraint cannot be null. " + exception.getMessage());
-            }
-            else if (exception.getSQLState().equals("23503")) {
+            } else if (exception.getSQLState().equals("23503")) {
                 throw new ProductUnitException("Provided unit not present in Unit relation table. " + exception.getMessage());
             }
             throw new ProductException("Incompatible edit attributes. " + exception.getMessage());
         }
-
     }
 
 
 
     @Override
-    public boolean delete(String code) throws CustomException {
+    public boolean delete(String code) throws ProductException, ClassNotFoundException {
 
         // Delete Product in Database table
         try {
@@ -87,19 +82,19 @@ public class ProductJdbcDAO implements ProductDAO {
             rowsAffected = preparedStatement.executeUpdate();
             preparedStatement.close();
             return rowsAffected > 0;
-        }
-        catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+        } catch (SQLException exception) {
+            throw new ProductException(exception.getMessage());
         }
     }
 
 
 
 
-    public ArrayList<Product> list() throws CustomException {
+    public ArrayList<Product> list() throws ProductException, ClassNotFoundException {
 
         // Returns arraylist of first 20 Products from Database table
         try {
+
             String query = "SELECT * FROM products LIMIT 20";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -115,11 +110,10 @@ public class ProductJdbcDAO implements ProductDAO {
                 product = new Product(code, name, unitCode, type, price, stock, isDeleted);
                 productArrayList.add(product);
             }
-
             return productArrayList;
         }
-        catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+        catch (SQLException exception) {
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -127,7 +121,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public ArrayList<Product> list(int range) throws CustomException {
+    public ArrayList<Product> list(int range) throws ProductException, ClassNotFoundException {
 
         // Returns arraylist of Products over a specified range from Database table
         try {
@@ -148,8 +142,8 @@ public class ProductJdbcDAO implements ProductDAO {
             }
             return productArrayList;
         }
-        catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+        catch (SQLException exception) {
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -157,7 +151,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public ArrayList<Product> list(int range, int page) throws CustomException {
+    public ArrayList<Product> list(int range, int page) throws ProductException {
         // Returns arraylist of Products by pagination from Database table
         try {
             String query = "SELECT * FROM products OFFSET '" + (range * (page - 1)) + "'" + "LIMIT '" + range + "'";
@@ -177,7 +171,7 @@ public class ProductJdbcDAO implements ProductDAO {
             return productArrayList;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -186,7 +180,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public ArrayList<Product> list(String searchText) throws CustomException {
+    public ArrayList<Product> list(String searchText) throws ProductException {
 
         // Returns arraylist of Products based on instances of searchText in Database table
         try {
@@ -207,7 +201,7 @@ public class ProductJdbcDAO implements ProductDAO {
             return productArrayList;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -216,7 +210,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public ArrayList<Product> list(String attribute, String searchText) throws CustomException {
+    public ArrayList<Product> list(String attribute, String searchText) throws ProductException {
 
         // Returns arraylist of Products based on instances of searchText using attribute in the Database table
         try {
@@ -237,7 +231,7 @@ public class ProductJdbcDAO implements ProductDAO {
             return productArrayList;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
@@ -245,7 +239,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws CustomException {
+    public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws ProductException {
 
         // Returns arraylist of Products based on instances of searchText using attribute, range and pagination
         try {
@@ -266,14 +260,14 @@ public class ProductJdbcDAO implements ProductDAO {
             return productArrayList;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
 
 
 
-    public int getStock(String code) throws CustomException {
+    public int getStock(String code) throws ProductException {
 
         // Returns the stock of the product based on product code provided
         try {
@@ -287,14 +281,14 @@ public class ProductJdbcDAO implements ProductDAO {
             return stock;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
 
 
 
-    public Product getProduct(String code) throws CustomException {
+    public Product getProduct(String code) throws ProductException {
 
         // Returns the product based on the product code provided
         try {
@@ -314,14 +308,14 @@ public class ProductJdbcDAO implements ProductDAO {
             return product;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
 
 
 
-    public int getCount() throws CustomException {
+    public int getCount() throws ProductException {
 
         // Returns the count of the products in the database table
         try {
@@ -334,16 +328,16 @@ public class ProductJdbcDAO implements ProductDAO {
             return count;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
     }
 
 
 
-    public boolean isCodePresent(String code) throws CustomException {
+    public boolean isCodePresent(String code) throws ProductException {
         try {
             boolean flag = false;
-            String query = "SELECT EXISTS(SELECT 1 FROM products WHERE code = '" + product.getCode() + "')";
+            String query = "SELECT EXISTS(SELECT 1 FROM products WHERE code = '" + code + "')";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next())
@@ -351,7 +345,7 @@ public class ProductJdbcDAO implements ProductDAO {
             return flag;
         }
         catch (SQLException | ClassNotFoundException exception) {
-            throw new CustomException(exception.getMessage());
+            throw new ProductException(exception.getMessage());
         }
 
     }

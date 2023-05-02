@@ -1,14 +1,16 @@
 package com.billing.app.domain.presentation;
 
 
+import com.billing.app.domain.exceptions.ProductException;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Router {
-    public void module(ArrayList<String> arrayList) throws Throwable {
+    public void module(ArrayList<String> arrayList) throws NoSuchFieldException, ClassNotFoundException, ProductException, IllegalAccessException {
         ProductRouter productRouter;
         UnitRouter unitRouter;
-        String module = arrayList.get(0).toString();
+        String module = arrayList.get(0);
         
         switch (module) {
             case "product":
@@ -18,7 +20,8 @@ public class Router {
 
             case "unit":
                 unitRouter = new UnitRouter();
-                unitRouter.execute();
+                unitRouter.execute(arrayList);
+                break;
                 
         }
     }

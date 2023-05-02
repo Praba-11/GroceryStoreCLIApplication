@@ -1,5 +1,7 @@
 package com.billing.app.domain.presentation;
 
+import com.billing.app.domain.entity.Product;
+
 import java.util.ArrayList;
 
 public class Validator {
@@ -15,5 +17,7 @@ public class Validator {
     public static boolean isNull(Object value) {
         return value == null;
     }
+
+
 
 }

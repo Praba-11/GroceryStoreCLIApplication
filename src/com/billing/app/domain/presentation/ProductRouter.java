@@ -10,36 +10,34 @@ import java.util.Scanner;
 
 public class ProductRouter {
     Formatter formatter = new Formatter();
-    public void execute(ArrayList<String> arrayList)  {
+    public void execute(ArrayList<String> arrayList) throws NoSuchFieldException, ClassNotFoundException, ProductException, IllegalAccessException {
         String action = arrayList.get(1);
         Scanner scanner = new Scanner(System.in);
         ProductParser productParser = new ProductParser();
 
         switch (action) {
-
             case "create":
                 try {
                     if (productParser.create(arrayList) != null) {
                         System.out.println("Product created successfully!");
                     }
-                }
-                catch (Throwable exception) {
+                } catch (ProductException exception) {
                     System.out.println("Error creating record into database. \n" + exception.getMessage());
+                } catch (RuntimeException | ClassNotFoundException exception) {
+                    System.out.println(exception.getMessage());
                 }
                 break;
 
 
             case "edit":
-                try {
+//                try {
                     if (productParser.edit(arrayList) != null)
                         System.out.println("Product edited successfully!");
-                }
-                catch (CustomException exception) {
-                    System.out.println("Error editing record into database. \n" + exception.getMessage());
-                }
-                catch (Throwable e) {
-                    System.out.println("Unexpected error occurred. " + e.getMessage());;
-                }
+//                } catch (ProductException exception) {
+//                    System.out.println("Error editing record into database. \n" + exception.getMessage());
+//                } catch (Throwable e) {
+//                    System.out.println("Unexpected error occurred. " + e.getMessage());;
+//                }
                 break;
 
 
