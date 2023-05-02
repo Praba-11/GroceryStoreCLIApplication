@@ -22,7 +22,7 @@ public class Main {
 //        arrayList.add(1);
 //        arrayList.add("delete");
         arrayList.add("code");
-        arrayList.add("101a1");
+        arrayList.add("101a11");
         arrayList.add("name");
         arrayList.add("vicks action 500");
 //        arrayList.add("unitCode");
