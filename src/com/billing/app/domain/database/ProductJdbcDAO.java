@@ -1,7 +1,7 @@
 package com.billing.app.domain.database;
 
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.exceptions.CustomException;
+import com.billing.app.domain.exceptions.*;
 
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -12,7 +12,7 @@ public class ProductJdbcDAO implements ProductDAO {
     ArrayList<Product> productArrayList = new ArrayList<>();
     Product product;
     @Override
-    public boolean create(Product product) throws SQLException {
+    public boolean create(Product product) throws ProductException, ClassNotFoundException {
 
         // Storing Product in Database table
         try {
@@ -30,16 +30,23 @@ public class ProductJdbcDAO implements ProductDAO {
             return rowsAffected > 0;
         }
         catch (SQLException exception) {
-            throw new SQLException(exception);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            if (exception.getSQLState().equals("23505")) {
+                throw new ProductPrimaryKeyException("Primary key cannot be modified. " + exception.getMessage());
+            }
+            else if (exception.getSQLState().equals("23502")) {
+                throw new ProductNullConstraintException("Provided constraint cannot be null in relational table. " + exception.getMessage());
+            }
+            else if (exception.getSQLState().equals("23503")) {
+                throw new ProductUnitException("Provided unit not present in Unit relation table. " + exception.getMessage());
+            }
+            throw new ProductException(exception.getMessage());
         }
     }
 
 
 
     @Override
-    public boolean edit(Product product) throws CustomException {
+    public boolean edit(Product product) throws CustomException, ClassNotFoundException, IllegalAccessException, ProductException {
 
         // Edit Product in Database table
         try {
@@ -54,8 +61,14 @@ public class ProductJdbcDAO implements ProductDAO {
             }
             return rowsAffected > 0;
         }
-        catch (SQLException | ClassNotFoundException | IllegalAccessException exception) {
-            throw new CustomException(exception.getMessage());
+        catch (SQLException exception) {
+            if (exception.getSQLState().equals("23502")) {
+                throw new ProductNullConstraintException("Provided constraint cannot be null. " + exception.getMessage());
+            }
+            else if (exception.getSQLState().equals("23503")) {
+                throw new ProductUnitException("Provided unit not present in Unit relation table. " + exception.getMessage());
+            }
+            throw new ProductException("Incompatible edit attributes. " + exception.getMessage());
         }
 
     }

@@ -1,7 +1,6 @@
 package com.billing.app.domain.presentation;
 
-import com.billing.app.domain.exceptions.CustomException;
-import com.billing.app.domain.exceptions.ProductException;
+import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.service.ProductService;
 import com.billing.app.domain.service.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
@@ -15,44 +14,33 @@ public class ProductParser {
     private ProductServiceInterface productServiceInterface;
     private Validator validator;
 
-    public Product create(ArrayList arrayList) throws ProductException {
-        try {
-            validator = new Validator();
-            if (validator.isValidConstraints(arrayList)) {
-                Product product = new Product();
-                product.setCode(arrayList.get(2).toString());
-                product.setName(arrayList.get(3).toString());
-                product.setUnitCode(arrayList.get(4).toString());
-                product.setType(arrayList.get(5).toString());
-                product.setPrice(Float.parseFloat(arrayList.get(6).toString()));
-                productServiceInterface = new ProductService();
-                return productServiceInterface.create(product);
-            }
-            else {
-                throw new CustomException("Invalid constraint length provided, please provide valid constraints");
-            }
+    public Product create(ArrayList arrayList) throws Throwable {
+        validator = new Validator();
+        if (validator.isValidConstraints(arrayList)) {
+            Product product = new Product();
+            product.setCode(arrayList.get(2).toString());
+            product.setName(arrayList.get(3).toString());
+            product.setUnitCode(arrayList.get(4).toString());
+            product.setType(arrayList.get(5).toString());
+            product.setPrice(Float.parseFloat(arrayList.get(6).toString()));
+            productServiceInterface = new ProductService();
+            return productServiceInterface.create(product);
         }
-        catch (ProductException exception) {
-            throw new ProductException(exception.getMessage());
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
+        else {
+            throw new InvalidConstraintLengthException("Invalid constraint length provided, please provide valid constraints ");
         }
     }
 
 
 
+
     public Product edit(ArrayList arrayList) throws Throwable {
-        try {
-            productDAO = new ProductJdbcDAO();
-            String code = arrayList.get(3).toString();
-            ArrayList<String> editArrayList = new ArrayList<>(arrayList.subList(4, arrayList.size()));
-            product = productDAO.getProduct(code);
-            productServiceInterface = new ProductService();
-            return productServiceInterface.edit(product, editArrayList);
-        }
-        catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
-        }
+        productDAO = new ProductJdbcDAO();
+        String code = arrayList.get(3).toString();
+        ArrayList<String> editArrayList = new ArrayList<>(arrayList.subList(4, arrayList.size()));
+        product = productDAO.getProduct(code);
+        productServiceInterface = new ProductService();
+        return productServiceInterface.edit(product, editArrayList);
     }
 
 

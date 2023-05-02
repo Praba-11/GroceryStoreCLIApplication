@@ -23,7 +23,7 @@ public class ProductRouter {
                         System.out.println("Product created successfully!");
                     }
                 }
-                catch (ProductException exception) {
+                catch (Throwable exception) {
                     System.out.println("Error creating record into database. \n" + exception.getMessage());
                 }
                 break;
@@ -33,9 +33,11 @@ public class ProductRouter {
                 try {
                     if (productParser.edit(arrayList) != null)
                         System.out.println("Product edited successfully!");
-                } catch (CustomException exception) {
+                }
+                catch (CustomException exception) {
                     System.out.println("Error editing record into database. \n" + exception.getMessage());
-                } catch (Throwable e) {
+                }
+                catch (Throwable e) {
                     System.out.println("Unexpected error occurred. " + e.getMessage());;
                 }
                 break;

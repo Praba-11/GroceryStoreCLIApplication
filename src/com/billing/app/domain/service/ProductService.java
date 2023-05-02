@@ -12,30 +12,17 @@ import java.util.ArrayList;
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;
 
-    public Product create(Product product) throws ProductException {
-        try {
-            productDAO = new ProductJdbcDAO();
-            ProductValidator productValidator = new ProductValidator();
-            if (productValidator.validate(product)) {
-                if (productDAO.create(product)) {
-                    return productDAO.getProduct(product.getCode());
-                } else {
-                    throw new ProductCreationException("Product creation unsuccessful.");
-                }
+    public Product create(Product product) throws Throwable {
+        productDAO = new ProductJdbcDAO();
+        ProductValidator productValidator = new ProductValidator();
+        if (productValidator.validate(product)) {
+            if (productDAO.create(product)) {
+                return productDAO.getProduct(product.getCode());
             } else {
-                throw new ProductValidationException("Product validation failed.");
+                throw new ProductCreationException("Product creation unsuccessful.");
             }
-        } catch (SQLException exception) {
-            if (exception.getSQLState().equals("23505")) {
-                throw new ProductPrimaryKeyException("Primary key cannot be modified. " + exception.getMessage());
-            } else if (exception.getSQLState().equals("23502")) {
-                throw new ProductNullConstraintException("Provided constraint cannot be null in relational table. " + exception.getMessage());
-            } else if (exception.getSQLState().equals("23503")) {
-                throw new ProductUnitException("Provided unit not present in Unit relation table. " + exception.getMessage());
-            }
-            throw new ProductException(exception.getMessage());
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
+        } else {
+            throw new ProductValidationException("Product validation failed.");
         }
     }
 
@@ -44,39 +31,25 @@ public class ProductService implements ProductServiceInterface {
 
 
 
-    public Product edit(Product product, ArrayList<String> arrayList) throws CustomException, CodeNotFoundException, NoSuchFieldException, IllegalAccessException {
-        try {
-            productDAO = new ProductJdbcDAO();
-            for (int index = 0; index < arrayList.size(); index+=2) {
-                String name = arrayList.get(index);
-                Object values = arrayList.get(index+1);
-                Field field = Product.class.getDeclaredField(name);
-                field.setAccessible(true);
-                field.set(product, values);
-            }
-            if (productDAO.isCodePresent(product.getCode())) {
-                if (productDAO.edit(product)) {
-                    return productDAO.getProduct(product.getCode());
-                }
-                else {
-                    throw new CustomException("Product edit unsuccessful.");
-                }
+    public Product edit(Product product, ArrayList<String> arrayList) throws Throwable {
+        productDAO = new ProductJdbcDAO();
+        for (int index = 0; index < arrayList.size(); index+=2) {
+            String name = arrayList.get(index);
+            Object values = arrayList.get(index+1);
+            Field field = Product.class.getDeclaredField(name);
+            field.setAccessible(true);
+            field.set(product, values);
+        }
+        if (productDAO.isCodePresent(product.getCode())) {
+            if (productDAO.edit(product)) {
+                return productDAO.getProduct(product.getCode());
             }
             else {
-                throw new CodeNotFoundException("Code not present in product relation table.");
+                throw new ProductException("Product edit unsuccessful.");
             }
         }
-        catch (SQLException exception) {
-            if (exception.getSQLState().equals("23502")) {
-                throw new CustomException("Provided constraint cannot be null. " + exception.getMessage());
-            }
-            else if (exception.getSQLState().equals("23503")) {
-                throw new CustomException("Provided unit not present in Unit relation table. " + exception.getMessage());
-            }
-            throw new CustomException("Incompatible edit attributes. " + exception.getMessage());
-        }
-        catch (Throwable e) {
-            throw new RuntimeException(e);
+        else {
+            throw new CodeNotFoundException("Code not present in product relation table.");
         }
     }
 

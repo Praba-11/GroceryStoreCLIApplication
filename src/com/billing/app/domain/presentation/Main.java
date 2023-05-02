@@ -20,11 +20,11 @@ public class Main {
 //        arrayList.add(1);
 //        arrayList.add("delete");
 //        arrayList.add("code");
-        arrayList.add("101mmm");
+        arrayList.add("101ppp");
 //        arrayList.add("name");
-        arrayList.add("erythromycin");
+        arrayList.add("e");
 //        arrayList.add("unitCode");
-        arrayList.add("praba");
+        arrayList.add("pc");
 //        arrayList.add("type");
         arrayList.add("medical");
 //        arrayList.add("price");

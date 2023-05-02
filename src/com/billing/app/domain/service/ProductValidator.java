@@ -14,11 +14,14 @@ public class ProductValidator {
         if (product.getCode().isEmpty()) {
             throw new CustomException("Product code cannot be empty.");
         }
-        if (product.getCode().length() > 6 && product.getCode().length() < 2) {
+        if (product.getCode().length() > 6 || product.getCode().length() < 2) {
             throw new CustomException("Product code out of bound.");
         }
-        if (product.getName().isEmpty() && (product.getName().length() > 30 || product.getName().length() < 2)) {
-            throw new CustomException("Product name cannot be empty (or) Product name out of bound.");
+        if (product.getName().isEmpty()) {
+            throw new CustomException("Product name cannot be empty.");
+        }
+        if ((product.getName().length() > 30 || product.getName().length() < 2)) {
+            throw new CustomException("Product name out of bound.");
         }
         if (product.getUnitCode().isEmpty()) {
             throw new CustomException("Product unit code cannot be empty.");
