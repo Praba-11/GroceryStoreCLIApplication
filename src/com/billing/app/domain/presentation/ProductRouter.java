@@ -1,6 +1,8 @@
 package com.billing.app.domain.presentation;
 
 import com.billing.app.domain.entity.Product;
+import com.billing.app.domain.exceptions.CustomException;
+import com.billing.app.domain.exceptions.ProductException;
 
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -8,19 +10,20 @@ import java.util.Scanner;
 
 public class ProductRouter {
     Formatter formatter = new Formatter();
-    public void execute(ArrayList<String> arrayList) {
+    public void execute(ArrayList<String> arrayList)  {
         String action = arrayList.get(1);
         Scanner scanner = new Scanner(System.in);
         ProductParser productParser = new ProductParser();
-        String output;
 
         switch (action) {
 
             case "create":
                 try {
-                    if (productParser.create(arrayList) != null)
+                    if (productParser.create(arrayList) != null) {
                         System.out.println("Product created successfully!");
-                } catch (Throwable exception) {
+                    }
+                }
+                catch (ProductException exception) {
                     System.out.println("Error creating record into database. \n" + exception.getMessage());
                 }
                 break;
@@ -30,8 +33,10 @@ public class ProductRouter {
                 try {
                     if (productParser.edit(arrayList) != null)
                         System.out.println("Product edited successfully!");
-                } catch (Throwable exception) {
+                } catch (CustomException exception) {
                     System.out.println("Error editing record into database. \n" + exception.getMessage());
+                } catch (Throwable e) {
+                    System.out.println("Unexpected error occurred. " + e.getMessage());;
                 }
                 break;
 

@@ -11,22 +11,22 @@ public class Main {
         ArrayList arrayList = new ArrayList();
 
         arrayList.add("product");
-//        arrayList.add("create");
+        arrayList.add("create");
 //        arrayList.add("edit");
-        arrayList.add(("list"));
+//        arrayList.add(("list"));
 //        arrayList.add("-s");
 //        arrayList.add("-p");
-        arrayList.add(4);
+//        arrayList.add(4);
 //        arrayList.add(1);
 //        arrayList.add("delete");
 //        arrayList.add("code");
-//        arrayList.add("101mmm");
+        arrayList.add("101mmm");
 //        arrayList.add("name");
-//        arrayList.add("paracetamol");
+        arrayList.add("erythromycin");
 //        arrayList.add("unitCode");
-//        arrayList.add("praba");
+        arrayList.add("praba");
 //        arrayList.add("type");
-//        arrayList.add("medical");
+        arrayList.add("medical");
 //        arrayList.add("price");
         arrayList.add(5);
 

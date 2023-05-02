@@ -12,7 +12,7 @@ public class ProductJdbcDAO implements ProductDAO {
     ArrayList<Product> productArrayList = new ArrayList<>();
     Product product;
     @Override
-    public boolean create(Product product) throws CustomException {
+    public boolean create(Product product) throws SQLException {
 
         // Storing Product in Database table
         try {
@@ -29,8 +29,10 @@ public class ProductJdbcDAO implements ProductDAO {
             preparedStatement.close();
             return rowsAffected > 0;
         }
-        catch (ClassNotFoundException | SQLException exception) {
-            throw new CustomException(exception.getMessage());
+        catch (SQLException exception) {
+            throw new SQLException(exception);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
