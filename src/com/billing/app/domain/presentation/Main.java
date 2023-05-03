@@ -1,9 +1,5 @@
 package com.billing.app.domain.presentation;
 
-import com.billing.app.domain.database.ProductDAO;
-import com.billing.app.domain.database.ProductJdbcDAO;
-import com.billing.app.domain.exceptions.ProductException;
-
 import java.util.ArrayList;
 
 
@@ -29,13 +25,13 @@ public class Main {
         edit.add("product");
         edit.add("edit");
         edit.add("code");
-        edit.add("v4");
-        edit.add("n");
-        edit.add("snake guard");
-//        edit.add("unitCode");
-//        edit.add("kg");
-//        edit.add("type");
-//        edit.add("vegetables");
+        edit.add("v6");
+        edit.add("name");
+        edit.add("bottle guard");
+        edit.add("unitCode");
+        edit.add("kg");
+        edit.add("type");
+        edit.add("vegetables");
         edit.add("price");
         edit.add("45");
 

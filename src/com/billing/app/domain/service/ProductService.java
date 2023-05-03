@@ -4,8 +4,10 @@ import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.*;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;
@@ -29,22 +31,19 @@ public class ProductService implements ProductServiceInterface {
 
 
 
-    public Product edit(Product product, HashMap<String, String> map) throws ProductException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+    public Product edit(Product product) throws ProductException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException, CustomException {
         productDAO = new ProductJdbcDAO();
         ProductValidator productValidator = new ProductValidator();
-        System.out.println(product);
-        System.out.println(map);
-        Product editedProduct = productValidator.editByValidation(product, map);
-        if (productDAO.isCodePresent(editedProduct.getCode())) {
-            if (productDAO.edit(editedProduct)) {
-                return productDAO.getProductByCode(editedProduct.getCode());
+        if (productValidator.validate(product)) {
+            if (productDAO.create(product)) {
+                return productDAO.getProductById(product.getCode());
             }
             else {
-                throw new ProductException("Product edit unsuccessful.");
+                throw new ProductException("Product edit failed.");
             }
         }
         else {
-            throw new CodeNotFoundException("Code not present in product relation table.");
+            throw new InvalidConstraintLengthException("Product validation failed. Please check the constraint length provided.");
         }
     }
 

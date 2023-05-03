@@ -6,8 +6,11 @@ import com.billing.app.domain.service.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.database.ProductDAO;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ProductParser {
     private Product product;
@@ -36,20 +39,34 @@ public class ProductParser {
 
 
 
-
-    public Product edit(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException {
-        productDAO = new ProductJdbcDAO();
-        String code = arrayList.get(3);
-        ArrayList<String> keyValues = new ArrayList<>(arrayList.subList(4, arrayList.size()));
+    public Product edit(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException, CustomException {
+        ArrayList<String> keyValues = new ArrayList<>(arrayList.subList(2, arrayList.size()));
         HashMap<String, String> map = new HashMap<>();
         for (int i = 0; i < keyValues.size(); i += 2) {
             String key = keyValues.get(i);
             String value = keyValues.get(i + 1);
             map.put(key, value);
         }
-        product = productDAO.getProductByCode(code);
+        product = new Product();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (key.equals("code")) {
+              product.setCode(value);
+            } else if (key.equals("name")) {
+                product.setName(value);
+            } else if (key.equals("unitCode")) {
+                product.setUnitCode(value);
+            } else if (key.equals("type")) {
+                product.setType(value);
+            } else if (key.equals("price")) {
+                product.setPrice(Float.parseFloat(value));
+            } else {
+                throw new ProductException("Invalid attribute provided. Please provide necessary attribute. " + key);
+            }
+        }
         productServiceInterface = new ProductService();
-        return productServiceInterface.edit(product, map);
+        return productServiceInterface.edit(product);
     }
 
 
@@ -103,4 +120,5 @@ public class ProductParser {
                 throw new CustomException("Template mismatch.");
             }
     }
+
 }

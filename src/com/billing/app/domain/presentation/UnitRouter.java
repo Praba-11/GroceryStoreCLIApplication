@@ -12,14 +12,14 @@ public class UnitRouter {
         switch (action) {
 
             case "create":
-                try {
-                    if (unitParser.create(arrayList) != null) {
-                        System.out.println("Unit created successfully!");
-                    }
-                } catch (Throwable exception) {
-                    System.out.println("Error creating record into database. \n" + exception.getMessage());
-                }
-                break;
+//                try {
+//                    if (unitParser.create(arrayList) != null) {
+//                        System.out.println("Unit created successfully!");
+//                    }
+//                } catch (Throwable exception) {
+//                    System.out.println("Error creating record into database. \n" + exception.getMessage());
+//                }
+//                break;
 
         }
     }

@@ -11,12 +11,10 @@ import com.billing.app.domain.exceptions.ProductException;
 
 import java.sql.SQLException;
 
-public class UnitService {
+public class UnitService implements UnitServiceInterface {
     private UnitDAO unitDAO;
     public void create(Unit unit) throws ProductException, ClassNotFoundException, SQLException, CustomException {
         unitDAO = new UnitJdbcDAO();
         unitDAO.create(unit);
     }
-
-
 }

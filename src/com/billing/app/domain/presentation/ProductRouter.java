@@ -29,14 +29,14 @@ public class ProductRouter {
 
 
             case "edit":
-                try {
+//                try {
                     if (productParser.edit(arrayList) != null)
                         System.out.println("Product edited successfully!");
-                } catch (ProductException exception) {
-                    System.out.println("Error editing record into database. \n" + exception.getMessage());
-                } catch (Throwable e) {
-                    System.out.println("Unexpected error occurred. ");
-                }
+//                } catch (ProductException exception) {
+//                    System.out.println("Error editing record into database. \n" + exception.getMessage());
+//                } catch (Throwable e) {
+//                    System.out.println("Unexpected error occurred. ");
+//                }
                 break;
 
 
