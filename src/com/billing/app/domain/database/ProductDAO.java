@@ -17,8 +17,10 @@ public interface ProductDAO {
     ArrayList<Product> list(String attribute, String searchText) throws ProductException;
     ArrayList<Product> list(String attribute, String searchText, int range, int page) throws ProductException;
     int getStock(String code) throws ProductException;
-    Product getProduct(String code) throws ProductException;
+    Product getProductById(String code) throws ProductException;
     int getCount() throws CustomException, ProductException;
+    boolean isIdPresent(String code) throws ProductException;
+    Product getProductByCode(String code) throws ProductException;
     boolean isCodePresent(String code) throws ProductException;
 
 }

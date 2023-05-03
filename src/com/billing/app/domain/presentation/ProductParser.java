@@ -15,22 +15,24 @@ public class ProductParser {
     private ProductServiceInterface productServiceInterface;
     private Validator validator;
 
-    public Product create(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException {
+    public Product create(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, IllegalAccessException {
         validator = new Validator();
-        if (validator.isValidConstraints(arrayList)) {
-            Product product = new Product();
-            product.setCode(arrayList.get(2));
-            product.setName(arrayList.get(3));
-            product.setUnitCode(arrayList.get(4));
-            product.setType(arrayList.get(5));
-            product.setPrice(Float.parseFloat(arrayList.get(6)));
-            productServiceInterface = new ProductService();
-            return productServiceInterface.create(product);
+        ArrayList<String> values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
+        Product product = new Product();
+        if (validator.createByValidation(values)) {
+            product.setCode(values.get(0));
+            product.setName(values.get(1));
+            product.setUnitCode(values.get(2));
+            product.setType(values.get(3));
+            product.setPrice(Float.parseFloat(values.get(4)));
         }
         else {
-            throw new InvalidConstraintLengthException("Invalid constraint length provided, please provide valid constraints ");
+            throw new ProductNullConstraintException("Product value to be assign may be null. Cannot assign null values.");
         }
+        productServiceInterface = new ProductService();
+        return productServiceInterface.create(product);
     }
+
 
 
 
@@ -45,7 +47,7 @@ public class ProductParser {
             String value = keyValues.get(i + 1);
             map.put(key, value);
         }
-        product = productDAO.getProduct(code);
+        product = productDAO.getProductByCode(code);
         productServiceInterface = new ProductService();
         return productServiceInterface.edit(product, map);
     }
@@ -53,9 +55,9 @@ public class ProductParser {
 
 
 
-    public boolean delete(ArrayList arrayList) throws Throwable {
+    public boolean delete(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, CustomException {
         try {
-            String code = arrayList.get(2).toString();
+            String code = arrayList.get(2);
             productServiceInterface = new ProductService();
             return productServiceInterface.delete(code);
         }
@@ -67,43 +69,38 @@ public class ProductParser {
 
 
 
-    public ArrayList<Product> list(ArrayList arrayList) throws Throwable {
-        try {
+    public ArrayList<Product> list(ArrayList<String> arrayList) throws Throwable {
             productServiceInterface = new ProductService();
             if (arrayList.size() == 2) {
                 return productServiceInterface.list();
             }
-            else if (arrayList.get(2).toString().equals("-p") && arrayList.size() == 4) {
-                int range = Integer.parseInt(arrayList.get(3).toString());
+            else if (arrayList.get(2).equals("-p") && arrayList.size() == 4) {
+                int range = Integer.parseInt(arrayList.get(3));
                 return productServiceInterface.list(range);
             }
-            else if (arrayList.get(2).toString().equals("-p") && arrayList.size() == 5) {
-                int range = Integer.parseInt(arrayList.get(3).toString());
-                int page = Integer.parseInt(arrayList.get(4).toString());
+            else if (arrayList.get(2).equals("-p") && arrayList.size() == 5) {
+                int range = Integer.parseInt(arrayList.get(3));
+                int page = Integer.parseInt(arrayList.get(4));
                 return productServiceInterface.list(range, page);
             }
-            else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 4) {
-                String searchText = arrayList.get(3).toString();
+            else if (arrayList.get(2).equals("-s") && arrayList.size() == 4) {
+                String searchText = arrayList.get(3);
                 return productServiceInterface.list(searchText);
             }
-            else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 5) {
-                String searchText = arrayList.get(4).toString();
-                String attribute = arrayList.get(3).toString();
+            else if (arrayList.get(2).equals("-s") && arrayList.size() == 5) {
+                String searchText = arrayList.get(4);
+                String attribute = arrayList.get(3);
                 return productServiceInterface.list(attribute, searchText);
             }
-            else if (arrayList.get(2).toString().equals("-s") && arrayList.size() == 7) {
-                String searchText = arrayList.get(4).toString();
-                String attribute = arrayList.get(3).toString();
-                int range = Integer.parseInt(arrayList.get(5).toString());
-                int page = Integer.parseInt(arrayList.get(6).toString());
+            else if (arrayList.get(2).equals("-s") && arrayList.get(5).equals("-p") && arrayList.size() == 8) {
+                String searchText = arrayList.get(4);
+                String attribute = arrayList.get(3);
+                int range = Integer.parseInt(arrayList.get(6));
+                int page = Integer.parseInt(arrayList.get(7));
                 return productServiceInterface.list(attribute, searchText, range, page);
             }
             else {
                 throw new CustomException("Template mismatch.");
             }
-        }
-        catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
-        }
     }
 }

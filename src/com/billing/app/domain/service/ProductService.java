@@ -3,8 +3,7 @@ package com.billing.app.domain.service;
 import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.*;
-import java.lang.reflect.Field;
-import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,14 +15,14 @@ public class ProductService implements ProductServiceInterface {
         ProductValidator productValidator = new ProductValidator();
         if (productValidator.validate(product)) {
             if (productDAO.create(product)) {
-                return productDAO.getProduct(product.getCode());
+                return productDAO.getProductById(product.getCode());
             }
             else {
-                throw new ProductCreationException("Product creation unsuccessful.");
+                throw new ProductException("Product creation failed.");
             }
         }
         else {
-            throw new ProductValidationException("Product validation failed.");
+            throw new InvalidConstraintLengthException("Product validation failed. Please check the constraint length provided.");
         }
     }
 
@@ -34,9 +33,10 @@ public class ProductService implements ProductServiceInterface {
         productDAO = new ProductJdbcDAO();
         ProductValidator productValidator = new ProductValidator();
         Product editedProduct = productValidator.editByValidation(product, map);
+        System.out.println(editedProduct);
         if (productDAO.isCodePresent(editedProduct.getCode())) {
             if (productDAO.edit(editedProduct)) {
-                return productDAO.getProduct(editedProduct.getCode());
+                return productDAO.getProductByCode(editedProduct.getCode());
             }
             else {
                 throw new ProductException("Product edit unsuccessful.");
@@ -49,16 +49,16 @@ public class ProductService implements ProductServiceInterface {
 
 
 
-    public boolean delete(String code) throws ClassNotFoundException, ProductException {
+    public boolean delete(String id) throws ClassNotFoundException, ProductException {
         try {
             productDAO = new ProductJdbcDAO();
-            if (productDAO.isCodePresent(code)) {
-                if (productDAO.getProduct(code).isDeleted()) {
+            if (productDAO.isIdPresent(id)) {
+                if (productDAO.getProductById(id).isDeleted()) {
                     throw new ProductException("Product has already been deleted.");
                 }
                 else {
-                    if (productDAO.getStock(code) == 0) {
-                        return productDAO.delete(code);
+                    if (productDAO.getStock(id) == 0) {
+                        return productDAO.delete(id);
                     }
                     else {
                         throw new ProductException("Product stock not zero.");

@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class ProductRouter {
     Formatter formatter = new Formatter();
-    public void execute(ArrayList<String> arrayList) throws NoSuchFieldException, ClassNotFoundException, ProductException, IllegalAccessException {
+    public void execute(ArrayList<String> arrayList) throws Throwable {
         String action = arrayList.get(1);
         Scanner scanner = new Scanner(System.in);
         ProductParser productParser = new ProductParser();

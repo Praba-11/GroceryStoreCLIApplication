@@ -1,41 +1,60 @@
 package com.billing.app.domain.presentation;
 
+import com.billing.app.domain.database.ProductDAO;
+import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.exceptions.ProductException;
 
 import java.util.ArrayList;
 
 
 public class Main {
-    public static void main(String[] args) throws NoSuchFieldException, ClassNotFoundException, ProductException, IllegalAccessException {
+    public static void main(String[] args) throws Throwable {
 
         // Code for separating string input obtained from the command line interface
 
-        ArrayList arrayList = new ArrayList();
+        ArrayList create = new ArrayList();
+        ArrayList edit = new ArrayList();
+        ArrayList delete = new ArrayList();
+        ArrayList list = new ArrayList();
 
-        arrayList.add("product");
-//        arrayList.add("create");
-        arrayList.add("edit");
-//        arrayList.add(("list"));
-//        arrayList.add("-s");
-//        arrayList.add("-p");
-//        arrayList.add(4);
-//        arrayList.add(1);
-//        arrayList.add("delete");
-        arrayList.add("code");
-        arrayList.add("101a11");
-        arrayList.add("name");
-        arrayList.add("vicks action 500");
-//        arrayList.add("unitCode");
-//        arrayList.add("pc");
-//        arrayList.add("type");
-//        arrayList.add("medical");
-        arrayList.add("price");
-        arrayList.add("10");
+        create.add("product");
+        create.add("create");
+        create.add("v4");
+        create.add("bottle guard");
+        create.add("kg");
+        create.add("vegetables");
+        create.add("55");
 
+
+        edit.add("product");
+        edit.add("edit");
+        edit.add("code");
+        edit.add("v4");
+        edit.add("name");
+        edit.add("snake guard");
+//        edit.add("unitCode");
+//        edit.add("kg");
+//        edit.add("type");
+//        edit.add("vegetables");
+        edit.add("price");
+        edit.add("45");
+
+
+        list.add("product");
+        list.add(("list"));
+        list.add("-s");
+        list.add("-p");
+        list.add("3");
+        list.add("3");
+
+
+        delete.add("product");
+        delete.add("delete");
+        delete.add("4");
 
 
         Router router  = new Router();
-        router.module(arrayList);
+        router.module(edit);
 
     }
 

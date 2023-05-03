@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Router {
-    public void module(ArrayList<String> arrayList) throws NoSuchFieldException, ClassNotFoundException, ProductException, IllegalAccessException {
+    public void module(ArrayList<String> arrayList) throws Throwable {
         ProductRouter productRouter;
         UnitRouter unitRouter;
         String module = arrayList.get(0);
