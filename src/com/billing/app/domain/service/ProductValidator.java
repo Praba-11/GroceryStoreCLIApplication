@@ -44,29 +44,35 @@ public class ProductValidator {
         return true;
     }
 
-    public Product editByValidation(Product product, HashMap<String, String> map) throws IllegalAccessException {
+    public Product editByValidation(Product product, HashMap<String, String> map) throws IllegalAccessException, ProductValidationException {
         Field[] fields = product.getClass().getDeclaredFields();
         for (Field field : fields) {
             String fieldName = field.getName();
-            String attributeValue = map.get(fieldName);
-            if (attributeValue != null) {
-                field.setAccessible(true);
-                Class<?> fieldType = field.getType();
-                if (fieldType.equals(String.class)) {
-                    field.set(product, attributeValue);
-                } else if (fieldType.equals(int.class) || fieldType.equals(Integer.class)) {
-                    int intValue = Integer.parseInt(attributeValue);
-                    field.set(product, intValue);
-                } else if (fieldType.equals(float.class) || fieldType.equals(Float.class)) {
-                    float floatValue = Float.parseFloat(attributeValue);
-                    field.set(product, floatValue);
-                } else if (fieldType.equals(double.class) || fieldType.equals(Double.class)) {
-                    double doubleValue = Double.parseDouble(attributeValue);
-                    field.set(product, doubleValue);
-                } else if (fieldType.equals(boolean.class) || fieldType.equals(Boolean.class)) {
-                    boolean booleanValue = Boolean.parseBoolean(attributeValue);
-                    field.set(product, booleanValue);
+            if (map.containsKey(fieldName)) {
+                String attributeValue = map.get(fieldName);
+                System.out.println(fieldName + " " + attributeValue);
+                if (attributeValue != null) {
+                    field.setAccessible(true);
+                    Class<?> fieldType = field.getType();
+                    if (fieldType.equals(String.class)) {
+                        field.set(product, attributeValue);
+                    } else if (fieldType.equals(int.class) || fieldType.equals(Integer.class)) {
+                        int intValue = Integer.parseInt(attributeValue);
+                        field.set(product, intValue);
+                    } else if (fieldType.equals(float.class) || fieldType.equals(Float.class)) {
+                        float floatValue = Float.parseFloat(attributeValue);
+                        field.set(product, floatValue);
+                    } else if (fieldType.equals(double.class) || fieldType.equals(Double.class)) {
+                        double doubleValue = Double.parseDouble(attributeValue);
+                        field.set(product, doubleValue);
+                    } else if (fieldType.equals(boolean.class) || fieldType.equals(Boolean.class)) {
+                        boolean booleanValue = Boolean.parseBoolean(attributeValue);
+                        field.set(product, booleanValue);
+                    }
                 }
+            }
+            else {
+                throw new ProductValidationException("Invalid attribute provided for editing. Please try again with a valid argument.");
             }
         }
         return product;

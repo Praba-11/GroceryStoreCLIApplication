@@ -30,7 +30,7 @@ public class Main {
         edit.add("edit");
         edit.add("code");
         edit.add("v4");
-        edit.add("name");
+        edit.add("n");
         edit.add("snake guard");
 //        edit.add("unitCode");
 //        edit.add("kg");

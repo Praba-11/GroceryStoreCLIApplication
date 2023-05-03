@@ -32,8 +32,9 @@ public class ProductService implements ProductServiceInterface {
     public Product edit(Product product, HashMap<String, String> map) throws ProductException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
         productDAO = new ProductJdbcDAO();
         ProductValidator productValidator = new ProductValidator();
+        System.out.println(product);
+        System.out.println(map);
         Product editedProduct = productValidator.editByValidation(product, map);
-        System.out.println(editedProduct);
         if (productDAO.isCodePresent(editedProduct.getCode())) {
             if (productDAO.edit(editedProduct)) {
                 return productDAO.getProductByCode(editedProduct.getCode());
