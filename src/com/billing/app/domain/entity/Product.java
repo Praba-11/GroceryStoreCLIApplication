@@ -1,18 +1,20 @@
 package com.billing.app.domain.entity;
 
 public class Product {
+    private int id;
     private String code;
     private String name;
     private String unitCode;
     private String type;
     private float price;
-    private int stock;
+    private float stock;
     private boolean isDeleted;
     public Product() {
 
     }
 
-    public Product(String code, String name, String unitCode, String type, float price, int stock, boolean isDeleted) {
+    public Product(int id, String code, String name, String unitCode, String type, float price, int stock, boolean isDeleted) {
+        this.id = id;
         this.code = code;
         this.name = name;
         this.unitCode = unitCode;
@@ -70,11 +72,11 @@ public class Product {
         this.price = price;
     }
 
-    public int getStock() {
+    public float getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(float stock) {
         this.stock = stock;
     }
 

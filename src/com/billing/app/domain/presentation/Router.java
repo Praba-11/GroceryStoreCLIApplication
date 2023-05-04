@@ -1,12 +1,16 @@
 package com.billing.app.domain.presentation;
 
 
+import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.ProductException;
+import com.billing.app.domain.exceptions.unit.CodeNullException;
+import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Router {
+    Unit unit;
     public void module(ArrayList<String> arrayList) throws Throwable {
         ProductRouter productRouter;
         UnitRouter unitRouter;

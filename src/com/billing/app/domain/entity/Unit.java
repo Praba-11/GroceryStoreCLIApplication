@@ -1,12 +1,14 @@
 package com.billing.app.domain.entity;
 
 public class Unit {
+    private int id;
     private String name;
     private String code;
     private String description;
     private boolean isDividable;
 
-    public Unit(String name, String code, String description, boolean isDividable) {
+    public Unit(int id, String name, String code, String description, boolean isDividable) {
+        this.id = id;
         this.name = name;
         this.code = code;
         this.description = description;
@@ -47,5 +49,23 @@ public class Unit {
 
     public void setDividable(boolean dividable) {
         isDividable = dividable;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Unit{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", isDividable=" + isDividable +
+                '}';
     }
 }

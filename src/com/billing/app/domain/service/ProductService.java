@@ -5,6 +5,7 @@ import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.*;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,20 +13,12 @@ import java.util.Map;
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;
 
-    public Product create(Product product) throws ProductException, ClassNotFoundException {
+    public Product create(Product product) throws ProductException, ClassNotFoundException, SQLException {
         productDAO = new ProductJdbcDAO();
-        ProductValidator productValidator = new ProductValidator();
-        if (productValidator.validate(product)) {
-            if (productDAO.create(product)) {
-                return productDAO.getProductById(product.getCode());
-            }
-            else {
-                throw new ProductException("Product creation failed.");
-            }
+        if (productDAO.create(product)) {
+            return productDAO.getProductByCode(product.getCode());
         }
-        else {
-            throw new InvalidConstraintLengthException("Product validation failed. Please check the constraint length provided.");
-        }
+        return null;
     }
 
 

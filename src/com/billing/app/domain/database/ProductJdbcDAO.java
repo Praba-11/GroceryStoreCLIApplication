@@ -12,32 +12,21 @@ public class ProductJdbcDAO implements ProductDAO {
     ArrayList<Product> productArrayList = new ArrayList<>();
     Product product;
     @Override
-    public boolean create(Product product) throws ProductException, ClassNotFoundException {
+    public boolean create(Product product) throws ProductException, ClassNotFoundException, SQLException {
 
         // Storing Product in Database table
-        try {
-            String query = "INSERT INTO products (code, name, unitCode, type, price, stock, isDeleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-            preparedStatement.setString(1, product.getCode());
-            preparedStatement.setString(2, product.getName());
-            preparedStatement.setString(3, product.getUnitCode());
-            preparedStatement.setString(4, product.getType());
-            preparedStatement.setFloat(5, product.getPrice());
-            preparedStatement.setInt(6, product.getStock());
-            preparedStatement.setBoolean(7, product.isDeleted());
-            int rowsAffected = preparedStatement.executeUpdate();
-            preparedStatement.close();
-            return rowsAffected > 0;
-        } catch (SQLException exception) {
-            if (exception.getSQLState().equals("23505")) {
-                throw new ProductPrimaryKeyException("Unable to modify the primary key. " + exception.getMessage());
-            } else if (exception.getSQLState().equals("23502")) {
-                throw new ProductNullConstraintException("Provided constraint cannot be null in relational table. " + exception.getMessage());
-            } else if (exception.getSQLState().equals("23503")) {
-                throw new ProductUnitException("Provided unit not present in Unit relation table. " + exception.getMessage());
-            }
-            throw new ProductException(exception.getMessage());
-        }
+        String query = "INSERT INTO product (code, name, unitcode, type, price, stock, isdeleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        preparedStatement.setString(1, product.getCode());
+        preparedStatement.setString(2, product.getName());
+        preparedStatement.setString(3, product.getUnitCode());
+        preparedStatement.setString(4, product.getType());
+        preparedStatement.setFloat(5, product.getPrice());
+        preparedStatement.setFloat(6, product.getStock());
+        preparedStatement.setBoolean(7, product.isDeleted());
+        int rowsAffected = preparedStatement.executeUpdate();
+        preparedStatement.close();
+        return rowsAffected > 0;
     }
 
 
@@ -100,6 +89,7 @@ public class ProductJdbcDAO implements ProductDAO {
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
+                int id = resultSet.getInt(1);
                 String code = resultSet.getString(2);
                 String name = resultSet.getString(3);
                 String unitCode = resultSet.getString(4);
@@ -107,7 +97,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 float price = resultSet.getFloat(6);
                 int stock = resultSet.getInt(7);
                 boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                product = new Product(id, code, name, unitCode, type, price, stock, isDeleted);
                 productArrayList.add(product);
             }
             return productArrayList;
@@ -130,6 +120,7 @@ public class ProductJdbcDAO implements ProductDAO {
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
+                int id = resultSet.getInt(1);
                 String code = resultSet.getString(2);
                 String name = resultSet.getString(3);
                 String unitCode = resultSet.getString(4);
@@ -137,7 +128,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 float price = resultSet.getFloat(6);
                 int stock = resultSet.getInt(7);
                 boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                product = new Product(id, code, name, unitCode, type, price, stock, isDeleted);
                 productArrayList.add(product);
             }
             return productArrayList;
@@ -158,6 +149,7 @@ public class ProductJdbcDAO implements ProductDAO {
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
+                int id = resultSet.getInt(1);
                 String code = resultSet.getString(2);
                 String name = resultSet.getString(3);
                 String unitCode = resultSet.getString(4);
@@ -165,7 +157,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 float price = resultSet.getFloat(6);
                 int stock = resultSet.getInt(7);
                 boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                product = new Product(id, code, name, unitCode, type, price, stock, isDeleted);
                 productArrayList.add(product);
             }
             return productArrayList;
@@ -188,6 +180,7 @@ public class ProductJdbcDAO implements ProductDAO {
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
+                int id = resultSet.getInt(1);
                 String code = resultSet.getString(2);
                 String name = resultSet.getString(3);
                 String unitCode = resultSet.getString(4);
@@ -195,7 +188,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 float price = resultSet.getFloat(6);
                 int stock = resultSet.getInt(7);
                 boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                product = new Product(id, code, name, unitCode, type, price, stock, isDeleted);
                 productArrayList.add(product);
             }
             return productArrayList;
@@ -218,6 +211,7 @@ public class ProductJdbcDAO implements ProductDAO {
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
+                int id = resultSet.getInt(1);
                 String code = resultSet.getString(2);
                 String name = resultSet.getString(3);
                 String unitCode = resultSet.getString(4);
@@ -225,7 +219,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 float price = resultSet.getFloat(6);
                 int stock = resultSet.getInt(7);
                 boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                product = new Product(id, code, name, unitCode, type, price, stock, isDeleted);
                 productArrayList.add(product);
             }
             return productArrayList;
@@ -247,6 +241,7 @@ public class ProductJdbcDAO implements ProductDAO {
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
+                int id = resultSet.getInt(1);
                 String code = resultSet.getString(2);
                 String name = resultSet.getString(3);
                 String unitCode = resultSet.getString(4);
@@ -254,7 +249,7 @@ public class ProductJdbcDAO implements ProductDAO {
                 float price = resultSet.getFloat(6);
                 int stock = resultSet.getInt(7);
                 boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                product = new Product(id, code, name, unitCode, type, price, stock, isDeleted);
                 productArrayList.add(product);
             }
             return productArrayList;
@@ -292,18 +287,19 @@ public class ProductJdbcDAO implements ProductDAO {
 
         // Returns the product based on the product code provided
         try {
-            String query = "SELECT * FROM products WHERE code = '" + code + "'";
+            String query = "SELECT * FROM product WHERE code = '" + code + "'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                String id = resultSet.getString(2);
+                int id = resultSet.getInt(1);
+                String productCode = resultSet.getString(2);
                 String name = resultSet.getString(3);
                 String unitCode = resultSet.getString(4);
                 String type = resultSet.getString(5);
                 float price = resultSet.getFloat(6);
                 int stock = resultSet.getInt(7);
                 boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(id, name, unitCode, type, price, stock, isDeleted);
+                product = new Product(id, productCode, name, unitCode, type, price, stock, isDeleted);
             }
             return product;
         }
@@ -312,22 +308,23 @@ public class ProductJdbcDAO implements ProductDAO {
         }
     }
 
-    public Product getProductById(String id) throws ProductException {
+    public Product getProductById(String code) throws ProductException {
 
         // Returns the product based on the product code provided
         try {
-            String query = "SELECT * FROM products WHERE id = '" + id + "'";
+            String query = "SELECT * FROM products WHERE id = '" + code + "'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                String code = resultSet.getString(2);
+                int id = resultSet.getInt(1);
+                String productCode = resultSet.getString(2);
                 String name = resultSet.getString(3);
                 String unitCode = resultSet.getString(4);
                 String type = resultSet.getString(5);
                 float price = resultSet.getFloat(6);
                 int stock = resultSet.getInt(7);
                 boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(code, name, unitCode, type, price, stock, isDeleted);
+                product = new Product(id, productCode, name, unitCode, type, price, stock, isDeleted);
             }
             return product;
         }
@@ -387,6 +384,5 @@ public class ProductJdbcDAO implements ProductDAO {
         catch (SQLException | ClassNotFoundException exception) {
             throw new ProductException(exception.getMessage());
         }
-
     }
 }

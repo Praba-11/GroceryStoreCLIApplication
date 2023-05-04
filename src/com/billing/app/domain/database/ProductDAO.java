@@ -4,10 +4,11 @@ import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.CustomException;
 import com.billing.app.domain.exceptions.ProductException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface ProductDAO {
-    boolean create(Product product) throws ProductException, ClassNotFoundException;
+    boolean create(Product product) throws ProductException, ClassNotFoundException, SQLException;
     boolean edit(Product product) throws ProductException, ClassNotFoundException, IllegalAccessException;
     boolean delete(String code) throws ProductException, ClassNotFoundException;
     ArrayList<Product> list() throws ProductException, ClassNotFoundException;

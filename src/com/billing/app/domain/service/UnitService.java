@@ -6,52 +6,53 @@ import com.billing.app.domain.database.UnitJdbcDAO;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
+import com.billing.app.domain.exceptions.unit.CodeNullException;
+import com.billing.app.domain.presentation.Validator;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class UnitService implements UnitServiceInterface {
     private UnitDAO unitDAO;
-
-    public void create(Unit unit) throws ProductException, ClassNotFoundException, SQLException, CustomException {
+    UnitValidator unitValidator;
+    public Unit create(Unit unit) throws SQLException, ClassNotFoundException {
         unitDAO = new UnitJdbcDAO();
         if (unitDAO.create(unit)) {
-            throw new CustomException("Unit created successfully.");
-        } else {
-            throw new CustomException("Unit creation failed.");
+            return unitDAO.getUnitByCode(unit.getCode());
+        }
+        return null;
+    }
+
+    @Override
+    public Unit edit(Unit modifiedUnit) throws SQLException, ClassNotFoundException, IllegalAccessException, CodeNullException {
+        try {
+            unitDAO = new UnitJdbcDAO();
+            Unit unitToBeEdited = unitDAO.getUnitByCode(modifiedUnit.getCode());
+            unitValidator = new UnitValidator();
+            unitValidator.editAttributes(unitToBeEdited, modifiedUnit);
+            if (unitDAO.edit(unitToBeEdited)) {
+                return unitDAO.getUnitByCode(modifiedUnit.getCode());
+            }
+            return null;
+        }
+        catch (NullPointerException exception) {
+            throw new CodeNullException("'" + modifiedUnit.getCode() + "' cannot be assigned as Unit Code.");
         }
     }
 
-    public void edit(Unit unit) throws ProductException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException, CustomException {
+    public boolean delete(String key, String value) throws SQLException, ClassNotFoundException, CodeNotFoundException {
+        boolean flag = false;
         unitDAO = new UnitJdbcDAO();
-        if (unitDAO.edit(unit)) {
-            throw new CustomException("Unit created successfully.");
-        } else {
-            throw new CustomException("Unit creation failed.");
+        unitValidator = new UnitValidator();
+        if (unitValidator.isDeletable(key, value)) {
+            flag = unitDAO.delete(key, value);
         }
+        return flag;
     }
 
-
-    public void delete(String id) throws ClassNotFoundException, ProductException {
-        unitDAO = new UnitJdbcDAO();
-        if (unitDAO.isIdPresent(id)) {
-            unitDAO.delete(id);
-        } else {
-            throw new CodeNotFoundException("Code not present in product relation table.");
-        }
-    }
-
-
-    public ArrayList<Unit> list() throws ProductException, ClassNotFoundException {
+    public ArrayList<Unit> list() throws SQLException, ClassNotFoundException {
         unitDAO = new UnitJdbcDAO();
         ArrayList<Unit> unitArrayList = unitDAO.list();
-        if (unitArrayList.isEmpty()) {
-            throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
-        }
-        else {
-            return unitArrayList;
-        }
+        return unitArrayList;
     }
-
-
 }

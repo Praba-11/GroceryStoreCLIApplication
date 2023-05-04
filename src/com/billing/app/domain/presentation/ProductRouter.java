@@ -1,8 +1,13 @@
 package com.billing.app.domain.presentation;
 
 import com.billing.app.domain.entity.Product;
+import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.ProductException;
+import com.billing.app.domain.exceptions.ProductNullConstraintException;
+import com.billing.app.domain.exceptions.ProductPrimaryKeyException;
+import com.billing.app.domain.exceptions.ProductUnitException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Scanner;
@@ -17,15 +22,21 @@ public class ProductRouter {
         switch (action) {
             case "create":
                 try {
-                    if (productParser.create(arrayList) != null) {
-                        System.out.println("Product created successfully!");
+                    Product productCreated = null;
+                    productCreated = productParser.create(arrayList);
+                    System.out.println(productCreated);
+                    break;
+                } catch (SQLException exception) {
+                    if (exception.getSQLState().equals("23505")) {
+                        System.out.println("Unable to modify the primary key. " + exception.getMessage());
+                    } else if (exception.getSQLState().equals("23502")) {
+                        System.out.println("Provided constraint cannot be null in relational table. " + exception.getMessage());
+                    } else if (exception.getSQLState().equals("23503")) {
+                        System.out.println("Provided unit not present in Unit relation table. " + exception.getMessage());
                     }
-                } catch (ProductException exception) {
-                    System.out.println("Error creating record into database. \n" + exception.getMessage());
-                } catch (RuntimeException | ClassNotFoundException exception) {
                     System.out.println(exception.getMessage());
                 }
-                break;
+
 
 
             case "edit":

@@ -3,8 +3,11 @@ package com.billing.app.domain.presentation;
 import com.billing.app.domain.database.ProductDAO;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
+import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.CustomException;
 import com.billing.app.domain.exceptions.ProductException;
+import com.billing.app.domain.exceptions.unit.CodeNullException;
+import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
 import com.billing.app.domain.service.ProductService;
 import com.billing.app.domain.service.ProductServiceInterface;
 import com.billing.app.domain.service.UnitService;
@@ -18,61 +21,48 @@ import java.util.Map;
 public class UnitParser {
     private Unit unit;
     UnitServiceInterface unitServiceInterface;
-    public void create(ArrayList<String> arrayList) throws SQLException, CustomException, ClassNotFoundException, ProductException {
+    Validator validator;
+
+    public Unit create(ArrayList<String> arrayList) throws SQLException, ClassNotFoundException {
         ArrayList<String> values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
-        Unit unit = new Unit();
+        unit = new Unit();
         unit.setName(values.get(0));
         unit.setCode(values.get(1));
         unit.setDescription(values.get(2));
         unit.setDividable(Boolean.parseBoolean(values.get(3)));
         unitServiceInterface = new UnitService();
-        unitServiceInterface.create(unit);
+        return unitServiceInterface.create(unit);
     }
 
 
-    public void edit(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException, CustomException {
-        ArrayList<String> keyValues = new ArrayList<>(arrayList.subList(2, arrayList.size()));
-        HashMap<String, String> map = new HashMap<>();
-        for (int i = 0; i < keyValues.size(); i += 2) {
-            String key = keyValues.get(i);
-            String value = keyValues.get(i + 1);
-            map.put(key, value);
-        }
+    public Unit edit(ArrayList<String> arrayList) throws SQLException, ClassNotFoundException, IllegalAccessException, NullPointerException, CodeNullException, TemplateMismatchException {
+        validator = new Validator();
         unit = new Unit();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            if (key.equals("name")) {
-                unit.setName(value);
-            } else if (key.equals("unitCode")) {
-                unit.setCode(value);
-            } else if (key.equals("description")) {
-                unit.setDescription(value);
-            } else if (key.equals("isDividable")) {
-                unit.setDividable(Boolean.parseBoolean(value));
-            } else {
-                throw new ProductException("Invalid attribute provided. Please provide necessary attribute. " + key);
-            }
+        ArrayList<String> keyValuePair = new ArrayList<>(arrayList.subList(2, arrayList.size()));
+        for (int index = 0; index < keyValuePair.size(); index += 2) {
+            String key = keyValuePair.get(index);
+            String value = keyValuePair.get(index + 1);
+            validator.editValidate(unit, key, value);
         }
-        unitServiceInterface = new ProductService();
+        unitServiceInterface = new UnitService();
         return unitServiceInterface.edit(unit);
     }
 
-    public boolean delete(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, CustomException {
-        try {
-            String code = arrayList.get(2);
-            unitServiceInterface = new ProductService();
-            return unitServiceInterface.delete(code);
+    public boolean delete(ArrayList<String> arrayList) throws TemplateMismatchException, SQLException, CodeNotFoundException, ClassNotFoundException {
+        boolean flag = false;
+        String key = arrayList.get(2);
+        String value = arrayList.get(3);
+        validator = new Validator();
+        if (validator.deleteValidate(key)) {
+            unitServiceInterface = new UnitService();
+            flag = unitServiceInterface.delete(key, value);
         }
-        catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
-        }
+        return flag;
     }
 
-    public ArrayList<Product> list(ArrayList<String> arrayList) throws Throwable {
-        unitServiceInterface = new ProductService();
-        if (arrayList.size() == 2) {
-            return unitServiceInterface.list();
-        }
+    public ArrayList<Unit> list() throws SQLException, ClassNotFoundException {
+        unitServiceInterface = new UnitService();
+        ArrayList<Unit> unitArrayList = unitServiceInterface.list();
+        return unitArrayList;
     }
 }

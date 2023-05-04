@@ -5,29 +5,39 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) throws Throwable {
+
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter a string: ");
+        System.out.print(">> ");
         String input = scanner.nextLine();
+        ArrayList<String> command = separateString(input);
 
-        ArrayList<String> separatedStrings = separateString(input);
-
-        System.out.println("Separated strings: " + separatedStrings);
         Router router = new Router();
-        router.module(separatedStrings);
+        router.module(command);
+
     }
 
     private static ArrayList<String> separateString(String input) {
-        // Replace multiple spaces, commas, and special characters with a single space
-        String cleanedInput = input.replaceAll("[\\s,\\p{P}]+", " ");
-        input = input.trim();
-        // Split the cleaned input into an array of strings
-        String[] stringArray = cleanedInput.split(" ");
 
-        // Convert the array to an ArrayList
-        ArrayList<String> separatedStrings = new ArrayList<>(Arrays.asList(stringArray));
+        ArrayList<String> splitByCommas = new ArrayList<>();
+        ArrayList<String> splitByCommasAndSpaces = new ArrayList<>();
 
-        return separatedStrings;
+        String[] parts = input.trim().split("\\s*[:,]\\s*");
+        for (String part : parts) {
+            splitByCommas.add(part);
+        }
+        String firstStringSet = splitByCommas.get(0);
+        String[] sample = firstStringSet.split("\\s+");
+        for (String element : sample) {
+            splitByCommasAndSpaces.add(element);
+        }
+        for (int index = 1; index<splitByCommas.size(); index++) {
+            splitByCommasAndSpaces.add(splitByCommas.get(index).trim());
+        }
+
+        return splitByCommasAndSpaces;
+
     }
 }
 

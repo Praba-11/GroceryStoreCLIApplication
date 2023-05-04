@@ -8,6 +8,7 @@ import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.database.ProductDAO;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,20 +19,15 @@ public class ProductParser {
     private ProductServiceInterface productServiceInterface;
     private Validator validator;
 
-    public Product create(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, IllegalAccessException {
-        validator = new Validator();
+    public Product create(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, SQLException {
         ArrayList<String> values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
-        Product product = new Product();
-        if (validator.createByValidation(values)) {
-            product.setCode(values.get(0));
-            product.setName(values.get(1));
-            product.setUnitCode(values.get(2));
-            product.setType(values.get(3));
-            product.setPrice(Float.parseFloat(values.get(4)));
-        }
-        else {
-            throw new ProductNullConstraintException("Product value to be assign may be null. Cannot assign null values.");
-        }
+        product = new Product();
+        product.setCode(values.get(0));
+        product.setName(values.get(1));
+        product.setUnitCode(values.get(2));
+        product.setType(values.get(3));
+        product.setPrice(Float.parseFloat(values.get(4)));
+        product.setStock(Float.parseFloat(values.get(5)));
         productServiceInterface = new ProductService();
         return productServiceInterface.create(product);
     }

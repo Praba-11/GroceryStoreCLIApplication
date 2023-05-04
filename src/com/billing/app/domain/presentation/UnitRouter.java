@@ -1,11 +1,18 @@
 package com.billing.app.domain.presentation;
 
 import com.billing.app.domain.entity.Product;
+import com.billing.app.domain.entity.Unit;
+import com.billing.app.domain.exceptions.CodeNotFoundException;
+import com.billing.app.domain.exceptions.unit.CodeNullException;
+import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.Scanner;
 
 public class UnitRouter {
+    Formatter formatter = new Formatter();
     public void execute(ArrayList<String> arrayList) {
         String action = arrayList.get(1);
         Scanner scanner = new Scanner(System.in);
@@ -14,52 +21,69 @@ public class UnitRouter {
         switch (action) {
 
             case "create":
-//                try {
-//                    if (unitParser.create(arrayList) != null) {
-//                        System.out.println("Unit created successfully!");
-//                    }
-//                } catch (Throwable exception) {
-//                    System.out.println("Error creating record into database. \n" + exception.getMessage());
-//                }
-//                break;
+                try {
+                    Unit unitCreated = null;
+                    unitCreated = unitParser.create(arrayList);
+                    System.out.println(unitCreated);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+
+
 
             case "edit":
                 try {
-                    if (unitParser.edit(arrayList) != null)
-                        System.out.println("Product edited successfully!");
-//                } catch (Throwable exception) {
-//                    System.out.println("Error editing record into database. \n" + exception.getMessage());
-//                }
+                    Unit unitEdited = unitParser.edit(arrayList);
+                    System.out.println(unitEdited);
+                } catch (CodeNullException exception) {
+                    System.out.println("Unit Code is unique, cannot be edited. " + exception.getMessage());
+                } catch (TemplateMismatchException exception) {
+                    System.out.println("Template mismatch. Incompatible attribute provided. " + exception.getMessage());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+
+
 
             case "delete":
                 try {
-                    System.out.println("Are you sure you want to delete the unit? y/n");
-                    String choice = scanner.next();
-                    if (choice.equals("y")) {
-                        if (unitParser.delete(arrayList))
-                            System.out.println("Unit deleted successfully!");
-                    } else if (choice.equals("n"))
-                        System.out.println("Unit not deleted.");
-                    else
-                        System.out.println("Invalid choice, please try again.");
-                } catch (Throwable exception) {
-                    System.out.println("No records deleted in database. \n" + exception.getMessage());
+                    boolean isDeleted = false;
+                    isDeleted = unitParser.delete(arrayList);
+                    System.out.println(isDeleted);
+                } catch (TemplateMismatchException exception) {
+                    System.out.println("Template mismatch. " + exception.getMessage());
+                } catch (SQLException exception) {
+                    throw new RuntimeException(exception);
+                } catch (CodeNotFoundException exception) {
+                    System.out.println("Provided Code (or) Id not found. " + exception.getMessage());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
                 break;
 
 
             case "list":
                 try {
-                    ArrayList<Unit> unitArray = unitParser.list(arrayList);
+                    ArrayList<Unit> units = unitParser.list();
                     System.out.println("List returned successfully.");
-                    formatter.format("%-15s %15s %15s %15s %15s %15s\n", "Code", "Name", "Unit Code", "Type", "Price", "Stock");
-                    formatter.format("%-15s %15s %15s %15s %15s %15s\n", "----", "----", "---------", "----", "-----", "-----");
-                    for (Unit unit : unitArray) {
-                        formatter.format("%-15s %15s %15s %15s %15.2f %15d\n", unit.getName(), products.getName(), products.getUnitCode(), products.getType(), products.getPrice(), products.getStock());
+                    formatter.format("%-15s %15s %15s %25s %15s\n", "Id", "Name", "Code", "Description", "Is Dividable");
+                    formatter.format("%-15s %15s %15s %25s %15s\n", "--", "----", "----", "-----------", "------------");
+                    for (Unit unit : units) {
+                        formatter.format("%-15d %15s %15s %25s %15b\n", unit.getId(), unit.getName(), unit.getCode(), unit.getDescription(), unit.isDividable());
                     }
                     System.out.println(formatter.toString());
-                } catch (Throwable exception) {
-                    System.out.println("Cannot list the records! \n" + exception.getMessage());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
         }
     }
