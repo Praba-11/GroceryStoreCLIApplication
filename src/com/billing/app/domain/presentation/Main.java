@@ -1,58 +1,33 @@
 package com.billing.app.domain.presentation;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Throwable {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter a string: ");
+        String input = scanner.nextLine();
 
-        // Code for separating string input obtained from the command line interface
+        ArrayList<String> separatedStrings = separateString(input);
 
-
-        ArrayList create = new ArrayList();
-        ArrayList edit = new ArrayList();
-        ArrayList delete = new ArrayList();
-        ArrayList list = new ArrayList();
-
-        create.add("product");
-        create.add("create");
-        create.add("v4");
-        create.add("bottle guard");
-        create.add("kg");
-        create.add("vegetables");
-        create.add("55");
-
-
-        edit.add("product");
-        edit.add("edit");
-        edit.add("code");
-        edit.add("v6");
-        edit.add("name");
-        edit.add("bottle guard");
-        edit.add("unitCode");
-        edit.add("kg");
-        edit.add("type");
-        edit.add("vegetables");
-        edit.add("price");
-        edit.add("45");
-
-
-        list.add("product");
-        list.add(("list"));
-        list.add("-s");
-        list.add("-p");
-        list.add("3");
-        list.add("3");
-
-
-        delete.add("product");
-        delete.add("delete");
-        delete.add("4");
-
-
-        Router router  = new Router();
-        router.module(edit);
-
+        System.out.println("Separated strings: " + separatedStrings);
+        Router router = new Router();
+        router.module(separatedStrings);
     }
 
+    private static ArrayList<String> separateString(String input) {
+        // Replace multiple spaces, commas, and special characters with a single space
+        String cleanedInput = input.replaceAll("[\\s,\\p{P}]+", " ");
+        input = input.trim();
+        // Split the cleaned input into an array of strings
+        String[] stringArray = cleanedInput.split(" ");
+
+        // Convert the array to an ArrayList
+        ArrayList<String> separatedStrings = new ArrayList<>(Arrays.asList(stringArray));
+
+        return separatedStrings;
+    }
 }
+
