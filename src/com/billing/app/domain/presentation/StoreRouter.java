@@ -21,7 +21,11 @@ public class StoreRouter {
                 try {
                     Store storeCreated;
                     storeCreated = storeParser.create(arrayList);
-                    System.out.println(storeCreated.toString());
+                    if(storeCreated != null) {
+                        System.out.println(storeCreated);
+                    } else {
+                        System.out.println("Multiple Stores cannot be created. Please try again.");
+                    }
                 } catch (SQLException exception) {
                     if (exception.getSQLState().equals("23514")) {
                         System.out.println("Store already exists. " + exception.getMessage());
@@ -31,6 +35,8 @@ public class StoreRouter {
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
+                break;
+
 
             case "edit":
                 try {

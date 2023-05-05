@@ -71,4 +71,15 @@ public class StoreJdbcDAO implements StoreDAO {
         }
         return store;
     }
+
+    public int getCount() throws SQLException, ClassNotFoundException {
+        int count = 0;
+        String query = "SELECT COUNT(id) FROM store";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            count = resultSet.getInt(1);
+        }
+        return count;
+    }
 }

@@ -11,5 +11,5 @@ public interface StoreDAO {
 
     boolean delete() throws SQLException, ClassNotFoundException;
     Store getStore() throws SQLException, ClassNotFoundException;
-
+    int getCount() throws SQLException, ClassNotFoundException;
 }

@@ -30,9 +30,13 @@ public class ProductService implements ProductServiceInterface {
         productDAO = new ProductJdbcDAO();
         Product productToBeEdited = productDAO.getProductByCode(modifiedProduct.getCode());
         productValidator = new ProductValidator();
-        productValidator.editAttributes(productToBeEdited, modifiedProduct);
-        if (productDAO.edit(productToBeEdited)) {
-            return productDAO.getProductByCode(modifiedProduct.getCode());
+        if (productToBeEdited != null) {
+            productValidator.editAttributes(productToBeEdited, modifiedProduct);
+            if (productDAO.edit(productToBeEdited)) {
+                return productDAO.getProductByCode(modifiedProduct.getCode());
+            }
+        } else {
+            return null;
         }
         return null;
     }

@@ -89,6 +89,7 @@ public class ProductParser {
                 return productServiceInterface.list(searchText);
             }
             else if (arrayList.get(2).equals("-s") && arrayList.size() == 5) {
+                System.out.println(arrayList);
                 String searchText = arrayList.get(4);
                 String attribute = arrayList.get(3);
                 return productServiceInterface.list(attribute, searchText);

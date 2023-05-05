@@ -2,6 +2,15 @@ package com.billing.app.domain.entity;
 
 public class Product {
     private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     private String code;
     private String name;
     private String unitCode;

@@ -78,14 +78,10 @@ public class ProductRouter {
             case "list":
                 try {
                     ArrayList<Product> productArray = productParser.list(arrayList);
-                    System.out.println(productArray);
                     System.out.println("List returned successfully.");
-                    formatter.format("%-15s %15s %15s %15s %15s %15s\n", "Code", "Name", "Unit Code", "Type", "Price", "Stock");
-                    formatter.format("%-15s %15s %15s %15s %15s %15s\n", "----", "----", "---------", "----", "-----", "-----");
                     for (Product products : productArray) {
-                        formatter.format("%-15s %15s %15s %15s %15.2f %15.2f\n", products.getCode(), products.getName(), products.getUnitCode(), products.getType(), products.getPrice(), products.getStock());
+                        System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
                     }
-                    System.out.println(formatter.toString());
                 }
                 catch (Throwable exception) {
                     System.out.println("Cannot list the records! \n" + exception.getMessage());

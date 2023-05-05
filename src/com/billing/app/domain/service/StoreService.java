@@ -7,13 +7,19 @@ import com.billing.app.domain.entity.Store;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 
 public class StoreService implements StoreServiceInterface {
     StoreDAO storeDAO;
     public Store create(Store store) throws SQLException, ClassNotFoundException {
         storeDAO = new StoreJdbcDAO();
-        if (storeDAO.create(store)) {
-            return storeDAO.getStore();
+        if (storeDAO.getCount() > 0) {
+            return null;
+        }
+        else {
+            if (storeDAO.create(store)) {
+                return storeDAO.getStore();
+            }
         }
         return null;
     }
