@@ -1,4 +1,4 @@
-package com.billing.app.domain.service;
+package com.billing.app.domain.service.store;
 
 import com.billing.app.domain.entity.Store;
 

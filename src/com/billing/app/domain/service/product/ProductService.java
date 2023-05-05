@@ -1,15 +1,11 @@
-package com.billing.app.domain.service;
+package com.billing.app.domain.service.product;
 
 import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
 
-import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;

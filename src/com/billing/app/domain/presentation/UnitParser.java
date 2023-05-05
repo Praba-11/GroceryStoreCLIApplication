@@ -1,22 +1,15 @@
 package com.billing.app.domain.presentation;
 
-import com.billing.app.domain.database.ProductDAO;
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.CustomException;
-import com.billing.app.domain.exceptions.ProductException;
 import com.billing.app.domain.exceptions.unit.CodeNullException;
 import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
-import com.billing.app.domain.service.ProductService;
-import com.billing.app.domain.service.ProductServiceInterface;
-import com.billing.app.domain.service.UnitService;
-import com.billing.app.domain.service.UnitServiceInterface;
+import com.billing.app.domain.service.unit.UnitService;
+import com.billing.app.domain.service.unit.UnitServiceInterface;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class UnitParser {
     private Unit unit;

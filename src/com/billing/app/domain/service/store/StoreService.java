@@ -1,13 +1,10 @@
-package com.billing.app.domain.service;
+package com.billing.app.domain.service.store;
 
 import com.billing.app.domain.database.StoreDAO;
 import com.billing.app.domain.database.StoreJdbcDAO;
-import com.billing.app.domain.database.UnitJdbcDAO;
 import com.billing.app.domain.entity.Store;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
 
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 
 public class StoreService implements StoreServiceInterface {
     StoreDAO storeDAO;

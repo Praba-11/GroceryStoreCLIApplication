@@ -1,21 +1,15 @@
 package com.billing.app.domain.presentation;
 
-import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.unit.CodeNullException;
 import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
-import com.billing.app.domain.service.ProductService;
-import com.billing.app.domain.service.ProductServiceInterface;
+import com.billing.app.domain.service.product.ProductService;
+import com.billing.app.domain.service.product.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.database.ProductDAO;
-import com.billing.app.domain.service.UnitService;
 
-import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ProductParser {
     private Product product;

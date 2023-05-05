@@ -1,13 +1,10 @@
-package com.billing.app.domain.service;
+package com.billing.app.domain.service.unit;
 
-import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.database.UnitDAO;
 import com.billing.app.domain.database.UnitJdbcDAO;
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.unit.CodeNullException;
-import com.billing.app.domain.presentation.Validator;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -70,14 +70,13 @@ public class UnitRouter {
                 break;
 
 
+
             case "list":
                 try {
-                    ArrayList<Unit> units = unitParser.list();
+                    ArrayList<Unit> unitArrayList = unitParser.list();
                     System.out.println("List returned successfully.");
-                    formatter.format("%-15s %15s %15s %25s %15s\n", "Id", "Name", "Code", "Description", "Is Dividable");
-                    formatter.format("%-15s %15s %15s %25s %15s\n", "--", "----", "----", "-----------", "------------");
-                    for (Unit unit : units) {
-                        formatter.format("%-15d %15s %15s %25s %15b\n", unit.getId(), unit.getName(), unit.getCode(), unit.getDescription(), unit.isDividable());
+                    for (Unit unit : unitArrayList) {
+                        System.out.println("id: " + unit.getId() + ", name: " + unit.getName() + ", code: " + unit.getCode() + ", description " + unit.getDescription() + ", isdividable: " + unit.isDividable());
                     }
                     System.out.println(formatter.toString());
                 } catch (SQLException e) {

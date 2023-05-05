@@ -1,4 +1,4 @@
-package com.billing.app.domain.service;
+package com.billing.app.domain.service.unit;
 
 import com.billing.app.domain.database.UnitDAO;
 import com.billing.app.domain.database.UnitJdbcDAO;

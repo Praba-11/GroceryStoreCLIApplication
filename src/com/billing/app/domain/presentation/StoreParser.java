@@ -1,11 +1,8 @@
 package com.billing.app.domain.presentation;
 
 import com.billing.app.domain.entity.Store;
-import com.billing.app.domain.entity.Store;
-import com.billing.app.domain.entity.Unit;
-import com.billing.app.domain.service.StoreService;
-import com.billing.app.domain.service.StoreServiceInterface;
-import com.billing.app.domain.service.UnitService;
+import com.billing.app.domain.service.store.StoreService;
+import com.billing.app.domain.service.store.StoreServiceInterface;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

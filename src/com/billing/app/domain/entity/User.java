@@ -2,12 +2,24 @@ package com.billing.app.domain.entity;
 
 public class User {
     private String type;
-    private String userID;
+    private String id;
     private String name;
+
+    public User(String id, String name, String password, String firstName, String lastName, String type, int phoneNumber) {
+        this.type = type;
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public User() {
+
+    }
+
     private String password;
-    private String firstName;
-    private String lastName;
-    private int phoneNumber;
 
     public String getType() {
         return type;
@@ -17,12 +29,12 @@ public class User {
         this.type = type;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getId() {
+        return id;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -57,11 +69,16 @@ public class User {
         this.lastName = lastName;
     }
 
-    public int getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    private String firstName;
+    private String lastName;
+    private long phoneNumber;
+
 }

@@ -1,4 +1,4 @@
-package com.billing.app.domain.service;
+package com.billing.app.domain.service.product;
 
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.CustomException;
