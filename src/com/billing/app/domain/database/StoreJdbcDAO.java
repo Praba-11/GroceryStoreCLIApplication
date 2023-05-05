@@ -21,7 +21,6 @@ public class StoreJdbcDAO implements StoreDAO {
         preparedStatement.setString(3, store.getAddress());
         preparedStatement.setLong(4, store.getGstNumber());
         preparedStatement.executeUpdate();
-        databaseSchemaDAO.create();
         preparedStatement.close();
 
         System.out.println("Store created.");

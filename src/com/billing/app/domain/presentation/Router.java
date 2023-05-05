@@ -14,6 +14,8 @@ public class Router {
     public void module(ArrayList<String> arrayList) throws Throwable {
         ProductRouter productRouter;
         UnitRouter unitRouter;
+        StoreRouter storeRouter;
+        UserRouter userRouter;
         String module = arrayList.get(0);
         
         switch (module) {
@@ -26,7 +28,16 @@ public class Router {
                 unitRouter = new UnitRouter();
                 unitRouter.execute(arrayList);
                 break;
-                
+
+            case "store":
+                storeRouter = new StoreRouter();
+                storeRouter.execute(arrayList);
+                break;
+
+            case "user":
+                userRouter = new UserRouter();
+                userRouter.execute(arrayList);
+                break;
         }
     }
 }

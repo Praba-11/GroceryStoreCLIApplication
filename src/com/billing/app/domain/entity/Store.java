@@ -12,6 +12,9 @@ public class Store {
         this.address = address;
         this.gstNumber = gstNumber;
     }
+    public Store() {
+
+    }
 
     public String getName() {
         return name;
