@@ -1,12 +1,23 @@
 package com.billing.app.domain.entity;
 
 public class Store {
+    int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     private String name;
     private long phoneNumber;
     private String address;
     private long gstNumber;
 
-    public Store(String name, long phoneNumber, String address, long gstNumber) {
+    public Store(int id, String name, long gstNumber, long phoneNumber, String address) {
+        this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
@@ -48,4 +59,14 @@ public class Store {
         this.gstNumber = gstNumber;
     }
 
+    @Override
+    public String toString() {
+        return "Store{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phoneNumber=" + phoneNumber +
+                ", address='" + address + '\'' +
+                ", gstNumber=" + gstNumber +
+                '}';
+    }
 }

@@ -10,28 +10,28 @@ import java.sql.SQLException;
 
 public class StoreService implements StoreServiceInterface {
     StoreDAO storeDAO;
-    public Store create(Store store) {
+    public Store create(Store store) throws SQLException, ClassNotFoundException {
         storeDAO = new StoreJdbcDAO();
         if (storeDAO.create(store)) {
-            return storeDAO.getStoreByGSTNumber(store.getCode());
+            return storeDAO.getStore();
         }
         return null;
     }
 
-    public Store edit(Store store) {
+    public Store edit(Store store) throws SQLException, ClassNotFoundException {
         storeDAO = new StoreJdbcDAO();
         if (storeDAO.edit(store)) {
-            return storeDAO.getStoreByGSTNumber(store.getCode());
+            return storeDAO.getStore();
         }
         return null;
     }
 
-    public boolean delete(int id) {
-        boolean flag = false;
+    public boolean delete() throws SQLException, ClassNotFoundException {
         storeDAO = new StoreJdbcDAO();
-        if (storeServiceValidator.isDeletable(key, value)) {
-            flag = storeDAO.delete(key, value);
+        if (storeDAO.getStore() != null) {
+            storeDAO.delete();
+            return true;
         }
-        return flag;
+        return false;
     }
 }

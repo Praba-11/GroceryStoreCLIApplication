@@ -2,10 +2,9 @@ package com.billing.app.domain.presentation;
 
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
-import com.billing.app.domain.exceptions.ProductException;
-import com.billing.app.domain.exceptions.ProductNullConstraintException;
-import com.billing.app.domain.exceptions.ProductPrimaryKeyException;
-import com.billing.app.domain.exceptions.ProductUnitException;
+import com.billing.app.domain.exceptions.*;
+import com.billing.app.domain.exceptions.unit.CodeNullException;
+import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,34 +35,42 @@ public class ProductRouter {
                     }
                     System.out.println(exception.getMessage());
                 }
+                break;
 
 
 
             case "edit":
-//                try {
-                    if (productParser.edit(arrayList) != null)
-                        System.out.println("Product edited successfully!");
-//                } catch (ProductException exception) {
-//                    System.out.println("Error editing record into database. \n" + exception.getMessage());
-//                } catch (Throwable e) {
-//                    System.out.println("Unexpected error occurred. ");
-//                }
+                try {
+                    Product productEdited = productParser.edit(arrayList);
+                    System.out.println(productEdited);
+                } catch (SQLException exception) {
+                    if (exception.getSQLState().equals("23502")) {
+                        throw new ProductNullConstraintException("Provided constraint cannot be null. " + exception.getMessage());
+                    } else if (exception.getSQLState().equals("23503")) {
+                        throw new ProductUnitException("Provided unit not present in Unit relation table. " + exception.getMessage());
+                    }
+                    throw new ProductException("Incompatible edit attributes. " + exception.getMessage());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
 
 
             case "delete":
                 try {
-                    System.out.println("Are you sure you want to delete the product? y/n");
-                    String choice = scanner.next();
-                    if (choice.equals("y")) {
-                        if (productParser.delete(arrayList))
-                            System.out.println("Product deleted successfully!");
-                    } else if (choice.equals("n"))
-                        System.out.println("Product not deleted.");
-                    else
-                        System.out.println("Invalid choice, please try again.");
-                } catch (Throwable exception) {
-                    System.out.println("No records deleted in database. \n" + exception.getMessage());
+                    boolean isDeleted = false;
+                    isDeleted = productParser.delete(arrayList);
+                    System.out.println(isDeleted);
+                } catch (TemplateMismatchException exception) {
+                    System.out.println("Template mismatch. " + exception.getMessage());
+                } catch (SQLException exception) {
+                    throw new RuntimeException(exception);
+                } catch (CodeNotFoundException exception) {
+                    System.out.println("Provided Code (or) Id not found. " + exception.getMessage());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
                 break;
 
@@ -71,17 +78,19 @@ public class ProductRouter {
             case "list":
                 try {
                     ArrayList<Product> productArray = productParser.list(arrayList);
+                    System.out.println(productArray);
                     System.out.println("List returned successfully.");
                     formatter.format("%-15s %15s %15s %15s %15s %15s\n", "Code", "Name", "Unit Code", "Type", "Price", "Stock");
                     formatter.format("%-15s %15s %15s %15s %15s %15s\n", "----", "----", "---------", "----", "-----", "-----");
                     for (Product products : productArray) {
-                        formatter.format("%-15s %15s %15s %15s %15.2f %15d\n", products.getCode(), products.getName(), products.getUnitCode(), products.getType(), products.getPrice(), products.getStock());
+                        formatter.format("%-15s %15s %15s %15s %15.2f %15.2f\n", products.getCode(), products.getName(), products.getUnitCode(), products.getType(), products.getPrice(), products.getStock());
                     }
                     System.out.println(formatter.toString());
                 }
                 catch (Throwable exception) {
                     System.out.println("Cannot list the records! \n" + exception.getMessage());
                 }
+                break;
         }
     }
 }

@@ -36,7 +36,7 @@ public class Router {
 
             case "user":
                 userRouter = new UserRouter();
-                userRouter.execute(arrayList);
+//                userRouter.execute(arrayList);
                 break;
         }
     }

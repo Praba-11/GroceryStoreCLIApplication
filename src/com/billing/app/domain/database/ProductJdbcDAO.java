@@ -12,7 +12,7 @@ public class ProductJdbcDAO implements ProductDAO {
     ArrayList<Product> productArrayList = new ArrayList<>();
     Product product;
     @Override
-    public boolean create(Product product) throws ProductException, ClassNotFoundException, SQLException {
+    public boolean create(Product product) throws ClassNotFoundException, SQLException {
 
         // Storing Product in Database table
         String query = "INSERT INTO product (code, name, unitcode, type, price, stock, isdeleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -32,48 +32,33 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public boolean edit(Product product) throws ProductException, ClassNotFoundException, IllegalAccessException {
+    public boolean edit(Product product) throws ClassNotFoundException, IllegalAccessException, SQLException {
 
         // Edit Product in Database table
-        try {
-            Statement statement = connectionDB.getConnection().createStatement();
-            int rowsAffected = 0;
-            Field[] fields = product.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true);
-                Object value = field.get(product);
-                String query = "UPDATE products SET " + field.getName() + " = '" + value + "' WHERE code = '" + product.getCode() + "'";
-                rowsAffected = statement.executeUpdate(query);
-            }
-            return rowsAffected > 0;
+        Statement statement = connectionDB.getConnection().createStatement();
+        int rowsAffected = 0;
+        Field[] fields = product.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            Object value = field.get(product);
+            String query = "UPDATE product SET " + field.getName() + " = '" + value + "' WHERE code = '" + product.getCode() + "'";
+            rowsAffected = statement.executeUpdate(query);
         }
-        catch (SQLException exception) {
-            if (exception.getSQLState().equals("23502")) {
-                throw new ProductNullConstraintException("Provided constraint cannot be null. " + exception.getMessage());
-            } else if (exception.getSQLState().equals("23503")) {
-                throw new ProductUnitException("Provided unit not present in Unit relation table. " + exception.getMessage());
-            }
-            throw new ProductException("Incompatible edit attributes. " + exception.getMessage());
-        }
+        return rowsAffected > 0;
     }
 
 
 
     @Override
-    public boolean delete(String id) throws ProductException, ClassNotFoundException {
+    public boolean delete(String key, String value) throws SQLException, ClassNotFoundException {
 
-        // Delete Product in Database table
-        try {
-            int rowsAffected;
-            String query = "UPDATE products SET isDeleted = " + true + " WHERE id = '" + id + "'";
-            PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-            preparedStatement.executeUpdate();
-            rowsAffected = preparedStatement.executeUpdate();
-            preparedStatement.close();
-            return rowsAffected > 0;
-        } catch (SQLException exception) {
-            throw new ProductException(exception.getMessage());
-        }
+        // Delete Unit in Database table
+        ConnectionDB connectionDB = new ConnectionDB();
+        String query = "UPDATE product SET isdeleted = " + true + " WHERE " + key + " = '" + value + "'";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        int rowsAffected = preparedStatement.executeUpdate();
+        preparedStatement.close();
+        return rowsAffected > 0;
     }
 
 
@@ -84,7 +69,7 @@ public class ProductJdbcDAO implements ProductDAO {
         // Returns arraylist of first 20 Products from Database table
         try {
 
-            String query = "SELECT * FROM products LIMIT 20";
+            String query = "SELECT * FROM product LIMIT 20";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -115,7 +100,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
         // Returns arraylist of Products over a specified range from Database table
         try {
-            String query = "SELECT * FROM products LIMIT '" + range + "'";
+            String query = "SELECT * FROM product LIMIT '" + range + "'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -145,7 +130,7 @@ public class ProductJdbcDAO implements ProductDAO {
     public ArrayList<Product> list(int range, int page) throws ProductException {
         // Returns arraylist of Products by pagination from Database table
         try {
-            String query = "SELECT * FROM products OFFSET '" + (range * (page - 1)) + "'" + "LIMIT '" + range + "'";
+            String query = "SELECT * FROM product OFFSET '" + (range * (page - 1)) + "'" + "LIMIT '" + range + "'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -176,7 +161,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
         // Returns arraylist of Products based on instances of searchText in Database table
         try {
-            String query = "SELECT * FROM products WHERE code || name || unitcode || type || price || stock LIKE '%" + searchText + "%'";
+            String query = "SELECT * FROM product WHERE code || name || unitcode || type || price || stock LIKE '%" + searchText + "%'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -207,7 +192,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
         // Returns arraylist of Products based on instances of searchText using attribute in the Database table
         try {
-            String query = "SELECT * FROM products WHERE " + attribute + " LIKE '%" + searchText + "%'";
+            String query = "SELECT * FROM product WHERE " + attribute + " LIKE '%" + searchText + "%'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -237,7 +222,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
         // Returns arraylist of Products based on instances of searchText using attribute, range and pagination
         try {
-            String query = "SELECT * FROM (SELECT * FROM products OFFSET " + range + " * (" + page + " - 1) LIMIT " + range + " ) subquery WHERE " + attribute + " = '" + searchText + "'";
+            String query = "SELECT * FROM (SELECT * FROM product OFFSET " + range + " * (" + page + " - 1) LIMIT " + range + " ) subquery WHERE " + attribute + " = '" + searchText + "'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -267,7 +252,7 @@ public class ProductJdbcDAO implements ProductDAO {
         // Returns the stock of the product based on product code provided
         try {
             int stock = 0;
-            String query = "SELECT stock FROM products WHERE code = '" + code + "'";
+            String query = "SELECT stock FROM product WHERE code = '" + code + "'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -312,7 +297,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
         // Returns the product based on the product code provided
         try {
-            String query = "SELECT * FROM products WHERE id = '" + code + "'";
+            String query = "SELECT * FROM product WHERE id = '" + code + "'";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -341,7 +326,7 @@ public class ProductJdbcDAO implements ProductDAO {
         // Returns the count of the products in the database table
         try {
             int count = 0;
-            String query = "SELECT COUNT(code) FROM products";
+            String query = "SELECT COUNT(code) FROM product";
             Statement statement = connectionDB.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next())
@@ -355,34 +340,28 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
 
-    public boolean isIdPresent(String id) throws ProductException {
-        try {
-            boolean flag = false;
-            String query = "SELECT EXISTS(SELECT 1 FROM products WHERE id = '" + id + "')";
-            Statement statement = connectionDB.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next())
-                flag = resultSet.getBoolean(1);
-            return flag;
-        }
-        catch (SQLException | ClassNotFoundException exception) {
-            throw new ProductException(exception.getMessage());
-        }
+
+
+    public boolean isCodePresent(String code) throws SQLException, ClassNotFoundException {
+
+        boolean flag = false;
+        String query = "SELECT EXISTS(SELECT 1 FROM product WHERE code = '" + code + "')";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next())
+            flag = resultSet.getBoolean(1);
+        return flag;
 
     }
 
-    public boolean isCodePresent(String code) throws ProductException {
-        try {
-            boolean flag = false;
-            String query = "SELECT EXISTS(SELECT 1 FROM products WHERE code = '" + code + "')";
-            Statement statement = connectionDB.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next())
-                flag = resultSet.getBoolean(1);
-            return flag;
-        }
-        catch (SQLException | ClassNotFoundException exception) {
-            throw new ProductException(exception.getMessage());
-        }
+
+    public boolean isIdPresent(String id) throws SQLException, ClassNotFoundException {
+        boolean flag = false;
+        String query = "SELECT EXISTS(SELECT 1 FROM product WHERE id = '" + id + "')";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next())
+            flag = resultSet.getBoolean(1);
+        return flag;
     }
 }

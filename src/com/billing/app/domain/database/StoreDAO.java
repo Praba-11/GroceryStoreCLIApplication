@@ -5,10 +5,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface StoreDAO {
-    void create(Store store) throws SQLException, ClassNotFoundException;
+    boolean create(Store store) throws SQLException, ClassNotFoundException;
 
-    void edit(ArrayList arrayList) throws SQLException, ClassNotFoundException;
+    boolean edit(Store store) throws SQLException, ClassNotFoundException;
 
-    void delete() throws SQLException, ClassNotFoundException;
+    boolean delete() throws SQLException, ClassNotFoundException;
+    Store getStore() throws SQLException, ClassNotFoundException;
 
 }

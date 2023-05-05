@@ -42,7 +42,7 @@ public class UnitParser {
         for (int index = 0; index < keyValuePair.size(); index += 2) {
             String key = keyValuePair.get(index);
             String value = keyValuePair.get(index + 1);
-            validator.editValidate(unit, key, value);
+            validator.unitEditValidate(unit, key, value);
         }
         unitServiceInterface = new UnitService();
         return unitServiceInterface.edit(unit);
@@ -53,7 +53,7 @@ public class UnitParser {
         String key = arrayList.get(2);
         String value = arrayList.get(3);
         validator = new Validator();
-        if (validator.deleteValidate(key)) {
+        if (validator.unitDeleteValidate(key)) {
             unitServiceInterface = new UnitService();
             flag = unitServiceInterface.delete(key, value);
         }

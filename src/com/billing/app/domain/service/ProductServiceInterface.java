@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface ProductServiceInterface {
-    Product create(Product product) throws ProductException, ClassNotFoundException, SQLException;
-    Product edit(Product product) throws ProductException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException, CustomException;
-    boolean delete(String code) throws ProductException, ClassNotFoundException;
+    Product create(Product product) throws ProductException, ClassNotFoundException, SQLException, ProductException;
+    Product edit(Product product) throws ProductException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException, CustomException, SQLException, ProductException;
+    boolean delete(String key, String value) throws ProductException, SQLException, ClassNotFoundException;
     ArrayList<Product> list() throws ProductException, ClassNotFoundException;
     ArrayList<Product> list(int range) throws ProductException, ClassNotFoundException;
     ArrayList<Product> list(int range, int page) throws ProductException, ClassNotFoundException;

@@ -1,11 +1,15 @@
 package com.billing.app.domain.presentation;
 
+import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
+import com.billing.app.domain.exceptions.unit.CodeNullException;
+import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
 import com.billing.app.domain.service.ProductService;
 import com.billing.app.domain.service.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.database.ProductDAO;
+import com.billing.app.domain.service.UnitService;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
@@ -35,31 +39,14 @@ public class ProductParser {
 
 
 
-    public Product edit(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException, CustomException {
-        ArrayList<String> keyValues = new ArrayList<>(arrayList.subList(2, arrayList.size()));
-        HashMap<String, String> map = new HashMap<>();
-        for (int i = 0; i < keyValues.size(); i += 2) {
-            String key = keyValues.get(i);
-            String value = keyValues.get(i + 1);
-            map.put(key, value);
-        }
+    public Product edit(ArrayList<String> arrayList) throws SQLException, ClassNotFoundException, IllegalAccessException, NullPointerException, CodeNullException, TemplateMismatchException, CustomException, NoSuchFieldException, ProductException {
+        validator = new Validator();
         product = new Product();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            if (key.equals("code")) {
-              product.setCode(value);
-            } else if (key.equals("name")) {
-                product.setName(value);
-            } else if (key.equals("unitCode")) {
-                product.setUnitCode(value);
-            } else if (key.equals("type")) {
-                product.setType(value);
-            } else if (key.equals("price")) {
-                product.setPrice(Float.parseFloat(value));
-            } else {
-                throw new ProductException("Invalid attribute provided. Please provide necessary attribute. " + key);
-            }
+        ArrayList<String> keyValuePair = new ArrayList<>(arrayList.subList(2, arrayList.size()));
+        for (int index = 0; index < keyValuePair.size(); index += 2) {
+            String key = keyValuePair.get(index);
+            String value = keyValuePair.get(index + 1);
+            validator.productEditValidate(product, key, value);
         }
         productServiceInterface = new ProductService();
         return productServiceInterface.edit(product);
@@ -68,15 +55,16 @@ public class ProductParser {
 
 
 
-    public boolean delete(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, CustomException {
-        try {
-            String code = arrayList.get(2);
+    public boolean delete(ArrayList<String> arrayList) throws TemplateMismatchException, SQLException, ProductException, ClassNotFoundException {
+        boolean flag = false;
+        String key = arrayList.get(2);
+        String value = arrayList.get(3);
+        validator = new Validator();
+        if (validator.unitDeleteValidate(key)) {
             productServiceInterface = new ProductService();
-            return productServiceInterface.delete(code);
+            flag = productServiceInterface.delete(key, value);
         }
-        catch (Throwable exception) {
-            throw new CustomException(exception.getMessage());
-        }
+        return flag;
     }
 
 

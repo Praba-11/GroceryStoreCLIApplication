@@ -14,45 +14,37 @@ public class StoreParser {
     private Store store;
     StoreServiceInterface storeServiceInterface;
     Validator validator;
-    public Store create(ArrayList<String> arrayList) {
+    public Store create(ArrayList<String> arrayList) throws SQLException, ClassNotFoundException {
         ArrayList<String> values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
         store = new Store();
-        store.setName(values.get(0));
-        store.setGstNumber(Long.parseLong(values.get(1)));
-        store.setAddress(values.get(2));
-        store.setPhoneNumber(Long.parseLong(values.get(3)));
+        store.setName(values.get(1));
+        store.setGstNumber(Long.parseLong(values.get(0)));
+        store.setAddress(values.get(3));
+        store.setPhoneNumber(Long.parseLong(values.get(2)));
         storeServiceInterface = new StoreService();
-        storeServiceInterface.create(store);
+        return storeServiceInterface.create(store);
     }
 
-    public Store edit(ArrayList<String> arrayList) {
-        validator = new Validator();
+    public Store edit(ArrayList<String> arrayList) throws SQLException, ClassNotFoundException {
+        ArrayList<String> values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
         store = new Store();
-        ArrayList<String> keyValuePair = new ArrayList<>(arrayList.subList(2, arrayList.size()));
-        for (int index = 0; index < keyValuePair.size(); index += 2) {
-            String key = keyValuePair.get(index);
-            String value = keyValuePair.get(index + 1);
-            validator.storeValidate(store, key, value);
-        }
+        store.setName(values.get(1));
+        store.setGstNumber(Long.parseLong(values.get(0)));
+        store.setAddress(values.get(3));
+        store.setPhoneNumber(Long.parseLong(values.get(2)));
         storeServiceInterface = new StoreService();
         return storeServiceInterface.edit(store);
     }
 
 
-    public boolean delete(ArrayList<String> arrayList) {
-        boolean flag = false;
-        int id = Integer.parseInt(arrayList.get(2));
-        validator = new Validator();
-        if (validator.storeValidate(id)) {
-            storeServiceInterface = new StoreService();
-            flag = storeServiceInterface.delete(id);
-        }
-        return flag;
+    public boolean delete() throws SQLException, ClassNotFoundException {
+        storeServiceInterface = new StoreService();
+        return storeServiceInterface.delete();
     }
-
-    public ArrayList<Store> list() throws SQLException, ClassNotFoundException {
-        storeServiceInterface = new UnitService();
-        ArrayList<Store> storeArrayList = storeServiceInterface.list();
-        return storeArrayList;
-    }
+//
+//    public ArrayList<Store> list() throws SQLException, ClassNotFoundException {
+//        storeServiceInterface = new UnitService();
+//        ArrayList<Store> storeArrayList = storeServiceInterface.list();
+//        return storeArrayList;
+//    }
 }

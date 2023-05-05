@@ -18,28 +18,28 @@ public class StoreRouter {
 
         switch (action) {
             case "create":
-
                 try {
-                    Store storeCreated = null;
+                    Store storeCreated;
                     storeCreated = storeParser.create(arrayList);
-                    System.out.println(storeCreated);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    System.out.println(storeCreated.toString());
+                } catch (SQLException exception) {
+                    if (exception.getSQLState().equals("23514")) {
+                        System.out.println("Store already exists. " + exception.getMessage());
+                    } else {
+                        System.out.println(exception.getMessage());
+                    }
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
 
             case "edit":
                 try {
-                    Store storeEdited = storeParser.edit(arrayList);
-                    System.out.println(storeEdited);
-                } catch (TemplateMismatchException exception) {
-                    System.out.println("Template mismatch. Incompatible attribute provided. " + exception.getMessage());
+                    Store storeEdited;
+                    storeEdited = storeParser.edit(arrayList);
+                    System.out.println(storeEdited.toString());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
                 break;
@@ -48,10 +48,8 @@ public class StoreRouter {
             case "delete":
                 try {
                     boolean isDeleted = false;
-                    isDeleted = storeParser.delete(arrayList);
+                    isDeleted = storeParser.delete();
                     System.out.println(isDeleted);
-                } catch (TemplateMismatchException exception) {
-                    System.out.println("Template mismatch. " + exception.getMessage());
                 } catch (SQLException exception) {
                     throw new RuntimeException(exception);
                 } catch (ClassNotFoundException e) {

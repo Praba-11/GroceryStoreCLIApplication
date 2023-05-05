@@ -2,6 +2,7 @@ package com.billing.app.domain.service;
 
 import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Product;
+import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
 
 import java.lang.reflect.Field;
@@ -12,8 +13,9 @@ import java.util.Map;
 
 public class ProductService implements ProductServiceInterface {
     private ProductDAO productDAO;
+    private ProductValidator productValidator;
 
-    public Product create(Product product) throws ProductException, ClassNotFoundException, SQLException {
+    public Product create(Product product) throws ClassNotFoundException, SQLException, ProductException {
         productDAO = new ProductJdbcDAO();
         if (productDAO.create(product)) {
             return productDAO.getProductByCode(product.getCode());
@@ -24,47 +26,27 @@ public class ProductService implements ProductServiceInterface {
 
 
 
-    public Product edit(Product product) throws ProductException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException, CustomException {
+    public Product edit(Product modifiedProduct) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException, CustomException, SQLException, ProductException {
         productDAO = new ProductJdbcDAO();
-        ProductValidator productValidator = new ProductValidator();
-        if (productValidator.validate(product)) {
-            if (productDAO.edit(product)) {
-                return productDAO.getProductById(product.getCode());
-            }
-            else {
-                throw new ProductException("Product edit failed.");
-            }
+        Product productToBeEdited = productDAO.getProductByCode(modifiedProduct.getCode());
+        productValidator = new ProductValidator();
+        productValidator.editAttributes(productToBeEdited, modifiedProduct);
+        if (productDAO.edit(productToBeEdited)) {
+            return productDAO.getProductByCode(modifiedProduct.getCode());
         }
-        else {
-            throw new InvalidConstraintLengthException("Product validation failed. Please check the constraint length provided.");
-        }
+        return null;
     }
 
 
 
-    public boolean delete(String id) throws ClassNotFoundException, ProductException {
-        try {
-            productDAO = new ProductJdbcDAO();
-            if (productDAO.isIdPresent(id)) {
-                if (productDAO.getProductById(id).isDeleted()) {
-                    throw new ProductException("Product has already been deleted.");
-                }
-                else {
-                    if (productDAO.getStock(id) == 0) {
-                        return productDAO.delete(id);
-                    }
-                    else {
-                        throw new ProductException("Product stock not zero.");
-                    }
-                }
-            }
-            else  {
-                throw new CodeNotFoundException("Code not present in product relation table.");
-            }
+    public boolean delete(String key, String value) throws ProductException, SQLException, ClassNotFoundException, CodeNotFoundException {
+        boolean flag = false;
+        productDAO = new ProductJdbcDAO();
+        productValidator = new ProductValidator();
+        if (productValidator.isDeletable(key, value)) {
+            flag = productDAO.delete(key, value);
         }
-        catch (ProductException exception) {
-            throw new ProductException(exception.getMessage());
-        }
+        return flag;
     }
 
 

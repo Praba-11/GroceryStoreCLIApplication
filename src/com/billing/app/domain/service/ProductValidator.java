@@ -1,12 +1,17 @@
 package com.billing.app.domain.service;
 
+import com.billing.app.domain.database.ProductJdbcDAO;
+import com.billing.app.domain.database.UnitJdbcDAO;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.database.ProductDAO;
+import com.billing.app.domain.entity.Unit;
+import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.CustomException;
 import com.billing.app.domain.exceptions.ProductException;
 import com.billing.app.domain.exceptions.ProductValidationException;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,4 +49,23 @@ public class ProductValidator {
         return true;
     }
 
+    public Product editAttributes(Product productToBeEdited, Product modfiedProduct) throws NullPointerException {
+        productToBeEdited.setName(modfiedProduct.getName());
+        productToBeEdited.setCode(modfiedProduct.getCode());
+        productToBeEdited.setUnitCode(modfiedProduct.getUnitCode());
+        productToBeEdited.setPrice(modfiedProduct.getPrice());
+        productToBeEdited.setStock(modfiedProduct.getStock());
+        return productToBeEdited;
+    }
+
+    public boolean isDeletable(String key, String value) throws SQLException, ClassNotFoundException, CodeNotFoundException {
+        productDAO = new ProductJdbcDAO();
+        if (key.equals("code")) {
+            return productDAO.isCodePresent(value);
+        } else if (key.equals("id")) {
+            return productDAO.isIdPresent(value);
+        } else {
+            throw new CodeNotFoundException("Provided attribute not found in relational table. '" + key + " doesn't contain '" + value + "'");
+        }
+    }
 }
