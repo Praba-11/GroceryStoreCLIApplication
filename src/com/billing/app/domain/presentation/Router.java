@@ -2,41 +2,41 @@ package com.billing.app.domain.presentation;
 
 
 import com.billing.app.domain.entity.Unit;
-import com.billing.app.domain.exceptions.ProductException;
-import com.billing.app.domain.exceptions.unit.CodeNullException;
-import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
+import com.billing.app.domain.presentation.product.ProductCLI;
+import com.billing.app.domain.presentation.store.StoreCLI;
+import com.billing.app.domain.presentation.unit.UnitCLI;
+import com.billing.app.domain.presentation.user.UserCLI;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Router {
     Unit unit;
     public void module(ArrayList<String> arrayList) throws Throwable {
-        ProductRouter productRouter;
-        UnitRouter unitRouter;
-        StoreRouter storeRouter;
-        UserRouter userRouter;
+        ProductCLI productCLI;
+        UnitCLI unitCLI;
+        StoreCLI storeCLI;
+        UserCLI userCLI;
         String module = arrayList.get(0);
-        
+
         switch (module) {
             case "product":
-                productRouter = new ProductRouter();
-                productRouter.execute(arrayList);
+                productCLI = new ProductCLI();
+                productCLI.execute(arrayList);
                 break;
 
             case "unit":
-                unitRouter = new UnitRouter();
-                unitRouter.execute(arrayList);
+                unitCLI = new UnitCLI();
+                unitCLI.execute(arrayList);
                 break;
 
             case "store":
-                storeRouter = new StoreRouter();
-                storeRouter.execute(arrayList);
+                storeCLI = new StoreCLI();
+                storeCLI.execute(arrayList);
                 break;
 
             case "user":
-                userRouter = new UserRouter();
-                userRouter.execute(arrayList);
+                userCLI = new UserCLI();
+                userCLI.execute(arrayList);
                 break;
         }
     }

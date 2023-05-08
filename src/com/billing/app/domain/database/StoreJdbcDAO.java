@@ -57,6 +57,7 @@ public class StoreJdbcDAO implements StoreDAO {
     }
 
 
+
     public Store getStore() throws SQLException, ClassNotFoundException {
         String query = "SELECT * FROM store";
         Statement statement = connectionDB.getConnection().createStatement();

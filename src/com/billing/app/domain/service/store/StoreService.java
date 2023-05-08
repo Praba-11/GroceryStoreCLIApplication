@@ -37,4 +37,9 @@ public class StoreService implements StoreServiceInterface {
         }
         return false;
     }
+
+    public Store view() throws SQLException, ClassNotFoundException {
+        storeDAO = new StoreJdbcDAO();
+        return storeDAO.getStore();
+    }
 }

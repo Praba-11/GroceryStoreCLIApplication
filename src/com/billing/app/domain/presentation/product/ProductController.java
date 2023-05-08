@@ -1,8 +1,9 @@
-package com.billing.app.domain.presentation;
+package com.billing.app.domain.presentation.product;
 
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.unit.CodeNullException;
-import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
+import com.billing.app.domain.exceptions.CodeNullException;
+import com.billing.app.domain.exceptions.TemplateMismatchException;
+import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.product.ProductService;
 import com.billing.app.domain.service.product.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
@@ -11,7 +12,7 @@ import com.billing.app.domain.database.ProductDAO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ProductParser {
+public class ProductController {
     private Product product;
     private ProductDAO productDAO;
     private ProductServiceInterface productServiceInterface;
@@ -54,7 +55,7 @@ public class ProductParser {
         String key = arrayList.get(2);
         String value = arrayList.get(3);
         validator = new Validator();
-        if (validator.unitDeleteValidate(key)) {
+        if (validator.deleteValidate(key)) {
             productServiceInterface = new ProductService();
             flag = productServiceInterface.delete(key, value);
         }
@@ -83,7 +84,6 @@ public class ProductParser {
                 return productServiceInterface.list(searchText);
             }
             else if (arrayList.get(2).equals("-s") && arrayList.size() == 5) {
-                System.out.println(arrayList);
                 String searchText = arrayList.get(4);
                 String attribute = arrayList.get(3);
                 return productServiceInterface.list(attribute, searchText);

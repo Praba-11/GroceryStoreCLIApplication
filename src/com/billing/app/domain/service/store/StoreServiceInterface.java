@@ -8,5 +8,6 @@ public interface StoreServiceInterface {
     Store create(Store store) throws SQLException, ClassNotFoundException;
     Store edit(Store store) throws SQLException, ClassNotFoundException;
     boolean delete() throws SQLException, ClassNotFoundException;
+    Store view() throws SQLException, ClassNotFoundException;
 
 }

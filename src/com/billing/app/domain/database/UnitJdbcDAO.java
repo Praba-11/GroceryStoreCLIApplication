@@ -1,6 +1,7 @@
 package com.billing.app.domain.database;
 
 import com.billing.app.domain.entity.Unit;
+import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.CustomException;
 import com.billing.app.domain.exceptions.ProductException;
 

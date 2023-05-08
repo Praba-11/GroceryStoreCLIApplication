@@ -4,7 +4,7 @@ import com.billing.app.domain.database.UnitDAO;
 import com.billing.app.domain.database.UnitJdbcDAO;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.unit.CodeNullException;
+import com.billing.app.domain.exceptions.CodeNullException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

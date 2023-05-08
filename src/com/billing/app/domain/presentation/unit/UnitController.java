@@ -1,9 +1,10 @@
-package com.billing.app.domain.presentation;
+package com.billing.app.domain.presentation.unit;
 
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.unit.CodeNullException;
-import com.billing.app.domain.exceptions.unit.TemplateMismatchException;
+import com.billing.app.domain.exceptions.CodeNullException;
+import com.billing.app.domain.exceptions.TemplateMismatchException;
+import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.unit.UnitService;
 import com.billing.app.domain.service.unit.UnitServiceInterface;
 
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class UnitParser {
+public class UnitController {
     private Unit unit;
     UnitServiceInterface unitServiceInterface;
     Validator validator;
@@ -46,7 +47,7 @@ public class UnitParser {
         String key = arrayList.get(2);
         String value = arrayList.get(3);
         validator = new Validator();
-        if (validator.unitDeleteValidate(key)) {
+        if (validator.deleteValidate(key)) {
             unitServiceInterface = new UnitService();
             flag = unitServiceInterface.delete(key, value);
         }

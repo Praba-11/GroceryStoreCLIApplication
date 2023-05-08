@@ -2,9 +2,7 @@ package com.billing.app.domain.service.unit;
 
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.CustomException;
-import com.billing.app.domain.exceptions.ProductException;
-import com.billing.app.domain.exceptions.unit.CodeNullException;
+import com.billing.app.domain.exceptions.CodeNullException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
