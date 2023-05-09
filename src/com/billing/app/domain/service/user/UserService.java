@@ -55,7 +55,6 @@ public class UserService implements UserServiceInterface {
     public ArrayList<User> list() throws SQLException, ClassNotFoundException {
         userDAO = new UserJdbcDAO();
         ArrayList<User> userArrayList = userDAO.list();
-        System.out.println(userArrayList);
         return userArrayList;
     }
 }

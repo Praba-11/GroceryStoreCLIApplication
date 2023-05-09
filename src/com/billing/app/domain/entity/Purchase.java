@@ -1,10 +1,11 @@
 package com.billing.app.domain.entity;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Purchase {
     private Date date;
     private int invoice;
-    PurchaseItem purchaseItem;
+    ArrayList<PurchaseItem> listOfPurchaseItem;
 
     public Date getDate() {
         return date;
@@ -22,11 +23,20 @@ public class Purchase {
         this.invoice = invoice;
     }
 
-    public PurchaseItem getPurchaseItem() {
-        return purchaseItem;
+    public ArrayList<PurchaseItem> getListOfPurchaseItem() {
+        return listOfPurchaseItem;
     }
 
-    public void setPurchaseItem(PurchaseItem purchaseItem) {
-        this.purchaseItem = purchaseItem;
+    public void setListOfPurchaseItem(ArrayList<PurchaseItem> listOfPurchaseItem) {
+        this.listOfPurchaseItem = listOfPurchaseItem;
+    }
+
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "date=" + date +
+                ", invoice=" + invoice +
+                ", listOfPurchaseItem=" + listOfPurchaseItem +
+                '}';
     }
 }

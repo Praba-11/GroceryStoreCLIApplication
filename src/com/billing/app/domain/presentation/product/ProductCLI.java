@@ -10,6 +10,7 @@ import java.util.Formatter;
 import java.util.Scanner;
 
 public class ProductCLI {
+    ProductHelp productHelp;
     Formatter formatter = new Formatter();
     public void execute(ArrayList<String> arrayList) throws Throwable {
         String action = arrayList.get(1);
@@ -19,10 +20,15 @@ public class ProductCLI {
         switch (action) {
             case "create":
                 try {
-                    Product productCreated = null;
-                    productCreated = productController.create(arrayList);
-                    System.out.println(productCreated);
-                    break;
+                    if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                        productHelp = new ProductHelp();
+                        productHelp.createProduct();
+                    } else {
+                        Product productCreated = null;
+                        productCreated = productController.create(arrayList);
+                        System.out.println(productCreated);
+                        break;
+                    }
                 } catch (SQLException exception) {
                     if (exception.getSQLState().equals("23505")) {
                         System.out.println("Unable to create product. " + exception.getMessage());
@@ -35,8 +41,13 @@ public class ProductCLI {
 
             case "edit":
                 try {
-                    Product productEdited = productController.edit(arrayList);
-                    System.out.println(productEdited);
+                    if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                        productHelp = new ProductHelp();
+                        productHelp.editProduct();
+                    } else {
+                        Product productEdited = productController.edit(arrayList);
+                        System.out.println(productEdited);
+                    }
                 } catch (SQLException exception) {
                     throw new ProductException(exception.getMessage());
                 } catch (ClassNotFoundException e) {
@@ -49,9 +60,14 @@ public class ProductCLI {
 
             case "delete":
                 try {
-                    boolean isDeleted = false;
-                    isDeleted = productController.delete(arrayList);
-                    System.out.println(isDeleted);
+                    if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                        productHelp = new ProductHelp();
+                        productHelp.deleteProduct();
+                    } else {
+                        boolean isDeleted = false;
+                        isDeleted = productController.delete(arrayList);
+                        System.out.println(isDeleted);
+                    }
                 } catch (TemplateMismatchException exception) {
                     System.out.println("Template mismatch. " + exception.getMessage());
                 } catch (SQLException exception) {
@@ -66,10 +82,15 @@ public class ProductCLI {
 
             case "list":
                 try {
-                    ArrayList<Product> productArray = productController.list(arrayList);
-                    System.out.println("List returned successfully.");
-                    for (Product products : productArray) {
-                        System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
+                    if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                        productHelp = new ProductHelp();
+                        productHelp.listProduct();
+                    } else {
+                        ArrayList<Product> productArray = productController.list(arrayList);
+                        System.out.println("List returned successfully.");
+                        for (Product products : productArray) {
+                            System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
+                        }
                     }
                 }
                 catch (Throwable exception) {

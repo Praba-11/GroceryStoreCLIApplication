@@ -2,7 +2,7 @@ package com.billing.app.domain.entity;
 
 public class PurchaseItem {
     private String code;
-    private int quantity;
+    private float quantity;
     private float costPrice;
 
     public String getCode() {
@@ -13,11 +13,11 @@ public class PurchaseItem {
         this.code = code;
     }
 
-    public int getQuantity() {
+    public float getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
 
@@ -27,5 +27,14 @@ public class PurchaseItem {
 
     public void setCostPrice(float costPrice) {
         this.costPrice = costPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "PurchaseItem{" +
+                "code='" + code + '\'' +
+                ", quantity=" + quantity +
+                ", costPrice=" + costPrice +
+                '}';
     }
 }

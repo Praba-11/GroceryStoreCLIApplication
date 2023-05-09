@@ -4,6 +4,7 @@ import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.CodeNullException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
+import com.billing.app.domain.presentation.store.StoreHelp;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Scanner;
 
 public class UnitCLI {
     Formatter formatter = new Formatter();
+    UnitHelp unitHelp;
     public void execute(ArrayList<String> arrayList) {
         String action = arrayList.get(1);
         Scanner scanner = new Scanner(System.in);
@@ -21,9 +23,15 @@ public class UnitCLI {
 
             case "create":
                 try {
-                    Unit unitCreated = null;
-                    unitCreated = unitController.create(arrayList);
-                    System.out.println(unitCreated);
+                    if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                        unitHelp = new UnitHelp();
+                        unitHelp.createUnit();
+                    } else {
+                        Unit unitCreated = null;
+                        unitCreated = unitController.create(arrayList);
+                        System.out.println(unitCreated);
+                    }
+
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 } catch (ClassNotFoundException e) {
@@ -35,8 +43,14 @@ public class UnitCLI {
 
             case "edit":
                 try {
-                    Unit unitEdited = unitController.edit(arrayList);
-                    System.out.println(unitEdited);
+                    if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                        unitHelp = new UnitHelp();
+                        unitHelp.editUnit();
+                    } else {
+                        Unit unitEdited = unitController.edit(arrayList);
+                        System.out.println(unitEdited);
+                }
+
                 } catch (CodeNullException exception) {
                     System.out.println("Unit Code is unique, cannot be edited. " + exception.getMessage());
                 } catch (TemplateMismatchException exception) {
@@ -54,9 +68,15 @@ public class UnitCLI {
 
             case "delete":
                 try {
-                    boolean isDeleted = false;
-                    isDeleted = unitController.delete(arrayList);
-                    System.out.println(isDeleted);
+                    if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                        unitHelp = new UnitHelp();
+                        unitHelp.deleteUnit();
+                    } else {
+                        boolean isDeleted = false;
+                        isDeleted = unitController.delete(arrayList);
+                        System.out.println(isDeleted);
+                }
+
                 } catch (TemplateMismatchException exception) {
                     System.out.println("Template mismatch. " + exception.getMessage());
                 } catch (SQLException exception) {
@@ -72,12 +92,16 @@ public class UnitCLI {
 
             case "list":
                 try {
-                    ArrayList<Unit> unitArrayList = unitController.list();
-                    System.out.println("List returned successfully.");
-                    for (Unit unit : unitArrayList) {
-                        System.out.println("id: " + unit.getId() + ", name: " + unit.getName() + ", code: " + unit.getCode() + ", description: " + unit.getDescription() + ", isdividable: " + unit.isDividable());
+                    if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                        unitHelp = new UnitHelp();
+                        unitHelp.listUnit();
+                    } else {
+                        ArrayList<Unit> unitArrayList = unitController.list();
+                        System.out.println("List returned successfully.");
+                        for (Unit unit : unitArrayList) {
+                            System.out.println("id: " + unit.getId() + ", name: " + unit.getName() + ", code: " + unit.getCode() + ", description: " + unit.getDescription() + ", isdividable: " + unit.isDividable());
+                        }
                     }
-                    System.out.println(formatter.toString());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 } catch (ClassNotFoundException e) {

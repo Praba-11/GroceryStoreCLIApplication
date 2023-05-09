@@ -2,6 +2,7 @@ package com.billing.app.domain.presentation.product;
 
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.CodeNullException;
+import com.billing.app.domain.exceptions.IllegalArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.product.ProductService;
@@ -52,14 +53,18 @@ public class ProductController {
 
     public boolean delete(ArrayList<String> arrayList) throws TemplateMismatchException, SQLException, ProductException, ClassNotFoundException {
         boolean flag = false;
-        String key = arrayList.get(2);
-        String value = arrayList.get(3);
-        validator = new Validator();
-        if (validator.deleteValidate(key)) {
-            productServiceInterface = new ProductService();
-            flag = productServiceInterface.delete(key, value);
+        if (arrayList.size() == 4) {
+            String key = arrayList.get(2);
+            String value = arrayList.get(3);
+            validator = new Validator();
+            if (validator.deleteValidate(key)) {
+                productServiceInterface = new ProductService();
+                flag = productServiceInterface.delete(key, value);
+            }
+            return flag;
+        } else {
+            throw new TemplateMismatchException("Number of arguments provided doesn't match the template. Please provide the value as key-value pair.");
         }
-        return flag;
     }
 
 
