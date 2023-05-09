@@ -13,7 +13,6 @@ public class ProductJdbcDAO implements ProductDAO {
     @Override
     public boolean create(Product product) throws ClassNotFoundException, SQLException {
 
-        // Storing Product in Database table
         String query = "INSERT INTO product (code, name, unitcode, type, price, stock, isdeleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.setString(1, product.getCode());
@@ -33,7 +32,6 @@ public class ProductJdbcDAO implements ProductDAO {
     @Override
     public boolean edit(Product product) throws ClassNotFoundException, IllegalAccessException, SQLException {
 
-        // Edit Product in Database table
         Statement statement = connectionDB.getConnection().createStatement();
         int rowsAffected = 0;
         Field[] fields = product.getClass().getDeclaredFields();
@@ -282,6 +280,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     public boolean isIdPresent(String id) throws SQLException, ClassNotFoundException {
+
         boolean flag = false;
         String query = "SELECT EXISTS(SELECT 1 FROM product WHERE id = '" + id + "')";
         Statement statement = connectionDB.getConnection().createStatement();
@@ -289,5 +288,6 @@ public class ProductJdbcDAO implements ProductDAO {
         while (resultSet.next())
             flag = resultSet.getBoolean(1);
         return flag;
+
     }
 }
