@@ -51,7 +51,6 @@ public class ProductJdbcDAO implements ProductDAO {
     @Override
     public boolean delete(String key, String value) throws SQLException, ClassNotFoundException {
 
-        // Delete Unit in Database table
         ConnectionDB connectionDB = new ConnectionDB();
         String query = "UPDATE product SET isdeleted = " + true + " WHERE " + key + " = '" + value + "'";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
@@ -65,7 +64,6 @@ public class ProductJdbcDAO implements ProductDAO {
 
     public ArrayList<Product> list() throws ProductException, ClassNotFoundException {
 
-        // Returns arraylist of first 20 Products from Database table
         try {
 
             String query = "SELECT * FROM product LIMIT 20";
@@ -97,7 +95,6 @@ public class ProductJdbcDAO implements ProductDAO {
     @Override
     public ArrayList<Product> list(int range) throws ProductException, ClassNotFoundException {
 
-        // Returns arraylist of Products over a specified range from Database table
         try {
             String query = "SELECT * FROM product LIMIT '" + range + "'";
             Statement statement = connectionDB.getConnection().createStatement();
@@ -127,7 +124,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
     @Override
     public ArrayList<Product> list(int range, int page) throws ProductException {
-        // Returns arraylist of Products by pagination from Database table
+
         try {
             String query = "SELECT * FROM product OFFSET '" + (range * (page - 1)) + "'" + "LIMIT '" + range + "'";
             Statement statement = connectionDB.getConnection().createStatement();
@@ -158,7 +155,6 @@ public class ProductJdbcDAO implements ProductDAO {
     @Override
     public ArrayList<Product> list(String searchText) throws ProductException {
 
-        // Returns arraylist of Products based on instances of searchText in Database table
         try {
             String query = "SELECT * FROM product WHERE code || name || unitcode || type || price || stock LIKE '%" + searchText + "%'";
             Statement statement = connectionDB.getConnection().createStatement();
@@ -189,7 +185,6 @@ public class ProductJdbcDAO implements ProductDAO {
     @Override
     public ArrayList<Product> list(String attribute, String searchText) throws ProductException {
 
-        // Returns arraylist of Products based on instances of searchText using attribute in the Database table
         try {
             String query = "SELECT * FROM product WHERE " + attribute + " LIKE '%" + searchText + "%'";
             Statement statement = connectionDB.getConnection().createStatement();
@@ -219,7 +214,6 @@ public class ProductJdbcDAO implements ProductDAO {
     @Override
     public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws ProductException {
 
-        // Returns arraylist of Products based on instances of searchText using attribute, range and pagination
         try {
             String query = "SELECT * FROM (SELECT * FROM product OFFSET " + range + " * (" + page + " - 1) LIMIT " + range + " ) subquery WHERE " + attribute + " = '" + searchText + "'";
             Statement statement = connectionDB.getConnection().createStatement();
@@ -247,7 +241,6 @@ public class ProductJdbcDAO implements ProductDAO {
 
     public Product getProductByCode(String code) throws ProductException {
 
-        // Returns the product based on the product code provided
         try {
             String query = "SELECT * FROM product WHERE code = '" + code + "'";
             Statement statement = connectionDB.getConnection().createStatement();
