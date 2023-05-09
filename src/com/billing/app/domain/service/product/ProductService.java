@@ -20,8 +20,6 @@ public class ProductService implements ProductServiceInterface {
     }
 
 
-
-
     public Product edit(Product modifiedProduct) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException, CustomException, SQLException, ProductException {
         productDAO = new ProductJdbcDAO();
         Product productToBeEdited = productDAO.getProductByCode(modifiedProduct.getCode());
@@ -38,7 +36,6 @@ public class ProductService implements ProductServiceInterface {
     }
 
 
-
     public boolean delete(String key, String value) throws ProductException, SQLException, ClassNotFoundException, CodeNotFoundException {
         boolean flag = false;
         productDAO = new ProductJdbcDAO();
@@ -50,8 +47,6 @@ public class ProductService implements ProductServiceInterface {
     }
 
 
-
-
     @Override
     public ArrayList<Product> list() throws ProductException, ClassNotFoundException {
         try {
@@ -59,17 +54,13 @@ public class ProductService implements ProductServiceInterface {
             ArrayList<Product> productArrayList = productDAO.list();
             if (productArrayList.isEmpty()) {
                 throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
-            }
-            else {
+            } else {
                 return productArrayList;
             }
-        }
-        catch (Throwable exception) {
+        } catch (Throwable exception) {
             throw new ProductException(exception.getMessage());
         }
     }
-
-
 
 
     @Override
@@ -79,33 +70,23 @@ public class ProductService implements ProductServiceInterface {
             ArrayList<Product> productArrayList = productDAO.list(range);
             if (productArrayList.isEmpty()) {
                 throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
-            }
-            else {
+            } else {
                 return productArrayList;
             }
-        }
-        catch (Throwable exception) {
+        } catch (Throwable exception) {
             throw new ProductException(exception.getMessage());
         }
     }
 
 
-
-
     @Override
     public ArrayList<Product> list(int range, int page) throws ProductException, ClassNotFoundException {
-        try {
-            productDAO = new ProductJdbcDAO();
-            ArrayList<Product> productArrayList = productDAO.list(range, page);
-            if (productArrayList.isEmpty()) {
-                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
-            }
-            else {
-                return productArrayList;
-            }
-        }
-        catch (Throwable exception) {
-            throw new ProductException(exception.getMessage());
+        productDAO = new ProductJdbcDAO();
+        ArrayList<Product> productArrayList = productDAO.list(range, page);
+        if (productArrayList.isEmpty()) {
+            throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
+        } else {
+            return productArrayList;
         }
     }
 
@@ -114,38 +95,25 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ArrayList<Product> list(String searchText) throws ProductException, ClassNotFoundException {
-        try {
-            productDAO = new ProductJdbcDAO();
-            ArrayList<Product> productArrayList = productDAO.list(searchText);
-            if (productArrayList.isEmpty()) {
-                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
-            }
-            else {
-                return productArrayList;
-            }
-        }
-        catch (Throwable exception) {
-            throw new ProductException(exception.getMessage());
+        productDAO = new ProductJdbcDAO();
+        ArrayList<Product> productArrayList = productDAO.list(searchText);
+        if (productArrayList.isEmpty()) {
+            throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
+        } else {
+            return productArrayList;
         }
     }
 
 
 
-
     @Override
     public ArrayList<Product> list(String attribute, String searchText) throws ProductException, ClassNotFoundException {
-        try {
-            productDAO = new ProductJdbcDAO();
-            ArrayList<Product> productArrayList = productDAO.list(attribute, searchText);
-            if (productArrayList.isEmpty()) {
-                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
-            }
-            else {
-                return productArrayList;
-            }
-        }
-        catch (Throwable exception) {
-            throw new ProductException(exception.getMessage());
+        productDAO = new ProductJdbcDAO();
+        ArrayList<Product> productArrayList = productDAO.list(attribute, searchText);
+        if (productArrayList.isEmpty()) {
+            throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
+        } else {
+            return productArrayList;
         }
     }
 
@@ -154,18 +122,12 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ArrayList<Product> list(String attribute, String searchText, int range, int page) throws ProductException, ClassNotFoundException {
-        try {
-            productDAO = new ProductJdbcDAO();
-            ArrayList<Product> productArrayList = productDAO.list(attribute, searchText, range, page);
-            if (productArrayList.isEmpty()) {
-                throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
-            }
-            else {
-                return productArrayList;
-            }
-        }
-        catch (Throwable exception) {
-            throw new ProductException(exception.getMessage());
+        productDAO = new ProductJdbcDAO();
+        ArrayList<Product> productArrayList = productDAO.list(attribute, searchText, range, page);
+        if (productArrayList.isEmpty()) {
+            throw new NullPageException("Pagination (or) search text failed. Cannot return any list of products.");
+        } else {
+            return productArrayList;
         }
     }
 

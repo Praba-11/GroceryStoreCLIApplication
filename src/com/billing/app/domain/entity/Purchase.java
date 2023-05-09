@@ -5,10 +5,19 @@ import java.util.Date;
 public class Purchase {
     private Date date;
     private int invoice;
-    ArrayList<PurchaseItem> listOfPurchaseItem;
+    private ArrayList<PurchaseItem> listOfPurchaseItem;
+    private float grandTotal;
 
-    public Date getDate() {
-        return date;
+    public float getGrandTotal() {
+        return grandTotal;
+    }
+
+    public void setGrandTotal(float grandTotal) {
+        this.grandTotal = grandTotal;
+    }
+
+    public java.sql.Date getDate() {
+        return (java.sql.Date) date;
     }
 
     public void setDate(Date date) {
@@ -37,6 +46,7 @@ public class Purchase {
                 "date=" + date +
                 ", invoice=" + invoice +
                 ", listOfPurchaseItem=" + listOfPurchaseItem +
+                ", grandTotal=" + grandTotal +
                 '}';
     }
 }

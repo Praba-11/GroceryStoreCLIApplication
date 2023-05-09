@@ -20,13 +20,13 @@ public class Main {
                 Router router = new Router();
                 command.add("purchase");
                 command.add("2023-09-05");
-                command.add("1");
+                command.add("6");
                 command.add("101m");
-                command.add("2");
+                command.add("3");
                 command.add("190");
                 command.add("101v");
                 command.add("2");
-                command.add("50");
+                command.add("60");
                 System.out.println(command);
                 router.module(command);
 //            }

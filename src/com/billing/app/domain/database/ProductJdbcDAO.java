@@ -2,7 +2,6 @@ package com.billing.app.domain.database;
 
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.*;
-
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
@@ -246,28 +245,6 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
 
-
-    public int getStock(String code) throws ProductException {
-
-        // Returns the stock of the product based on product code provided
-        try {
-            int stock = 0;
-            String query = "SELECT stock FROM product WHERE code = '" + code + "'";
-            Statement statement = connectionDB.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next()) {
-                stock = resultSet.getInt(1);
-            }
-            return stock;
-        }
-        catch (SQLException | ClassNotFoundException exception) {
-            throw new ProductException(exception.getMessage());
-        }
-    }
-
-
-
-
     public Product getProductByCode(String code) throws ProductException {
 
         // Returns the product based on the product code provided
@@ -287,56 +264,12 @@ public class ProductJdbcDAO implements ProductDAO {
                 product = new Product(id, productCode, name, unitCode, type, price, stock, isDeleted);
             }
             return product;
-        }
-        catch (SQLException | ClassNotFoundException exception) {
-            throw new ProductException(exception.getMessage());
-        }
-    }
-
-    public Product getProductById(String code) throws ProductException {
-
-        // Returns the product based on the product code provided
-        try {
-            String query = "SELECT * FROM product WHERE id = '" + code + "'";
-            Statement statement = connectionDB.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                String productCode = resultSet.getString(2);
-                String name = resultSet.getString(3);
-                String unitCode = resultSet.getString(4);
-                String type = resultSet.getString(5);
-                float price = resultSet.getFloat(6);
-                int stock = resultSet.getInt(7);
-                boolean isDeleted = resultSet.getBoolean(8);
-                product = new Product(id, productCode, name, unitCode, type, price, stock, isDeleted);
-            }
-            return product;
-        }
-        catch (SQLException | ClassNotFoundException exception) {
+        } catch (SQLException | ClassNotFoundException exception) {
             throw new ProductException(exception.getMessage());
         }
     }
 
 
-
-
-    public int getCount() throws ProductException {
-
-        // Returns the count of the products in the database table
-        try {
-            int count = 0;
-            String query = "SELECT COUNT(code) FROM product";
-            Statement statement = connectionDB.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next())
-                count = resultSet.getInt(1);
-            return count;
-        }
-        catch (SQLException | ClassNotFoundException exception) {
-            throw new ProductException(exception.getMessage());
-        }
-    }
 
 
 
