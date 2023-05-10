@@ -1,48 +1,70 @@
 package com.billing.app.domain.presentation.product;
 
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.CodeNullException;
 import com.billing.app.domain.exceptions.IllegalArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.product.ProductService;
 import com.billing.app.domain.service.product.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.database.ProductDAO;
+
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductController {
+    List<String> valueList;
+    List<String> keyList;
     private Product product;
-    private ProductDAO productDAO;
     private ProductServiceInterface productServiceInterface;
     private Validator validator;
 
-    public Product create(ArrayList<String> arrayList) throws ProductException, ClassNotFoundException, SQLException {
-        ArrayList<String> values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
-        product = new Product();
-        product.setCode(values.get(0));
-        product.setName(values.get(1));
-        product.setUnitCode(values.get(2));
-        product.setType(values.get(3));
-        product.setPrice(Float.parseFloat(values.get(4)));
-        product.setStock(Float.parseFloat(values.get(5)));
-        productServiceInterface = new ProductService();
-        return productServiceInterface.create(product);
+    public Product create(ArrayList<String> values) throws ClassNotFoundException, SQLException, TemplateMismatchException, IllegalArgumentException, TypeMismatchException, ObjectNullPointerException {
+        int expectedLength = 6;
+        int actualLength = values.size();
+        validator = new Validator();
+        validator.validateProductDetails(values);
+        if (actualLength == expectedLength) {
+            product = new Product();
+            product.setCode(values.get(0));
+            product.setName(values.get(1));
+            product.setUnitCode(values.get(2));
+            product.setType(values.get(3));
+            product.setPrice(Float.parseFloat(values.get(4)));
+            product.setStock(Float.parseFloat(values.get(5)));
+            productServiceInterface = new ProductService();
+            return productServiceInterface.create(product);
+        } else {
+            throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
+        }
     }
 
 
-
-
-    public Product edit(ArrayList<String> arrayList) throws SQLException, ClassNotFoundException, IllegalAccessException, NullPointerException, CodeNullException, TemplateMismatchException, CustomException, NoSuchFieldException, ProductException {
-        validator = new Validator();
-        product = new Product();
-        ArrayList<String> keyValuePair = new ArrayList<>(arrayList.subList(2, arrayList.size()));
-        for (int index = 0; index < keyValuePair.size(); index += 2) {
-            String key = keyValuePair.get(index);
-            String value = keyValuePair.get(index + 1);
-            validator.productEditValidate(product, key, value);
+    public Product edit(ArrayList<String> values) throws SQLException, ClassNotFoundException, NullPointerException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
+        int expectedLength = 12;
+        int actualLength = values.size();
+        valueList = new ArrayList<>();
+        keyList = new ArrayList<>();
+        if (actualLength == expectedLength) {
+            for (int index = 0; index < values.size(); index += 2) {
+                String key = values.get(index);
+                String value = values.get(index + 1);
+                keyList.add(key);
+                valueList.add(value);
+            }
+            validator = new Validator();
+            validator.validateProductKeys(keyList);
+            validator.validateProductDetails(valueList);
+            product = new Product();
+            product.setCode(valueList.get(0));
+            product.setName(valueList.get(1));
+            product.setUnitCode(valueList.get(2));
+            product.setType(valueList.get(3));
+            product.setPrice(Float.parseFloat(valueList.get(4)));
+            product.setStock(Float.parseFloat(valueList.get(5)));
+        } else {
+            throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
         productServiceInterface = new ProductService();
         return productServiceInterface.edit(product);
@@ -51,58 +73,27 @@ public class ProductController {
 
 
 
-    public boolean delete(ArrayList<String> arrayList) throws TemplateMismatchException, SQLException, ProductException, ClassNotFoundException {
+    public boolean delete(ArrayList<String> values) throws TemplateMismatchException, SQLException, ClassNotFoundException, CodeNotFoundException {
         boolean flag = false;
-        if (arrayList.size() == 4) {
-            String key = arrayList.get(2);
-            String value = arrayList.get(3);
+
+        int expectedLength = 2;
+        int actualLength = values.size();
+
+        if (actualLength == expectedLength) {
+            String notation = values.get(0);
+            String value = values.get(1);
             validator = new Validator();
-            if (validator.deleteValidate(key)) {
-                productServiceInterface = new ProductService();
-                flag = productServiceInterface.delete(key, value);
-            }
+            String key = validator.validateDelete(notation);
+            productServiceInterface = new ProductService();
+            flag = productServiceInterface.delete(key, value);
             return flag;
         } else {
             throw new TemplateMismatchException("Number of arguments provided doesn't match the template. Please provide the value as key-value pair.");
         }
     }
 
-
-
-
-    public ArrayList<Product> list(ArrayList<String> arrayList) throws Throwable {
-            productServiceInterface = new ProductService();
-            if (arrayList.size() == 2) {
-                return productServiceInterface.list();
-            }
-            else if (arrayList.get(2).equals("-p") && arrayList.size() == 4) {
-                int range = Integer.parseInt(arrayList.get(3));
-                return productServiceInterface.list(range);
-            }
-            else if (arrayList.get(2).equals("-p") && arrayList.size() == 5) {
-                int range = Integer.parseInt(arrayList.get(3));
-                int page = Integer.parseInt(arrayList.get(4));
-                return productServiceInterface.list(range, page);
-            }
-            else if (arrayList.get(2).equals("-s") && arrayList.size() == 4) {
-                String searchText = arrayList.get(3);
-                return productServiceInterface.list(searchText);
-            }
-            else if (arrayList.get(2).equals("-s") && arrayList.size() == 5) {
-                String searchText = arrayList.get(4);
-                String attribute = arrayList.get(3);
-                return productServiceInterface.list(attribute, searchText);
-            }
-            else if (arrayList.get(2).equals("-s") && arrayList.get(5).equals("-p") && arrayList.size() == 8) {
-                String searchText = arrayList.get(4);
-                String attribute = arrayList.get(3);
-                int range = Integer.parseInt(arrayList.get(6));
-                int page = Integer.parseInt(arrayList.get(7));
-                return productServiceInterface.list(attribute, searchText, range, page);
-            }
-            else {
-                throw new CustomException("Template mismatch.");
-            }
+    public List<Product> list(List<String> values) {
+        System.out.println(values);
+        return null;
     }
-
 }

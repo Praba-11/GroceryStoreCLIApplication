@@ -19,9 +19,6 @@ public class PurchaseService implements PurchaseServiceInterface {
         int flag = 0;
         productDAO = new ProductJdbcDAO();
         for (PurchaseItem purchaseItem : purchase.getListOfPurchaseItem()) {
-            if (productDAO.isCodePresent(purchaseItem.getCode())) {
-                flag++;
-            }
         }
         if (flag == purchase.getListOfPurchaseItem().size()) {
             purchaseDAO = new PurchaseJdbcDAO();

@@ -6,11 +6,124 @@ import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.IllegalArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
+import com.billing.app.domain.exceptions.TypeMismatchException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Validator {
+
+
+    public boolean validateProductDetails(List<String> productDetails) throws IllegalArgumentException, TypeMismatchException {
+
+        String code = productDetails.get(0);
+        String name = productDetails.get(1);
+        String unitCode = productDetails.get(2);
+        String type = productDetails.get(3);
+
+        try {
+            float price = Float.parseFloat(productDetails.get(4));
+            if (price < 0) {
+                throw new IllegalArgumentException("Product price cannot be negative.");
+            }
+        } catch (NumberFormatException exception) {
+            throw new TypeMismatchException("'" + productDetails.get(4) + "'. Provided input is incompatible.");
+        }
+
+        try {
+            float stock = Float.parseFloat(productDetails.get(5));
+            if (stock < 0) {
+                throw new IllegalArgumentException("Product stock cannot be negative.");
+            }
+        } catch(NumberFormatException exception) {
+            throw new TypeMismatchException("'" + productDetails.get(5) + "'. Provided input is incompatible.");
+        }
+
+        if (code.length() < 2 || code.length() > 6) {
+            throw new IllegalArgumentException("Product code: " + code + " is incompatible. Provide a product code of valid length.");
+        }
+        if (code.trim().length() == 0) {
+            throw new IllegalArgumentException("Product code is mandatory. Please provide a valid product code.");
+        }
+        if (name.length() < 3 || name.length() > 30) {
+            throw new IllegalArgumentException("Product name: " + name + " is incompatible. Provide a product code of valid length.");
+        }
+        if (name.trim().length() == 0) {
+            throw new IllegalArgumentException("Product name cannot be empty. Please provide a valid product name.");
+        }
+        if (unitCode.trim().length() == 0) {
+            throw new IllegalArgumentException("Product unit code cannot be empty. Please provide a valid product unit code.");
+        }
+        if (type.trim().length() == 0) {
+            throw new IllegalArgumentException("Product type cannot be empty. Please provide a valid product type.");
+        }
+
+        return true;
+    }
+
+
+
+    public String validateSQLState(SQLException exception) {
+        String sqlState = exception.getSQLState();
+        if (sqlState.equals("23505"))
+            return "Provided product code already exists. \n" + exception.getMessage();
+        if (sqlState.equals("23503")) {
+            return "Provided unit not present in Unit relational table. \n" + exception.getMessage();
+        } else {
+            return "Unknown SQL Exception occurred.";
+        }
+    }
+
+
+    public boolean validateProductKeys(List<String> productKeys) throws IllegalArgumentException {
+
+        String codeKey = productKeys.get(0);
+        String nameKey = productKeys.get(1);
+        String unitCodeKey = productKeys.get(2);
+        String typeKey = productKeys.get(3);
+        String priceKey = productKeys.get(4);
+        String stockKey = productKeys.get(5);
+
+        if (codeKey.trim().length() == 0 || nameKey.trim().length() == 0 || unitCodeKey.trim().length() == 0 || typeKey.trim().length() == 0 || priceKey.trim().length() == 0 || stockKey.trim().length() == 0) {
+            throw new IllegalArgumentException("(key) cannot be empty.");
+        }
+        if (!codeKey.equals("code")) {
+            throw new IllegalArgumentException("Invalid key provided. " + codeKey + " doesn't exist.");
+        }
+        if (!nameKey.equals("name")) {
+            throw new IllegalArgumentException("Invalid key provided. " + nameKey + " doesn't exist.");
+        }
+        if (!unitCodeKey.equals("unitcode")) {
+            throw new IllegalArgumentException("Invalid key provided. " + unitCodeKey + " doesn't exist.");
+        }
+        if (!typeKey.equals("type")) {
+            throw new IllegalArgumentException("Invalid key provided. " + typeKey + " doesn't exist.");
+        }
+        if (!priceKey.equals("price")) {
+            throw new IllegalArgumentException("Invalid key provided. " + priceKey + " doesn't exist.");
+        }
+        if (!stockKey.equals("stock")) {
+            throw new IllegalArgumentException("Invalid key provided. " + stockKey + " doesn't exist.");
+        }
+        return true;
+
+    }
+
+
+    public String validateDelete(String key) throws TemplateMismatchException {
+        if (key.equals("-c")) {
+            return "code";
+        } else if (key.equals("-i")) {
+            return "id";
+        } else {
+            throw new TemplateMismatchException("Invalid attribute '" + key + "'. Provide appropriate attribute for deletion.");
+        }
+    }
+
+
+//    --------------------------------------------------------------------------------------------------------------------
 
     public void unitEditValidate(Unit unit, String key, String value) throws TemplateMismatchException {
 
@@ -28,24 +141,6 @@ public class Validator {
     }
 
 
-    public void productEditValidate(Product product, String key, String value) throws TemplateMismatchException {
-
-        if (key.equals("name")) {
-            product.setName(value);
-        } else if (key.equals("code")) {
-            product.setCode(value);
-        } else if (key.equals("unitcode")) {
-            product.setUnitCode(value);
-        } else if (key.equals("type")) {
-            product.setType(value);
-        } else if (key.equals("price")) {
-            product.setPrice(Float.parseFloat(value));
-        } else if (key.equals("stock")) {
-            product.setStock(Float.parseFloat(value));
-        } else {
-            throw new TemplateMismatchException("Replace the string '" + key + "' with proper attribute string according to the template.");
-        }
-    }
 
     public void storeEditValidate(Store store, String key, String value) throws TemplateMismatchException {
         if (key.equals("gstnumber")) {
@@ -79,13 +174,8 @@ public class Validator {
         }
     }
 
-    public boolean deleteValidate(String key) throws TemplateMismatchException {
-        if (key.equals("code") || key.equals("id")) {
-            return true;
-        } else {
-            throw new TemplateMismatchException("Invalid attribute '" + key + "'. Provide appropriate attribute for deletion.");
-        }
-    }
+
+
 
     public boolean userDeleteValidate(String key) throws TemplateMismatchException {
         if (key.equals("username") || key.equals("id")) {
@@ -94,6 +184,9 @@ public class Validator {
             throw new TemplateMismatchException("Invalid attribute '" + key + "'. Provide appropriate attribute for deletion.");
         }
     }
+
+
+
 
     public boolean validateUserDetails(ArrayList<String> stringArrayList) throws IllegalArgumentException {
         if (stringArrayList.size() != 6) {
@@ -117,6 +210,7 @@ public class Validator {
             return true;
         }
     }
+
 }
 
 

@@ -47,10 +47,6 @@ public class UnitController {
         String key = arrayList.get(2);
         String value = arrayList.get(3);
         validator = new Validator();
-        if (validator.deleteValidate(key)) {
-            unitServiceInterface = new UnitService();
-            flag = unitServiceInterface.delete(key, value);
-        }
         return flag;
     }
 
