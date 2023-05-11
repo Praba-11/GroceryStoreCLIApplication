@@ -12,6 +12,7 @@ import com.billing.app.domain.entity.Product;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ProductController {
     List<String> valueList;
@@ -92,8 +93,15 @@ public class ProductController {
         }
     }
 
-    public List<Product> list(List<String> values) {
-        System.out.println(values);
-        return null;
+    public List<Product> list(List<String> values) throws IllegalArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {
+        int range, page;
+        String attribute, searchText;
+        validator = new Validator();
+        Map<String, Object> parameters = validator.validateProductList(values);
+        range = Integer.parseInt(parameters.get(0).toString());
+        page = Integer.parseInt(parameters.get(1).toString());
+        attribute = parameters.get(2).toString();
+        searchText = parameters.get(3).toString();
+        return productServiceInterface.list(range, page, attribute, searchText);
     }
 }

@@ -16,7 +16,7 @@ public class ProductCLI {
     Validator validator;
     ArrayList<String> values;
     ProductHelp productHelp;
-    Formatter formatter = new Formatter();
+
 
     public void execute(ArrayList<String> arrayList) {
         String action = arrayList.get(1);
@@ -121,17 +121,23 @@ public class ProductCLI {
                     productHelp.listProduct();
                 } else {
                     values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
-                    List<Product> productArray = productController.list(values);
-
-
-
-//                    System.out.println("List returned successfully.");
-//                    for (Product products : productArray) {
-//                        System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
-//                    }
+                    try {
+                        List<Product> productArray = productController.list(values);
+                        System.out.println("List returned successfully.");
+                        for (Product products : productArray) {
+                            System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
+                        }
+                    } catch (IllegalArgumentException exception) {
+                        System.out.println("Incompatible argument. " + exception.getMessage());
+                    } catch (TemplateMismatchException exception) {
+                        System.out.println("Template mismatch. " + exception.getMessage());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 break;
         }
-
     }
 }
