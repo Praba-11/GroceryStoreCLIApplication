@@ -1,6 +1,5 @@
 package com.billing.app.domain.presentation;
 
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Store;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.entity.User;
@@ -114,7 +113,7 @@ public class Validator {
     }
 
 
-    public String validateDelete(String key) throws TemplateMismatchException {
+    public String validateProductDelete(String key) throws TemplateMismatchException {
         if (key.equals("-c")) {
             return "code";
         } else if (key.equals("-i")) {
@@ -135,14 +134,11 @@ public class Validator {
             if (notation.equals("-p")) {
                 range = Integer.parseInt(values.get(1));
                 page = 0;
-                attribute = null;
-                searchText = null;
             }
             else if (notation.equals("-s")) {
-                range = 0;
-                page = 0;
-                attribute = null;
                 searchText = values.get(1);
+                range =
+                page = 0;
             }
             else {
                 throw new IllegalArgumentException("Invalid notation provided. Provide a valid list notation.");

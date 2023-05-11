@@ -9,14 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService implements ProductServiceInterface {
-    private ProductDAO productDAO;
+    private ProductDAO productDAO = new ProductJdbcDAO();
     private ProductValidator productValidator;
 
     public Product create(Product product) throws ClassNotFoundException, SQLException, ObjectNullPointerException {
         try {
             productValidator = new ProductValidator();
             productValidator.validate(product);
-            productDAO = new ProductJdbcDAO();
             return productDAO.create(product);
         } catch (ObjectNullPointerException exception) {
             throw new ObjectNullPointerException("Error while creating product: " + exception.getMessage());
@@ -24,14 +23,13 @@ public class ProductService implements ProductServiceInterface {
     }
 
 
-    public Product edit(Product modifiedProduct) throws ClassNotFoundException, SQLException, ObjectNullPointerException, CodeNotFoundException {
+    public Product edit(Product product) throws ClassNotFoundException, SQLException, ObjectNullPointerException, CodeNotFoundException {
 
         try {
             productValidator = new ProductValidator();
-            productValidator.validate(modifiedProduct);
-            productDAO = new ProductJdbcDAO();
-            if (productDAO.getByCode(modifiedProduct.getCode()) != null) {
-                return productDAO.edit(modifiedProduct);
+            productValidator.validate(product);
+            if (productDAO.find(product.getCode()) != null) {
+                return productDAO.edit(product);
             }
             throw new CodeNotFoundException("Provided product code not present in product relation table.");
         } catch (ObjectNullPointerException exception) {
@@ -42,7 +40,6 @@ public class ProductService implements ProductServiceInterface {
 
     public boolean delete(String key, String value) throws SQLException, ClassNotFoundException, CodeNotFoundException {
         boolean isDeleted;
-        productDAO = new ProductJdbcDAO();
         isDeleted = productDAO.delete(key, value);
         if (!isDeleted) {
             throw new CodeNotFoundException("(" + key  + ": " + value + ") not present in product relational table.");
@@ -51,7 +48,8 @@ public class ProductService implements ProductServiceInterface {
     }
 
     public List<Product> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
-        productDAO = new ProductJdbcDAO();
-        return productDAO.list(range, page, attribute, searchText);
+        List<Product> list = productDAO.list(range, page, attribute, searchText);
+        System.out.println(list);
+        return list;
     }
 }

@@ -15,16 +15,17 @@ import java.util.List;
 import java.util.Map;
 
 public class ProductController {
-    List<String> valueList;
-    List<String> keyList;
+    private List<String> valueList;
+    private List<String> keyList;
     private Product product;
-    private ProductServiceInterface productServiceInterface;
-    private Validator validator;
+    private ProductServiceInterface productServiceInterface = new ProductService();
+    private Validator validator = new Validator();
+
 
     public Product create(ArrayList<String> values) throws ClassNotFoundException, SQLException, TemplateMismatchException, IllegalArgumentException, TypeMismatchException, ObjectNullPointerException {
+
         int expectedLength = 6;
         int actualLength = values.size();
-        validator = new Validator();
         validator.validateProductDetails(values);
         if (actualLength == expectedLength) {
             product = new Product();
@@ -34,7 +35,6 @@ public class ProductController {
             product.setType(values.get(3));
             product.setPrice(Float.parseFloat(values.get(4)));
             product.setStock(Float.parseFloat(values.get(5)));
-            productServiceInterface = new ProductService();
             return productServiceInterface.create(product);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
@@ -42,9 +42,12 @@ public class ProductController {
     }
 
 
+
     public Product edit(ArrayList<String> values) throws SQLException, ClassNotFoundException, NullPointerException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
+
         int expectedLength = 12;
         int actualLength = values.size();
+
         valueList = new ArrayList<>();
         keyList = new ArrayList<>();
         if (actualLength == expectedLength) {
@@ -54,7 +57,6 @@ public class ProductController {
                 keyList.add(key);
                 valueList.add(value);
             }
-            validator = new Validator();
             validator.validateProductKeys(keyList);
             validator.validateProductDetails(valueList);
             product = new Product();
@@ -67,7 +69,7 @@ public class ProductController {
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
-        productServiceInterface = new ProductService();
+
         return productServiceInterface.edit(product);
     }
 
@@ -83,9 +85,8 @@ public class ProductController {
         if (actualLength == expectedLength) {
             String notation = values.get(0);
             String value = values.get(1);
-            validator = new Validator();
-            String key = validator.validateDelete(notation);
-            productServiceInterface = new ProductService();
+
+            String key = validator.validateProductDelete(notation);
             flag = productServiceInterface.delete(key, value);
             return flag;
         } else {
@@ -93,15 +94,23 @@ public class ProductController {
         }
     }
 
+
+
     public List<Product> list(List<String> values) throws IllegalArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {
+
         int range, page;
         String attribute, searchText;
+
         validator = new Validator();
         Map<String, Object> parameters = validator.validateProductList(values);
-        range = Integer.parseInt(parameters.get(0).toString());
-        page = Integer.parseInt(parameters.get(1).toString());
-        attribute = parameters.get(2).toString();
-        searchText = parameters.get(3).toString();
+        System.out.println(parameters);
+
+        range = Integer.parseInt(parameters.get("range").toString());
+        page = Integer.parseInt(parameters.get("page").toString());
+        attribute = (String) parameters.get("attribute");
+        searchText = (String) parameters.get("searchtext");
+
         return productServiceInterface.list(range, page, attribute, searchText);
+
     }
 }

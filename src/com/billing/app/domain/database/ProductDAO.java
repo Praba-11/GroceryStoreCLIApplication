@@ -11,5 +11,6 @@ public interface ProductDAO {
     Product edit(Product product) throws ClassNotFoundException, SQLException, CodeNotFoundException;
     boolean delete(String key, String value) throws SQLException, ClassNotFoundException;
     List<Product> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException;
-    Product getByCode(String code) throws SQLException, ClassNotFoundException;
+    Product find(String code) throws SQLException, ClassNotFoundException;
+    int count() throws SQLException, ClassNotFoundException;
 }

@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductJdbcDAO implements ProductDAO {
-    ConnectionDB connectionDB = new ConnectionDB();
-    Product product;
-    List<Product> productList;
+    private ConnectionDB connectionDB = new ConnectionDB();
+    private Product product;
+    private List<Product> productList;
 
     @Override
     public Product create(Product product) throws ClassNotFoundException, SQLException {
@@ -58,7 +58,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
     public List<Product> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
         productList = new ArrayList<>();
-        String query = "SELECT * FROM product WHERE (" + attribute + " ILIKE '%" + searchText + "%') LIMIT " + range + " OFFSET " + (page - 1)*range;
+        String query = "SELECT * FROM product WHERE (code ILIKE '%" + searchText + "%' or name ILIKE '%" + searchText + "%' or unitcode ILIKE '%" + searchText + "%' or type ILIKE '%" + searchText + "%' or CAST(price AS VARCHAR) ILIKE '%" + searchText + "%' or CAST(stock AS VARCHAR) ILIKE '%" + searchText + "%') LIMIT " + range + " OFFSET " + (page - 1) * range;
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         while (resultSet.next()) {
@@ -77,8 +77,8 @@ public class ProductJdbcDAO implements ProductDAO {
     }
 
 
-    public Product getByCode(String code) throws SQLException, ClassNotFoundException {
-        String query = "SELECT * FROM product WHERE id = '" + code + "'";
+    public Product find(String code) throws SQLException, ClassNotFoundException {
+        String query = "SELECT * FROM product WHERE code = '" + code + "'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         product = new Product();
@@ -93,5 +93,16 @@ public class ProductJdbcDAO implements ProductDAO {
             product.setDeleted(resultSet.getBoolean(8));
         }
         return product;
+    }
+
+    public int count() throws SQLException, ClassNotFoundException {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM product";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            count = resultSet.getInt(1);
+        }
+        return count;
     }
 }

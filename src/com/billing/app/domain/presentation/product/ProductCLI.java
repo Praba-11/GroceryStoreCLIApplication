@@ -56,6 +56,7 @@ public class ProductCLI {
                 break;
 
 
+
             case "edit":
                 try {
                     if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
@@ -88,6 +89,7 @@ public class ProductCLI {
                 break;
 
 
+
             case "delete":
                 try {
                     if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
@@ -112,6 +114,7 @@ public class ProductCLI {
                     throw new RuntimeException(e);
                 }
                 break;
+
 
 
             case "list":
