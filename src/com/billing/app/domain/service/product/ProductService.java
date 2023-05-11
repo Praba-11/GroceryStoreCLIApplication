@@ -48,6 +48,9 @@ public class ProductService implements ProductServiceInterface {
     }
 
     public List<Product> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
+        if (range == 0 && page == 0) {
+
+        }
         List<Product> list = productDAO.list(range, page, attribute, searchText);
         System.out.println(list);
         return list;

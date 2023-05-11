@@ -133,12 +133,9 @@ public class Validator {
             String notation = values.get(0);
             if (notation.equals("-p")) {
                 range = Integer.parseInt(values.get(1));
-                page = 0;
             }
             else if (notation.equals("-s")) {
                 searchText = values.get(1);
-                range =
-                page = 0;
             }
             else {
                 throw new IllegalArgumentException("Invalid notation provided. Provide a valid list notation.");

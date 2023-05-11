@@ -58,7 +58,16 @@ public class ProductJdbcDAO implements ProductDAO {
 
     public List<Product> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
         productList = new ArrayList<>();
-        String query = "SELECT * FROM product WHERE (code ILIKE '%" + searchText + "%' or name ILIKE '%" + searchText + "%' or unitcode ILIKE '%" + searchText + "%' or type ILIKE '%" + searchText + "%' or CAST(price AS VARCHAR) ILIKE '%" + searchText + "%' or CAST(stock AS VARCHAR) ILIKE '%" + searchText + "%') LIMIT " + range + " OFFSET " + (page - 1) * range;
+        String query = "DO " +
+                "$$" +
+                "BEGIN" +
+                "    IF (attribute == null && searchtext == null && range > 0 && page == 0) THEN" +
+                "        SELECT * FROM product LIMIT 2 OFFSET 0;" +
+                "    ELSE" +
+                "        SELECT * FROM product LIMIT 2 OFFSET 0;" +
+                "    END IF;" +
+                "END;" +
+                "$$";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         while (resultSet.next()) {
