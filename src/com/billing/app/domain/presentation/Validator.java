@@ -16,6 +16,21 @@ import java.util.Map;
 
 public class Validator {
 
+    public boolean validateId(String key, String identifier) throws IllegalArgumentException, TypeMismatchException {
+        try {
+            int id = Integer.parseInt(identifier);;
+            if (id < 0) {
+                throw new IllegalArgumentException("Product price cannot be negative.");
+            }
+        } catch (NumberFormatException exception) {
+            throw new TypeMismatchException("'" + identifier + "'. Provided input is incompatible.");
+        }
+        if (key.trim().length() == 0) {
+            throw new IllegalArgumentException("(key) cannot be empty.");
+        }
+        return true;
+    }
+
 
     public boolean validateProductDetails(List<String> productDetails) throws IllegalArgumentException, TypeMismatchException {
 
@@ -73,7 +88,7 @@ public class Validator {
         if (sqlState.equals("23503")) {
             return "Provided unit not present in Unit relational table. \n" + exception.getMessage();
         } else {
-            return "Unknown SQL Exception occurred.";
+            throw new RuntimeException(exception);
         }
     }
 
@@ -113,23 +128,15 @@ public class Validator {
     }
 
 
-    public String validateProductDelete(String key) throws TemplateMismatchException {
-        if (key.equals("-c")) {
-            return "code";
-        } else if (key.equals("-i")) {
-            return "id";
-        } else {
-            throw new TemplateMismatchException("Invalid attribute '" + key + "'. Provide appropriate attribute for deletion.");
-        }
-    }
-
 
     public Map<String, Object> validateProductList(List<String> values) throws IllegalArgumentException, TemplateMismatchException {
         Map<String, Object> parseMap = new HashMap<>();
         int range = 0, page = 0;
         String attribute = null, searchText = null;
-        
-        if (values.size() == 2) {
+        if (values.size() == 0) {
+            range = 0; page = 0;
+            attribute = null; searchText = null;
+        } else if (values.size() == 2) {
             String notation = values.get(0);
             if (notation.equals("-p")) {
                 range = Integer.parseInt(values.get(1));
@@ -141,7 +148,6 @@ public class Validator {
                 throw new IllegalArgumentException("Invalid notation provided. Provide a valid list notation.");
             }
 
-            
         } else if (values.size() == 3) {
             System.out.println(values);
             String notation = values.get(0);

@@ -9,11 +9,12 @@ import com.billing.app.domain.presentation.store.StoreCLI;
 import com.billing.app.domain.presentation.unit.UnitCLI;
 import com.billing.app.domain.presentation.user.UserCLI;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Router {
     Unit unit;
-    public void module(ArrayList<String> arrayList) throws Throwable {
+    public void module(ArrayList<String> arrayList) throws ParseException {
         ProductCLI productCLI;
         UnitCLI unitCLI;
         StoreCLI storeCLI;

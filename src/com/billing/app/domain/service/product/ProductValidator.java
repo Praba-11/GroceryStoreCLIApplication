@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProductValidator {
-    ProductDAO productDAO;
 
     public boolean validate(Product product) throws ObjectNullPointerException {
         if (product.getCode().isEmpty() || product.getCode() == null) {

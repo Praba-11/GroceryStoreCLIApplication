@@ -8,7 +8,6 @@ import com.billing.app.domain.presentation.Validator;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
 
