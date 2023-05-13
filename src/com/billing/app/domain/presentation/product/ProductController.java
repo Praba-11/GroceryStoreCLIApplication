@@ -29,13 +29,7 @@ public class ProductController {
         int actualLength = values.size();
         validator.validateProductDetails(values);
         if (actualLength == expectedLength) {
-            product = new Product();
-            product.setCode(values.get(0));
-            product.setName(values.get(1));
-            product.setUnitCode(values.get(2));
-            product.setType(values.get(3));
-            product.setPrice(Float.parseFloat(values.get(4)));
-            product.setStock(Float.parseFloat(values.get(5)));
+            product = setProductValues(values, false);
             return productServiceInterface.create(product);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
@@ -70,14 +64,7 @@ public class ProductController {
             validator.validateProductKeys(keys);
             validator.validateProductDetails(details);
 
-            product = new Product();
-            product.setId(Integer.parseInt(valueList.get(0)));
-            product.setCode(valueList.get(1));
-            product.setName(valueList.get(2));
-            product.setUnitCode(valueList.get(3));
-            product.setType(valueList.get(4));
-            product.setPrice(Float.parseFloat(valueList.get(5)));
-            product.setStock(Float.parseFloat(valueList.get(6)));
+            product = setProductValues(valueList, true);
 
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
@@ -121,5 +108,22 @@ public class ProductController {
 
         return productServiceInterface.list(range, page, attribute, searchText);
 
+    }
+
+    private static Product setProductValues(List<String> values, boolean setId) {
+        Product product = new Product();
+        int startIndex = setId ? 0 : -1;
+
+        if (setId) {
+            product.setId(Integer.parseInt(values.get(startIndex)));
+        }
+
+        product.setCode(values.get(startIndex + 1));
+        product.setName(values.get(startIndex + 2));
+        product.setUnitCode(values.get(startIndex + 3));
+        product.setType(values.get(startIndex + 4));
+        product.setPrice(Float.parseFloat(values.get(startIndex + 5)));
+        product.setStock(Float.parseFloat(values.get(startIndex + 6)));
+        return product;
     }
 }

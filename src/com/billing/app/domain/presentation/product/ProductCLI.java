@@ -8,6 +8,7 @@ import com.billing.app.domain.presentation.Validator;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -69,7 +70,7 @@ public class ProductCLI {
                     }
                 } catch (SQLException exception) {
                     validator = new Validator();
-                    System.out.print("Unable to create product. ");
+                    System.out.print("Unable to edit product. ");
                     String sqlMessage = validator.validateSQLState(exception);
                     System.out.println(sqlMessage);
                 } catch (ClassNotFoundException e) {
@@ -83,7 +84,7 @@ public class ProductCLI {
                 } catch (ObjectNullPointerException exception) {
                     System.out.println("Unable to edit product. " + exception.getMessage());
                 } catch (CodeNotFoundException exception) {
-                    System.out.println("Invalid product code. " + exception.getMessage());
+                    System.out.println("Invalid product id. " + exception.getMessage());
                 }
                 break;
 
@@ -104,7 +105,7 @@ public class ProductCLI {
                     System.out.println("Template mismatch. " + exception.getMessage());
                 } catch (SQLException exception) {
                     validator = new Validator();
-                    System.out.print("Unable to create product. ");
+                    System.out.print("Unable to delete product. ");
                     String sqlMessage = validator.validateSQLState(exception);
                     System.out.println(sqlMessage);
                 } catch (CodeNotFoundException exception) {
@@ -117,12 +118,14 @@ public class ProductCLI {
 
 
             case "list":
-
-                if (arrayList.size() == 3 && arrayList.get(2).equals("help")) {
+                List<String> command = arrayList.subList(0, arrayList.size()-1);
+                String[] lastSplit = arrayList.get(arrayList.size()-1).split("\\s+");
+                command.addAll(Arrays.asList(lastSplit));
+                if (command.size() == 3 && command.get(2).equals("help")) {
                     productHelp = new ProductHelp();
                     productHelp.listProduct();
                 } else {
-                    values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
+                    values = new ArrayList<>(command.subList(2, command.size()));
                     try {
                         List<Product> productArray = productController.list(values);
                         System.out.println("List returned successfully.");

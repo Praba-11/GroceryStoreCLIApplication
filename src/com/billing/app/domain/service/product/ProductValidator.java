@@ -15,6 +15,9 @@ import java.util.Map;
 public class ProductValidator {
 
     public boolean validate(Product product) throws ObjectNullPointerException {
+        if(product == null) {
+            throw new ObjectNullPointerException("Product cannot be null or empty.");
+        }
         if (product.getCode().isEmpty() || product.getCode() == null) {
             throw new ObjectNullPointerException("Product code cannot be null (or) empty.");
         }
