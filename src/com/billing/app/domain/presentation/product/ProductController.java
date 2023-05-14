@@ -7,7 +7,6 @@ import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.product.ProductService;
 import com.billing.app.domain.service.product.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.service.product.ProductValidator;
 
 
 import java.sql.SQLException;
@@ -29,7 +28,7 @@ public class ProductController {
         int actualLength = values.size();
         validator.validateProductDetails(values);
         if (actualLength == expectedLength) {
-            product = setProductValues(values, false);
+            product = setValues(values, false);
             return productServiceInterface.create(product);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
@@ -64,7 +63,7 @@ public class ProductController {
             validator.validateProductKeys(keys);
             validator.validateProductDetails(details);
 
-            product = setProductValues(valueList, true);
+            product = setValues(valueList, true);
 
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
@@ -87,7 +86,7 @@ public class ProductController {
             flag = productServiceInterface.delete(id);
             return flag;
         } else {
-            throw new TemplateMismatchException("Number of arguments provided doesn't match the template. Please provide the value as key-value pair.");
+            throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Provided: " + actualLength);
         }
     }
 
@@ -110,7 +109,7 @@ public class ProductController {
 
     }
 
-    private static Product setProductValues(List<String> values, boolean setId) {
+    private static Product setValues(List<String> values, boolean setId) {
         Product product = new Product();
         int startIndex = setId ? 0 : -1;
 

@@ -2,30 +2,30 @@ package com.billing.app.domain.service.unit;
 
 import com.billing.app.domain.database.UnitDAO;
 import com.billing.app.domain.database.UnitJdbcDAO;
+import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
+import com.billing.app.domain.exceptions.ObjectNullPointerException;
 
 import java.sql.SQLException;
 
 public class UnitValidator {
     UnitDAO unitDAO;
-    public Unit editAttributes(Unit unitToBeEdited, Unit modfiedUnit) throws NullPointerException {
-        unitToBeEdited.setName(modfiedUnit.getName());
-        unitToBeEdited.setCode(modfiedUnit.getCode());
-        unitToBeEdited.setDescription(modfiedUnit.getDescription());
-        unitToBeEdited.setDividable(modfiedUnit.isDividable());
-        return unitToBeEdited;
+    public boolean validate(Unit unit) throws ObjectNullPointerException {
+        if(unit == null) {
+            throw new ObjectNullPointerException("Unit cannot be null or empty.");
+        }
+        if (unit.getCode().isEmpty() || unit.getCode() == null) {
+            throw new ObjectNullPointerException("Unit code cannot be null (or) empty.");
+        }
+        if (unit.getName().isEmpty() || unit.getName() == null) {
+            throw new ObjectNullPointerException("Unit name cannot be null (or) empty.");
+        }
+        if (unit.getDescription().isEmpty() || unit.getDescription() == null) {
+            throw new ObjectNullPointerException("Unit description cannot be null (or) empty.");
+        }
+        return true;
     }
 
-    public boolean isDeletable(String key, String value) throws SQLException, ClassNotFoundException, CodeNotFoundException {
-        unitDAO = new UnitJdbcDAO();
-        if (key.equals("code")) {
-            return unitDAO.isCodePresent(value);
-        } else if (key.equals("id")) {
-            return unitDAO.isIdPresent(value);
-        } else {
-            throw new CodeNotFoundException("Provided attribute not found in relational table. '" + key + " doesn't contain '" + value + "'");
-        }
-    }
 }
 

@@ -4,6 +4,7 @@ import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.CodeNullException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
+import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.presentation.store.StoreHelp;
 
 import java.sql.SQLException;
@@ -12,7 +13,8 @@ import java.util.Formatter;
 import java.util.Scanner;
 
 public class UnitCLI {
-    Formatter formatter = new Formatter();
+    UnitValidator unitValidator = new UnitValidator();
+    ArrayList<String> values;
     UnitHelp unitHelp;
     public void execute(ArrayList<String> arrayList) {
         String action = arrayList.get(1);
@@ -27,13 +29,17 @@ public class UnitCLI {
                         unitHelp = new UnitHelp();
                         unitHelp.createUnit();
                     } else {
+                        values = new ArrayList<>(arrayList.subList(2, arrayList.size()));
                         Unit unitCreated = null;
-                        unitCreated = unitController.create(arrayList);
-                        System.out.println(unitCreated);
+                        unitCreated = unitController.create(values);
+                        System.out.println("Unit created successfully.");
+                        System.out.println("Created unit: " + unitCreated);
                     }
 
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException exception) {
+                    System.out.print("Unable to create unit. ");
+                    String sqlMessage = unitValidator.validateSQLState(exception);
+                    System.out.println(sqlMessage);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }

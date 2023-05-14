@@ -20,13 +20,13 @@ public class Validator {
         try {
             int id = Integer.parseInt(identifier);;
             if (id < 0) {
-                throw new IllegalArgumentException("Product price cannot be negative.");
+                throw new IllegalArgumentException("Product id cannot be negative.");
             }
         } catch (NumberFormatException exception) {
             throw new TypeMismatchException("'" + identifier + "'. Provided input is incompatible.");
         }
         if (key.trim().length() == 0) {
-            throw new IllegalArgumentException("(key) cannot be empty.");
+            throw new IllegalArgumentException(key + " cannot be empty.");
         }
         return true;
     }
@@ -86,7 +86,7 @@ public class Validator {
         if (sqlState.equals("23505"))
             return "Provided product code already exists. \n" + exception.getMessage();
         if (sqlState.equals("23503")) {
-            return "Provided unit not present in Unit relational table. \n" + exception.getMessage();
+            return "Invalid unit provided, please ensure whether the unit is already created (or) present. \n" + exception.getMessage();
         } else {
             throw new RuntimeException(exception);
         }
