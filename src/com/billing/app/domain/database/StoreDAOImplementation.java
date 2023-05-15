@@ -5,9 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
-public class StoreJdbcDAO implements StoreDAO {
+public class StoreDAOImplementation implements StoreDAO {
     ConnectionDB connectionDB = new ConnectionDB();
     Store store;
     @Override

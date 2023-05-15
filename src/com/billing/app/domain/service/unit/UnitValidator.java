@@ -1,13 +1,8 @@
 package com.billing.app.domain.service.unit;
 
 import com.billing.app.domain.database.UnitDAO;
-import com.billing.app.domain.database.UnitJdbcDAO;
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.ObjectNullPointerException;
-
-import java.sql.SQLException;
 
 public class UnitValidator {
     UnitDAO unitDAO;

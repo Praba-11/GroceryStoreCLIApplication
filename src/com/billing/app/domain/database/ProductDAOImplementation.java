@@ -1,13 +1,12 @@
 package com.billing.app.domain.database;
 
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.exceptions.*;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductJdbcDAO implements ProductDAO {
+public class ProductDAOImplementation implements ProductDAO {
     private ConnectionDB connectionDB = new ConnectionDB();
     private Product product;
     private List<Product> productList;

@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnitJdbcDAO implements UnitDAO {
+public class UnitDAOImplementation implements UnitDAO {
     Unit unit;
     private List<Unit> unitList;
     ConnectionDB connectionDB = new ConnectionDB();

@@ -1,18 +1,15 @@
 package com.billing.app.domain.service.unit;
 
 import com.billing.app.domain.database.UnitDAO;
-import com.billing.app.domain.database.UnitJdbcDAO;
-import com.billing.app.domain.entity.Product;
+import com.billing.app.domain.database.UnitDAOImplementation;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.CodeNullException;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UnitService implements UnitServiceInterface {
-    private UnitDAO unitDAO = new UnitJdbcDAO();
+    private UnitDAO unitDAO = new UnitDAOImplementation();
     UnitValidator unitValidator = new UnitValidator();
     public Unit create(Unit unit) throws SQLException, ClassNotFoundException, ObjectNullPointerException {
         try {
@@ -47,7 +44,7 @@ public class UnitService implements UnitServiceInterface {
     }
 
     public List<Unit> list() throws SQLException, ClassNotFoundException {
-        unitDAO = new UnitJdbcDAO();
+        unitDAO = new UnitDAOImplementation();
         List<Unit> units = unitDAO.list();
         return units;
     }

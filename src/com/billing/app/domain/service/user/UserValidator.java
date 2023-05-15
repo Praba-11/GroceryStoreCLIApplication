@@ -1,8 +1,7 @@
 package com.billing.app.domain.service.user;
 
-import com.billing.app.domain.database.ProductJdbcDAO;
 import com.billing.app.domain.database.UserDAO;
-import com.billing.app.domain.database.UserJdbcDAO;
+import com.billing.app.domain.database.UserDAOImplementation;
 import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
 
@@ -20,7 +19,7 @@ public class UserValidator {
     }
 
     public boolean isDeletable(String key, String value) throws SQLException, ClassNotFoundException, CodeNotFoundException {
-        userDAO = new UserJdbcDAO();
+        userDAO = new UserDAOImplementation();
         if (key.equals("username")) {
             return userDAO.isUsernamePresent(value);
         } else if (key.equals("id")) {

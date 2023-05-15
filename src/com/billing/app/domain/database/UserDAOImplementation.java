@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class UserJdbcDAO implements UserDAO {
+public class UserDAOImplementation implements UserDAO {
     User user;
     ConnectionDB connectionDB = new ConnectionDB();
     ArrayList<User> userArrayList;

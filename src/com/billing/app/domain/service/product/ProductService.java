@@ -6,11 +6,10 @@ import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.IllegalArgumentException;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService implements ProductServiceInterface {
-    private ProductDAO productDAO = new ProductJdbcDAO();
+    private ProductDAO productDAO = new ProductDAOImplementation();
     private ProductValidator productValidator = new ProductValidator();
 
     public Product create(Product product) throws ClassNotFoundException, SQLException, ObjectNullPointerException {

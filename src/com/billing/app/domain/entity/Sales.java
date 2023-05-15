@@ -6,9 +6,18 @@ public class Sales {
     private Date date;
     private int invoice;
     SalesItem salesItem;
+    int grandTotal;
 
-    public Date getDate() {
-        return date;
+    public int getGrandTotal() {
+        return grandTotal;
+    }
+
+    public void setGrandTotal(int grandTotal) {
+        this.grandTotal = grandTotal;
+    }
+
+    public java.sql.Date getDate() {
+        return (java.sql.Date) date;
     }
 
     public void setDate(Date date) {
