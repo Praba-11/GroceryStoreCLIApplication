@@ -14,11 +14,8 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     public Purchase create(Purchase purchase) throws SQLException, ClassNotFoundException {
         String query = "INSERT INTO purchase (invoice, date, grand_total) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-        preparedStatement.setInt(1, purchase.getInvoice());
-        preparedStatement.setDate(2, purchase.getDate());
-        preparedStatement.setFloat(3, purchase.getGrandTotal());
-
-        preparedStatement.execute();
+        PreparedStatement statement = setQuery(preparedStatement, purchase);
+        statement.executeUpdate();
         return purchase;
     }
 
@@ -56,10 +53,17 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     }
 
     private Purchase setPurchase(Purchase purchase, ResultSet resultSet) throws SQLException {
-        purchase.setId(resultSet.getInt(1));
-        purchase.setInvoice(resultSet.getInt(2));
-        purchase.setDate(resultSet.getDate(3));
-        purchase.setGrandTotal(resultSet.getInt(4));
+        purchase.setInvoice(resultSet.getInt(1));
+        purchase.setDate(resultSet.getDate(2));
+        purchase.setGrandTotal(resultSet.getFloat(3));
         return purchase;
+    }
+
+
+    private PreparedStatement setQuery(PreparedStatement preparedStatement, Purchase purchase) throws SQLException {
+        preparedStatement.setInt(1, purchase.getInvoice());
+        preparedStatement.setDate(2, purchase.getDate());
+        preparedStatement.setFloat(3, purchase.getGrandTotal());
+        return preparedStatement;
     }
 }

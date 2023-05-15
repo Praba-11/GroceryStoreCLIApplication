@@ -6,13 +6,13 @@ public class Sales {
     private Date date;
     private int invoice;
     SalesItem salesItem;
-    int grandTotal;
+    float grandTotal;
 
-    public int getGrandTotal() {
+    public float getGrandTotal() {
         return grandTotal;
     }
 
-    public void setGrandTotal(int grandTotal) {
+    public void setGrandTotal(float grandTotal) {
         this.grandTotal = grandTotal;
     }
 
