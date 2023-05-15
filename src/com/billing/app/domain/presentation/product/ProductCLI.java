@@ -17,6 +17,9 @@ public class ProductCLI {
     ArrayList<String> values;
     ProductHelp productHelp;
 
+    public void splitCommand() {
+
+    }
 
     public void execute(ArrayList<String> arrayList) {
         String action = arrayList.get(1);

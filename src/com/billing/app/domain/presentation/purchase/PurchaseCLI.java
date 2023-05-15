@@ -8,11 +8,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 public class PurchaseCLI {
-    PurchaseController purchaseController;
+    PurchaseController purchaseController = new PurchaseController();
     public void execute(ArrayList<String> stringArrayList) throws ParseException {
 
         try {
-            purchaseController = new PurchaseController();
             purchaseController.create(stringArrayList);
         } catch (SQLException exception) {
             System.out.println("Cannot purchase products." + exception.getMessage());

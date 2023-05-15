@@ -1,13 +1,17 @@
 package com.billing.app.domain.presentation;
 
+import com.billing.app.domain.presentation.purchase.PurchaseCLI;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) throws ParseException {
+
 
         Scanner scanner = new Scanner(System.in);
         System.out.print(">> ");
@@ -19,6 +23,7 @@ public class Main {
             Router router = new Router();
             System.out.println(command);
             router.module(command);
+
         }
     }
 
@@ -33,6 +38,7 @@ public class Main {
         }
         String firstStringSet = splitByCommas.get(0);
         String[] sample = firstStringSet.split("\\s+");
+
         for (String element : sample) {
             splitByCommasAndSpaces.add(element);
         }

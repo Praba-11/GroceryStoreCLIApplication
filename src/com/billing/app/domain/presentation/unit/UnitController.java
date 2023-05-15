@@ -2,11 +2,8 @@ package com.billing.app.domain.presentation.unit;
 
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.CodeNullException;
+import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.IllegalArgumentException;
-import com.billing.app.domain.exceptions.TemplateMismatchException;
-import com.billing.app.domain.exceptions.TypeMismatchException;
 import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.unit.UnitService;
 import com.billing.app.domain.service.unit.UnitServiceInterface;
@@ -23,7 +20,7 @@ public class UnitController {
     UnitServiceInterface unitServiceInterface = new UnitService();
     UnitValidator unitValidator = new UnitValidator();
 
-    public Unit create(ArrayList<String> values) throws SQLException, ClassNotFoundException, TypeMismatchException, IllegalArgumentException, TemplateMismatchException {
+    public Unit create(ArrayList<String> values) throws SQLException, ClassNotFoundException, TypeMismatchException, IllegalArgumentException, TemplateMismatchException, ObjectNullPointerException {
 
         int expectedLength = 4;
         int actualLength = values.size();
@@ -37,7 +34,7 @@ public class UnitController {
     }
 
 
-    public Unit edit(ArrayList<String> values) throws SQLException, ClassNotFoundException, IllegalAccessException, NullPointerException, CodeNullException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException {
+    public Unit edit(ArrayList<String> values) throws SQLException, ClassNotFoundException, IllegalAccessException, NullPointerException, CodeNullException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
 
         int expectedLength = 10;
         int actualLength = values.size();
@@ -86,9 +83,9 @@ public class UnitController {
             }
         }
 
-        public ArrayList<Unit> list () throws SQLException, ClassNotFoundException {
+        public List<Unit> list () throws SQLException, ClassNotFoundException {
             unitServiceInterface = new UnitService();
-            ArrayList<Unit> unitArrayList = unitServiceInterface.list();
+            List<Unit> unitArrayList = unitServiceInterface.list();
             return unitArrayList;
         }
 

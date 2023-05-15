@@ -24,6 +24,7 @@ public class Router {
 
         switch (module) {
             case "product":
+
                 productCLI = new ProductCLI();
                 productCLI.execute(arrayList);
                 break;

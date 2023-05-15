@@ -23,7 +23,7 @@ public class ProductJdbcDAO implements ProductDAO {
 
 
     @Override
-    public Product edit(Product product) throws ClassNotFoundException, SQLException, CodeNotFoundException {
+    public Product edit(Product product) throws ClassNotFoundException, SQLException {
         String query = "UPDATE product SET code = ?, name = ?, unitcode = ?, type = ?, price = ?, stock = ?, isdeleted = ? WHERE id = ?";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, product);

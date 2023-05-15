@@ -9,6 +9,7 @@ import com.billing.app.domain.exceptions.CodeNullException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UnitService implements UnitServiceInterface {
     private UnitDAO unitDAO = new UnitJdbcDAO();
@@ -23,7 +24,7 @@ public class UnitService implements UnitServiceInterface {
     }
 
     @Override
-    public Unit edit(Unit unit) throws ClassNotFoundException, SQLException, ObjectNullPointerException, CodeNotFoundException {
+    public Unit edit(Unit unit) throws ClassNotFoundException, SQLException, CodeNotFoundException, ObjectNullPointerException {
 
         try {
             unitValidator.validate(unit);
@@ -45,9 +46,9 @@ public class UnitService implements UnitServiceInterface {
         return true;
     }
 
-    public ArrayList<Unit> list() throws SQLException, ClassNotFoundException {
+    public List<Unit> list() throws SQLException, ClassNotFoundException {
         unitDAO = new UnitJdbcDAO();
-        ArrayList<Unit> unitArrayList = unitDAO.list();
-        return unitArrayList;
+        List<Unit> units = unitDAO.list();
+        return units;
     }
 }

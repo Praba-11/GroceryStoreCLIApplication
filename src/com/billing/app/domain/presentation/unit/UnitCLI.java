@@ -1,15 +1,15 @@
 package com.billing.app.domain.presentation.unit;
 
 import com.billing.app.domain.entity.Unit;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.CodeNullException;
-import com.billing.app.domain.exceptions.TemplateMismatchException;
+import com.billing.app.domain.exceptions.*;
+import com.billing.app.domain.exceptions.IllegalArgumentException;
 import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.presentation.store.StoreHelp;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Formatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class UnitCLI {
@@ -42,6 +42,14 @@ public class UnitCLI {
                     System.out.println(sqlMessage);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
+                } catch (ObjectNullPointerException e) {
+                    throw new RuntimeException(e);
+                } catch (TypeMismatchException e) {
+                    throw new RuntimeException(e);
+                } catch (TemplateMismatchException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException(e);
                 }
                 break;
 
@@ -66,6 +74,14 @@ public class UnitCLI {
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (ObjectNullPointerException e) {
+                    throw new RuntimeException(e);
+                } catch (TypeMismatchException e) {
+                    throw new RuntimeException(e);
+                } catch (CodeNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalArgumentException e) {
                     throw new RuntimeException(e);
                 }
                 break;
@@ -102,7 +118,7 @@ public class UnitCLI {
                         unitHelp = new UnitHelp();
                         unitHelp.listUnit();
                     } else {
-                        ArrayList<Unit> unitArrayList = unitController.list();
+                        List<Unit> unitArrayList = unitController.list();
                         System.out.println("List returned successfully.");
                         for (Unit unit : unitArrayList) {
                             System.out.println("id: " + unit.getId() + ", name: " + unit.getName() + ", code: " + unit.getCode() + ", description: " + unit.getDescription() + ", isdividable: " + unit.isDividable());

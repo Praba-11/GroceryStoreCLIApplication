@@ -1,36 +1,28 @@
 package com.billing.app.domain.database;
 
 import com.billing.app.domain.entity.Unit;
-import com.billing.app.domain.entity.User;
-import com.billing.app.domain.exceptions.CustomException;
-import com.billing.app.domain.exceptions.ProductException;
 
-import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UnitJdbcDAO implements UnitDAO {
     Unit unit;
+    private List<Unit> unitList;
     ConnectionDB connectionDB = new ConnectionDB();
     ArrayList<Unit> unitArrayList = new ArrayList<>();
 
     @Override
-    public boolean create(Unit unit) throws SQLException, ClassNotFoundException {
+    public Unit create(Unit unit) throws SQLException, ClassNotFoundException {
 
-        // Storing Unit in Database table
         String query = "INSERT INTO unit (name, code, description, isdividable) VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-        preparedStatement.setString(1, unit.getName());
-        preparedStatement.setString(2, unit.getCode());
-        preparedStatement.setString(3, unit.getDescription());
-        preparedStatement.setBoolean(4, unit.isDividable());
-        int rowsAffected = preparedStatement.executeUpdate();
-        preparedStatement.close();
-
-        return rowsAffected > 0;
+        PreparedStatement statement = setQuery(preparedStatement, unit);
+        statement.executeUpdate();
+        return unit;
 
     }
 
@@ -39,30 +31,23 @@ public class UnitJdbcDAO implements UnitDAO {
 
 
     @Override
-    public boolean edit(Unit unit) throws SQLException, ClassNotFoundException, IllegalAccessException {
+    public Unit edit(Unit unit) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE unit SET name = ?, code = ?, description = ?, isdividable = ? WHERE id = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        PreparedStatement statement = setQuery(preparedStatement, unit);
+        statement.setInt(8, unit.getId());
+        statement.executeUpdate();
+        return unit;
 
-        // Edit Unit in Database table
-        Statement statement = connectionDB.getConnection().createStatement();
-        int rowsAffected = 0;
-        Field[] fields = unit.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Object value = field.get(unit);
-            String query = "UPDATE unit SET " + field.getName() + " = '" + value + "' WHERE code = '" + unit.getCode() + "'";
-            rowsAffected = statement.executeUpdate(query);
-        }
-        return rowsAffected > 0;
     }
 
 
 
 
     @Override
-    public boolean delete(String key, String value) throws SQLException, ClassNotFoundException {
+    public boolean delete(int id) throws SQLException, ClassNotFoundException {
 
-        // Delete Unit in Database table
-        ConnectionDB connectionDB = new ConnectionDB();
-        String query = "DELETE FROM unit WHERE " + key + " = '" + value + "'";
+        String query = "DELETE FROM unit WHERE id = " + id ;
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         int rowsAffected = preparedStatement.executeUpdate();
         preparedStatement.close();
@@ -73,63 +58,67 @@ public class UnitJdbcDAO implements UnitDAO {
 
 
     @Override
-    public ArrayList<Unit> list() throws SQLException, ClassNotFoundException {
+    public List<Unit> list() throws SQLException, ClassNotFoundException {
 
-        // Returns arraylist of Units from Database table
         ConnectionDB connectionDB = new ConnectionDB();
         String query = "SELECT * FROM unit";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            int id = resultSet.getInt(1);
-            String name = resultSet.getString(2);
-            String code = resultSet.getString(3);
-            String description = resultSet.getString(4);
-            boolean isDividable = resultSet.getBoolean(5);
-            unit = new Unit(id, name, code, description, isDividable);
-            unitArrayList.add(unit);
-        }
-        statement.close();
-        resultSet.close();
-        return unitArrayList;
+        List<Unit> units = listUnit(resultSet);
+        return units;
 
     }
 
 
 
-    public boolean isCodePresent(String code) throws SQLException, ClassNotFoundException {
-
-        boolean flag = false;
-        String query = "SELECT EXISTS(SELECT 1 FROM unit WHERE code = '" + code + "')";
+    public Unit find(int id) throws SQLException, ClassNotFoundException {
+        Unit unitFound = null;
+        String query = "SELECT * FROM unit WHERE id = '" + id + "'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next())
-            flag = resultSet.getBoolean(1);
-        return flag;
-
+        unit = new Unit();
+        while (resultSet.next()) {
+            unitFound = setUnit(unit, resultSet);
+        }
+        return unitFound;
     }
 
-    public Unit getUnitByCode(String code) throws SQLException, ClassNotFoundException {
-        String query = "SELECT * FROM unit WHERE code = '" + code + "'";
+    public int count() throws SQLException, ClassNotFoundException {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM unit";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         while (resultSet.next()) {
-            int id = resultSet.getInt(1);
-            String name = resultSet.getString(2);
-            String description = resultSet.getString(4);
-            boolean isDividable = resultSet.getBoolean(5);
-            unit = new Unit(id, name, code, description, isDividable);
+            count = resultSet.getInt(1);
         }
+        return count;
+    }
+
+    private List<Unit> listUnit(ResultSet resultSet) throws SQLException {
+        unitList = new ArrayList<>();
+        while (resultSet.next()) {
+            unit = new Unit();
+            Unit setUnit = setUnit(unit, resultSet);
+            unitList.add(setUnit);
+        }
+        return unitList;
+    }
+
+
+    private Unit setUnit(Unit unit, ResultSet resultSet) throws SQLException {
+        unit.setId(resultSet.getInt(1));
+        unit.setName(resultSet.getString(2));
+        unit.setCode(resultSet.getString(3));
+        unit.setDescription(resultSet.getString(4));
+        unit.setDividable(resultSet.getBoolean(5));
         return unit;
     }
 
-    public boolean isIdPresent(String id) throws SQLException, ClassNotFoundException {
-        boolean flag = false;
-        String query = "SELECT EXISTS(SELECT 1 FROM unit WHERE id = '" + id + "')";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next())
-            flag = resultSet.getBoolean(1);
-        return flag;
+    private PreparedStatement setQuery(PreparedStatement preparedStatement, Unit unit) throws SQLException {
+        preparedStatement.setString(1, unit.getName());
+        preparedStatement.setString(2, unit.getCode());
+        preparedStatement.setString(3, unit.getDescription());
+        preparedStatement.setBoolean(4, unit.isDividable());
+        return preparedStatement;
     }
 }

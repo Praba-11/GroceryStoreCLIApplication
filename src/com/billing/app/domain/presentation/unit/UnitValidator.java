@@ -34,13 +34,13 @@ public class UnitValidator {
             throw new IllegalArgumentException("Unit code: " + code + " is incompatible. Provide a unit code of valid length.");
         }
         if (code.trim().length() == 0) {
-            throw new IllegalArgumentException("Product code is mandatory. Please provide a valid product code.");
+            throw new IllegalArgumentException("Unit code is mandatory. Please provide a valid unit code.");
         }
         if (name.length() < 3 || name.length() > 30) {
-            throw new IllegalArgumentException("Product name: " + name + " is incompatible. Provide a product code of valid length.");
+            throw new IllegalArgumentException("Unit name: " + name + " is incompatible. Provide a unit code of valid length.");
         }
         if (name.trim().length() == 0) {
-            throw new IllegalArgumentException("Product name cannot be empty. Please provide a valid product name.");
+            throw new IllegalArgumentException("Unit name cannot be empty. Please provide a valid unit name.");
         }
 
         return true;

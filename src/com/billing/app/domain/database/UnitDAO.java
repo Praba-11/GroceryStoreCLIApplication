@@ -1,18 +1,18 @@
 package com.billing.app.domain.database;
 
+import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.CustomException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface UnitDAO {
-    boolean create(Unit unit) throws SQLException, ClassNotFoundException;
-    boolean edit(Unit unit) throws SQLException, ClassNotFoundException, IllegalAccessException;
-    boolean delete(String key, String value) throws SQLException, ClassNotFoundException;
-    ArrayList<Unit> list() throws SQLException, ClassNotFoundException;
-    Unit getUnitByCode(String code) throws SQLException, ClassNotFoundException;
-    boolean isCodePresent(String code) throws SQLException, ClassNotFoundException;
-    boolean isIdPresent(String id) throws SQLException, ClassNotFoundException;
-
+    Unit create(Unit unit) throws SQLException, ClassNotFoundException;
+    Unit edit(Unit unit) throws SQLException, ClassNotFoundException;
+    boolean delete(int id) throws SQLException, ClassNotFoundException;
+    List<Unit> list() throws SQLException, ClassNotFoundException;
+    Unit find(int id) throws SQLException, ClassNotFoundException;
+    int count() throws SQLException, ClassNotFoundException;
 }
