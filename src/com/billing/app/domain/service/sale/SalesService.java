@@ -20,6 +20,7 @@ public class SalesService implements SalesServiceInterface {
     public Sales create(Sales sales) throws SQLException, ClassNotFoundException, CodeNotFoundException {
         if (salesValidator.valid(sales)) {
             float grandTotal = 0;
+            salesDAO.create(sales);
             for (SalesItem salesItem : sales.getListOfSalesItem()) {
                 salesItem.setInvoice(sales.getInvoice());
                 salesItem.setCostPrice(productDAO.getPrice(salesItem.getCode()));
@@ -27,7 +28,7 @@ public class SalesService implements SalesServiceInterface {
                 sales.setGrandTotal(grandTotal);
                 salesItemDAO.create(salesItem);
             }
-            s
+
         }
         return sales;
     }

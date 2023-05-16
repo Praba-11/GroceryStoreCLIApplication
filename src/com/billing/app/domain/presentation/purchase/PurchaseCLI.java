@@ -1,11 +1,9 @@
 package com.billing.app.domain.presentation.purchase;
 
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.IllegalArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
-import com.billing.app.domain.presentation.product.ProductHelp;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -53,8 +51,8 @@ public class PurchaseCLI {
                 break;
 
             case "list":
-                List<String> command = stringArrayList.subList(0, stringArrayList.size()-1);
-                String[] lastSplit = stringArrayList.get(stringArrayList.size()-1).split("\\s+");
+                List<String> command = stringArrayList.subList(0, stringArrayList.size() - 1);
+                String[] lastSplit = stringArrayList.get(stringArrayList.size() - 1).split("\\s+");
                 command.addAll(Arrays.asList(lastSplit));
                 if (command.size() == 3 && command.get(2).equals("help")) {
 //                    productHelp = new ProductHelp();
