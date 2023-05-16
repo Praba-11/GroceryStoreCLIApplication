@@ -94,5 +94,23 @@ public class PurchaseController {
 
     }
 
+    public int count(List<String> values) throws SQLException, ClassNotFoundException, TemplateMismatchException {
+        int actualLength;
+        actualLength = values.size();
+        if (actualLength == 0) {
+            return purchaseServiceInterface.count("1970-01-01", "40000-01-01");
+        }
+        else if (actualLength == 1) {
+            String date = values.get(0);
+            return purchaseServiceInterface.count(date, date);
+        } else if (actualLength == 2) {
+            String from, to;
+            from = values.get(0);
+            to = values.get(1);
+            return purchaseServiceInterface.count(from, to);
+        } else {
+            throw new TemplateMismatchException("Invalid argument length. Provided: " + actualLength);
+        }
 
+    }
 }

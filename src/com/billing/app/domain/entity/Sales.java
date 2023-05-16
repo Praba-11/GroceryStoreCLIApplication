@@ -1,11 +1,12 @@
 package com.billing.app.domain.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class Sales {
     private Date date;
     private int invoice;
-    SalesItem salesItem;
+    List<SalesItem> listOfSalesItem;
     float grandTotal;
 
     public float getGrandTotal() {
@@ -32,11 +33,21 @@ public class Sales {
         this.invoice = invoice;
     }
 
-    public SalesItem getSalesItem() {
-        return salesItem;
+    public List<SalesItem> getListOfSalesItem() {
+        return listOfSalesItem;
     }
 
-    public void setSalesItem(SalesItem salesItem) {
-        this.salesItem = salesItem;
+    public void setListOfSalesItem(List<SalesItem> listOfSalesItem) {
+        this.listOfSalesItem = listOfSalesItem;
+    }
+
+    @Override
+    public String toString() {
+        return "Sales{" +
+                "date=" + date +
+                ", invoice=" + invoice +
+                ", listOfSalesItem=" + listOfSalesItem +
+                ", grandTotal=" + grandTotal +
+                '}';
     }
 }

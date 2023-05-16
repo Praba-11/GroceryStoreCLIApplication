@@ -66,12 +66,6 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
 
     public int count(String from, String to) throws SQLException, ClassNotFoundException {
         int count = 0;
-        String query = "SELECT COUNT(*) FROM purchase WHERE purchase_date = BETWEEN '" + from + "' AND '" + to + "'";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            count = resultSet.getInt(1);
-        }
         return count;
     }
 

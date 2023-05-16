@@ -5,6 +5,7 @@ import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.presentation.product.ProductCLI;
 import com.billing.app.domain.presentation.purchase.PurchaseCLI;
+import com.billing.app.domain.presentation.sale.SalesCLI;
 import com.billing.app.domain.presentation.store.StoreCLI;
 import com.billing.app.domain.presentation.unit.UnitCLI;
 import com.billing.app.domain.presentation.user.UserCLI;
@@ -20,6 +21,7 @@ public class Router {
         StoreCLI storeCLI;
         UserCLI userCLI;
         PurchaseCLI purchaseCLI;
+        SalesCLI salesCLI;
         String module = arrayList.get(0);
 
         switch (module) {
@@ -47,7 +49,12 @@ public class Router {
             case "purchase":
                 purchaseCLI = new PurchaseCLI();
                 purchaseCLI.execute(arrayList);
+                break;
 
+            case "sales":
+                salesCLI = new SalesCLI();
+                salesCLI.execute(arrayList);
+                break;
         }
     }
 }

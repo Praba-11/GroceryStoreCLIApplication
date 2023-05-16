@@ -9,12 +9,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SalesDAOImplementation {
+public class SalesDAOImplementation implements SalesDAO {
     Sales sales;
     List<Sales> salesList;
     ConnectionDB connectionDB = new ConnectionDB();
     public Sales create(Sales sales) throws SQLException, ClassNotFoundException {
-        String query = "INSERT INTO sales (invoice, date, grand_total) VALUES (?, ?, ?)";
+        String query = "INSERT INTO sales (invoice_id, sales_date, grand_total) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, sales);
         statement.executeUpdate();
@@ -22,7 +22,7 @@ public class SalesDAOImplementation {
     }
 
     public boolean delete(int invoice) throws SQLException, ClassNotFoundException {
-        String query = "DELETE * FROM sales WHERE invoice = " + invoice;
+        String query = "DELETE FROM sales WHERE invoice_id = " + invoice;
         Statement statement = connectionDB.getConnection().createStatement();
         int rowsAffected = statement.executeUpdate(query);
         return rowsAffected > 0;
@@ -52,6 +52,21 @@ public class SalesDAOImplementation {
             salesList.add(setSales);
         }
         return salesList;
+    }
+
+    public boolean find(String code) throws SQLException, ClassNotFoundException {
+        boolean flag = false;
+        String query = "SELECT EXISTS(SELECT 1 FROM product WHERE code = '" + code + "') AS code_exists";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            flag = resultSet.getBoolean(1);
+        }
+        return flag;
+    }
+    public int count(String from, String to) throws SQLException, ClassNotFoundException {
+        int count = 0;
+        return count;
     }
 
     private Sales setSales(Sales sales, ResultSet resultSet) throws SQLException {

@@ -113,4 +113,16 @@ public class ProductDAOImplementation implements ProductDAO {
         preparedStatement.setBoolean(7, product.isDeleted());
         return preparedStatement;
     }
+
+    public float getPrice(String code) throws SQLException, ClassNotFoundException {
+        float price = 0;
+        String query = "SELECT price FROM product WHERE code = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        preparedStatement.setString(1, code);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()) {
+            price = resultSet.getFloat(1);
+        }
+        return price;
+    }
 }

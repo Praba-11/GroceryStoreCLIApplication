@@ -62,4 +62,9 @@ public class PurchaseService implements PurchaseServiceInterface {
         }
         return list;
     }
+
+    public int count(String from, String to) throws SQLException, ClassNotFoundException {
+        int count = purchaseDAO.count(from, to);
+        return count;
+    }
 }

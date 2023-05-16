@@ -79,6 +79,18 @@ public class PurchaseCLI {
                     }
                 }
                 break;
+
+            case "count":
+                try {
+                    List<String> values = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
+                    purchaseController.count(values);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (TemplateMismatchException e) {
+                    throw new RuntimeException(e);
+                }
         }
 
     }

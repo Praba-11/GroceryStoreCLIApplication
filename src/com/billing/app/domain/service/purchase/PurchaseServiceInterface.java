@@ -11,4 +11,5 @@ public interface PurchaseServiceInterface {
     Purchase create(Purchase purchase) throws SQLException, ClassNotFoundException, CodeNotFoundException;
     boolean delete(int invoice) throws CodeNotFoundException, SQLException, ClassNotFoundException;
     List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException, IllegalArgumentException;
+    int count(String from, String to) throws SQLException, ClassNotFoundException;
 }

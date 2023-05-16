@@ -14,4 +14,5 @@ public interface ProductDAO {
     List<Product> list(String searchText) throws SQLException, ClassNotFoundException;
     Product find(int id) throws SQLException, ClassNotFoundException;
     int count() throws SQLException, ClassNotFoundException;
+    float getPrice(String code) throws SQLException, ClassNotFoundException;
 }

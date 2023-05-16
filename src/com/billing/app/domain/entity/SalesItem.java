@@ -1,8 +1,18 @@
 package com.billing.app.domain.entity;
 
 public class SalesItem {
+    private int invoice;
+
+    public int getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(int invoice) {
+        this.invoice = invoice;
+    }
+
     private String code;
-    private int quantity;
+    private float quantity;
     private float costPrice;
 
     public String getCode() {
@@ -13,11 +23,11 @@ public class SalesItem {
         this.code = code;
     }
 
-    public int getQuantity() {
+    public float getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
 
