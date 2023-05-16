@@ -55,6 +55,9 @@ public class Router {
                 salesCLI = new SalesCLI();
                 salesCLI.execute(arrayList);
                 break;
+
+            case "stock":
+
         }
     }
 }

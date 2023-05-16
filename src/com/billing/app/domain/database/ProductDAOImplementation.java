@@ -13,7 +13,8 @@ public class ProductDAOImplementation implements ProductDAO {
 
     @Override
     public Product create(Product product) throws ClassNotFoundException, SQLException {
-        String query = "INSERT INTO product (code, name, unitcode, type, price, stock, isdeleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO product (code, name, unitcode, type, price, stock, isdeleted) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, product);
         statement.executeUpdate();
@@ -23,7 +24,8 @@ public class ProductDAOImplementation implements ProductDAO {
 
     @Override
     public Product edit(Product product) throws ClassNotFoundException, SQLException {
-        String query = "UPDATE product SET code = ?, name = ?, unitcode = ?, type = ?, price = ?, stock = ?, isdeleted = ? WHERE id = ?";
+        String query = "UPDATE product SET code = ?, name = ?, unitcode = ?, type = ?, price = ?, stock = ?, " +
+                "isdeleted = ? WHERE id = ?";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, product);
         statement.setInt(8, product.getId());
@@ -42,8 +44,10 @@ public class ProductDAOImplementation implements ProductDAO {
     }
 
 
-    public List<Product> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
-        String query = "SELECT * FROM product WHERE CAST(" + attribute + " AS TEXT) ILIKE '%" + searchText + "%' LIMIT " + range + " OFFSET " + page;
+    public List<Product> list(int range, int page, String attribute, String searchText)
+            throws SQLException, ClassNotFoundException {
+        String query = "SELECT * FROM product WHERE CAST(" + attribute + " AS TEXT) ILIKE '%" + searchText + "%' " +
+                "LIMIT " + range + " OFFSET " + page;
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         List<Product> products = listProducts(resultSet);
@@ -124,5 +128,23 @@ public class ProductDAOImplementation implements ProductDAO {
             price = resultSet.getFloat(1);
         }
         return price;
+    }
+
+    public boolean setStock(String code, float stock) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE product SET stock = ? WHERE code = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        preparedStatement.setFloat(1, stock);
+        preparedStatement.setString(2, code);
+        int rowsAffected = preparedStatement.executeUpdate();
+        return rowsAffected > 0;
+    }
+
+    public boolean setPrice(String code, float price) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE product SET price = ? WHERE code = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        preparedStatement.setFloat(1, price);
+        preparedStatement.setString(2, code);
+        int rowsAffected = preparedStatement.executeUpdate();
+        return rowsAffected > 0;
     }
 }
