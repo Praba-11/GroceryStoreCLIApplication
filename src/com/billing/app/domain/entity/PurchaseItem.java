@@ -1,6 +1,16 @@
 package com.billing.app.domain.entity;
 
 public class PurchaseItem {
+    private int invoice;
+
+    public int getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(int invoice) {
+        this.invoice = invoice;
+    }
+
     private String code;
     private float quantity;
     private float costPrice;
@@ -32,7 +42,8 @@ public class PurchaseItem {
     @Override
     public String toString() {
         return "PurchaseItem{" +
-                "code='" + code + '\'' +
+                "invoice=" + invoice +
+                ", code='" + code + '\'' +
                 ", quantity=" + quantity +
                 ", costPrice=" + costPrice +
                 '}';

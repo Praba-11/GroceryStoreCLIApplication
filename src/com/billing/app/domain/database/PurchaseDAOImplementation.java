@@ -12,7 +12,7 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     List<Purchase> purchaseList;
     ConnectionDB connectionDB = new ConnectionDB();
     public Purchase create(Purchase purchase) throws SQLException, ClassNotFoundException {
-        String query = "INSERT INTO purchase (invoice, date, grand_total) VALUES (?, ?, ?)";
+        String query = "INSERT INTO purchase (invoice_id, purchase_date, grand_total) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, purchase);
         statement.executeUpdate();
@@ -20,13 +20,14 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     }
 
     public boolean delete(int invoice) throws SQLException, ClassNotFoundException {
-        String query = "DELETE * FROM purchase WHERE invoice = " + invoice;
+        String query = "DELETE FROM purchase WHERE invoice_id = " + invoice;
         Statement statement = connectionDB.getConnection().createStatement();
         int rowsAffected = statement.executeUpdate(query);
         return rowsAffected > 0;
     }
 
     public List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
+        System.out.println(attribute);
         String query = "SELECT * FROM purchase WHERE CAST(" + attribute + " AS TEXT) ILIKE '%" + searchText + "%' LIMIT " + range + " OFFSET " + page;
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -35,7 +36,7 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     }
 
     public List<Purchase> list(String searchText) throws SQLException, ClassNotFoundException {
-        String query = "SELECT * FROM purchase WHERE CAST(id AS TEXT) ILIKE '%" + searchText + "%' OR code ILIKE '%" + searchText + "%' OR name ILIKE '%" + searchText + "%' OR unitcode ILIKE '%" + searchText + "%' OR type ILIKE '%" + searchText + "%' OR CAST(price AS TEXT) ILIKE '%" + searchText + "%' OR CAST(stock AS TEXT) ILIKE '%" + searchText + "%'";
+        String query = "SELECT * FROM purchase WHERE CAST(invoice_id AS TEXT) ILIKE '%" + searchText + "%' OR CAST(purchase_date AS TEXT) ILIKE '%" + searchText + "%' OR CAST(grand_total AS TEXT) ILIKE '%" + searchText + "%'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         List<Purchase> purchases = listPurchases(resultSet);
@@ -50,6 +51,28 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
             purchaseList.add(setPurchase);
         }
         return purchaseList;
+    }
+
+    public boolean find(String code) throws SQLException, ClassNotFoundException {
+        boolean flag = false;
+        String query = "SELECT EXISTS(SELECT 1 FROM product WHERE code = '" + code + "') AS code_exists";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            flag = resultSet.getBoolean(1);
+        }
+        return flag;
+    }
+
+    public int count(String from, String to) throws SQLException, ClassNotFoundException {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM purchase WHERE purchase_date = BETWEEN '" + from + "' AND '" + to + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            count = resultSet.getInt(1);
+        }
+        return count;
     }
 
     private Purchase setPurchase(Purchase purchase, ResultSet resultSet) throws SQLException {
