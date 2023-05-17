@@ -19,15 +19,20 @@ public class ProductCLI {
     Main main = new Main();
     List<String> splitBySpaces;
 
-    public void execute(String command) throws TemplateMismatchException {
+    public void execute(String command) {
         splitBySpaces = main.splitBySpaces(command);
         String action = splitBySpaces.get(0);
         System.out.println(action);
+
+
+
         ProductController productController = new ProductController();
         switch (action) {
             case "create":
                 try {
-                    List<String> arraylist;
+                    String createCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    System.out.println(createCommand);
+                    List<String> arraylist = new ArrayList<>();
                     if (arraylist.size() == 1 && arraylist.get(0).equals("help")) {
                         productHelp = new ProductHelp();
                         productHelp.createProduct();
@@ -61,6 +66,8 @@ public class ProductCLI {
 
             case "edit":
                 try {
+                    String editCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    System.out.println(editCommand);
                     if (arraylist.size() == 3 && arraylist.get(2).equals("help")) {
                         productHelp = new ProductHelp();
                         productHelp.editProduct();
@@ -93,6 +100,8 @@ public class ProductCLI {
 
             case "delete":
                 try {
+                    String deleteCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    System.out.println(deleteCommand);
                     if (arraylist.size() == 1 && arraylist.get(0).equals("help")) {
                         productHelp = new ProductHelp();
                         productHelp.deleteProduct();
@@ -118,30 +127,30 @@ public class ProductCLI {
 
 
             case "list":
-                List<String> arrayList = list(command);
-                System.out.println(arrayList);
-//                if (command.size() == 3 && command.get(2).equals("help")) {
-//                    productHelp = new ProductHelp();
-//                    productHelp.listProduct();
-//                } else {
-//                    values = new ArrayList<>(command.subList(2, command.size()));
-//                    try {
-//                        List<Product> productArray = productController.list(values);
-//                        System.out.println("List returned successfully.");
-//                        for (Product products : productArray) {
-//                            System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
-//                        }
-//                    } catch (IllegalArgumentException exception) {
-//                        System.out.println("Incompatible argument. " + exception.getMessage());
-//                    } catch (TemplateMismatchException exception) {
-//                        System.out.println("Template mismatch. " + exception.getMessage());
-//                    } catch (SQLException e) {
-//                        throw new RuntimeException(e);
-//                    } catch (ClassNotFoundException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//                break;
+                String listCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                System.out.println(listCommand);
+                if (command.size() == 3 && command.get(2).equals("help")) {
+                    productHelp = new ProductHelp();
+                    productHelp.listProduct();
+                } else {
+                    values = new ArrayList<>(command.subList(2, command.size()));
+                    try {
+                        List<Product> productArray = productController.list(values);
+                        System.out.println("List returned successfully.");
+                        for (Product products : productArray) {
+                            System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
+                        }
+                    } catch (IllegalArgumentException exception) {
+                        System.out.println("Incompatible argument. " + exception.getMessage());
+                    } catch (TemplateMismatchException exception) {
+                        System.out.println("Template mismatch. " + exception.getMessage());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
         }
     }
 }

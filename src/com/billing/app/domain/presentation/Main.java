@@ -1,6 +1,5 @@
 package com.billing.app.domain.presentation;
 
-import com.billing.app.domain.exceptions.IllegalArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 
 import java.text.ParseException;
@@ -10,7 +9,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws ParseException, TemplateMismatchException {
+    public static void main(String[] args) throws ParseException {
 
 
         Scanner scanner = new Scanner(System.in);
@@ -19,59 +18,22 @@ public class Main {
         if (input.equals("exit")) {
             System.out.println("exit");
         } else {
-//            ArrayList<String> command = separateString(input);
             Router router = new Router();
             router.module(input);
+
         }
     }
 
 
-//    private static ArrayList<String> separateString(String input) {
-//
-//        ArrayList<String> splitByCommas = new ArrayList<>();
-//        ArrayList<String> splitByCommasAndSpaces = new ArrayList<>();
-//
-//        String[] parts = input.trim().split("\\s*[,]\\s*");
-//        for (String part : parts) {
-//            splitByCommas.add(part);
-//        }
-//        String firstStringSet = splitByCommas.get(0);
-//        String[] sample = firstStringSet.split("\\s+");
-//
-//        for (String element : sample) {
-//            splitByCommasAndSpaces.add(element);
-//        }
-//        for (int index = 1; index<splitByCommas.size(); index++) {
-//            splitByCommasAndSpaces.add(splitByCommas.get(index).trim());
-//        }
-//
-//        return splitByCommasAndSpaces;
-//
-//    }
 
 
-
-    public List<String> splitBySpaces(String command) throws TemplateMismatchException {
+    public List<String> splitBySpaces(String command) {
         List<String> splitBySpaces = new ArrayList<>();
-        String specialCharsPattern = ".*[,:!@#$%^&*()].*";
-        if (command.matches(specialCharsPattern)) {
-            String[] parts = command.trim().split("\\s+");
-            for (String part : parts) {
-                splitBySpaces.add(part.trim());
-            }
-        } else {
-            throw new TemplateMismatchException("Provided command is of invalid template.");
+        String[] parts = command.trim().split("\\s+");
+        for (String part : parts) {
+            splitBySpaces.add(part.trim());
         }
         return splitBySpaces;
-    }
-
-    public List<String> splitByCommas(String command) {
-        List<String> splitByCommas = new ArrayList<>();
-        String[] parts = command.trim().split("\\s*,\\s*");
-        for (String part : parts) {
-            splitByCommas.add(part.trim());
-        }
-        return splitByCommas;
     }
 }
 

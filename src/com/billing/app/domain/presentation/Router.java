@@ -18,7 +18,7 @@ import java.util.List;
 public class Router {
     List<String> attributes;
     Unit unit;
-    public void module(String command) throws ParseException, TemplateMismatchException {
+    public void module(String command) throws ParseException {
         ProductCLI productCLI;
         UnitCLI unitCLI;
         StoreCLI storeCLI;
