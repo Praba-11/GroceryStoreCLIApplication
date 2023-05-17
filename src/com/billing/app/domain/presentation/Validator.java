@@ -16,47 +16,11 @@ import java.util.Map;
 
 public class Validator {
 
-    public boolean validateId(String key, String identifier) throws IllegalArgumentException, TypeMismatchException {
-        try {
-            int id = Integer.parseInt(identifier);;
-            if (id < 0) {
-                throw new IllegalArgumentException("Product id cannot be negative.");
-            }
-        } catch (NumberFormatException exception) {
-            throw new TypeMismatchException("'" + identifier + "'. Provided input is incompatible.");
-        }
-        if (key.trim().length() == 0) {
-            throw new IllegalArgumentException(key + " cannot be empty.");
-        }
-        return true;
-    }
-
-
-    public boolean validateProductDetails(List<String> productDetails) throws IllegalArgumentException, TypeMismatchException {
-
-        String code = productDetails.get(0);
-        String name = productDetails.get(1);
-        String unitCode = productDetails.get(2);
-        String type = productDetails.get(3);
-
-        try {
-            float price = Float.parseFloat(productDetails.get(4));
-            if (price < 0) {
-                throw new IllegalArgumentException("Product price cannot be negative.");
-            }
-        } catch (NumberFormatException exception) {
-            throw new TypeMismatchException("'" + productDetails.get(4) + "'. Provided input is incompatible.");
-        }
-
-        try {
-            float stock = Float.parseFloat(productDetails.get(5));
-            if (stock < 0) {
-                throw new IllegalArgumentException("Product stock cannot be negative.");
-            }
-        } catch(NumberFormatException exception) {
-            throw new TypeMismatchException("'" + productDetails.get(5) + "'. Provided input is incompatible.");
-        }
-
+    public boolean validateValues(List<String> values) throws IllegalArgumentException, TypeMismatchException {
+        String code = values.get(0);
+        String name = values.get(1);
+        String unitCode = values.get(2);
+        String type = values.get(3);
         if (code.length() < 2 || code.length() > 6) {
             throw new IllegalArgumentException("Product code: " + code + " is incompatible. Provide a product code of valid length.");
         }
@@ -75,11 +39,26 @@ public class Validator {
         if (type.trim().length() == 0) {
             throw new IllegalArgumentException("Product type cannot be empty. Please provide a valid product type.");
         }
-
+        try {
+            String price = values.get(4);
+            float castedPrice = Float.parseFloat(price);
+            if (castedPrice < 0) {
+                throw new IllegalArgumentException("Product price cannot be negative.");
+            }
+        } catch (NumberFormatException exception) {
+            throw new TypeMismatchException("'" + values.get(4) + "'. Provided input is incompatible.");
+        }
+        try {
+            String stock = values.get(5);
+            float castedStock = Float.parseFloat(stock);
+            if (castedStock < 0) {
+                throw new IllegalArgumentException("Product stock cannot be negative.");
+            }
+        } catch(NumberFormatException exception) {
+            throw new TypeMismatchException("'" + values.get(5) + "'. Provided input is incompatible.");
+        }
         return true;
     }
-
-
 
     public String validateSQLState(SQLException exception) {
         String sqlState = exception.getSQLState();
@@ -93,38 +72,86 @@ public class Validator {
     }
 
 
-    public boolean validateProductKeys(List<String> productKeys) throws IllegalArgumentException {
+    public boolean validateMap(Map<String, String> productMap) throws IllegalArgumentException, TypeMismatchException {
 
-        String codeKey = productKeys.get(0);
-        String nameKey = productKeys.get(1);
-        String unitCodeKey = productKeys.get(2);
-        String typeKey = productKeys.get(3);
-        String priceKey = productKeys.get(4);
-        String stockKey = productKeys.get(5);
-
-        if (codeKey.trim().length() == 0 || nameKey.trim().length() == 0 || unitCodeKey.trim().length() == 0 || typeKey.trim().length() == 0 || priceKey.trim().length() == 0 || stockKey.trim().length() == 0) {
-            throw new IllegalArgumentException("(key) cannot be empty.");
+        if (productMap.containsKey("id")) {
+            String identifier = productMap.get("id");
+            try {
+                int id = Integer.parseInt(identifier);;
+                if (id < 0) {
+                    throw new IllegalArgumentException("Product id cannot be negative.");
+                }
+            } catch (NumberFormatException exception) {
+                throw new TypeMismatchException("'" + identifier + "'. Provided input is incompatible.");
+            }
+        } else {
+            throw new IllegalArgumentException("Product Id not entered.");
         }
-        if (!codeKey.equals("code")) {
-            throw new IllegalArgumentException("Invalid key provided. " + codeKey + " doesn't exist.");
+        if (productMap.containsKey("code")) {
+            String code = productMap.get("code");
+            if (code.length() < 2 || code.length() > 6) {
+                throw new IllegalArgumentException("Product code: " + code + " is incompatible. Provide a product code of valid length.");
+            }
+            if (code.trim().length() == 0) {
+                throw new IllegalArgumentException("Product code is mandatory. Please provide a valid product code.");
+            }
+        } else {
+            throw new IllegalArgumentException("Product code not entered.");
         }
-        if (!nameKey.equals("name")) {
-            throw new IllegalArgumentException("Invalid key provided. " + nameKey + " doesn't exist.");
+        if (productMap.containsKey("name")) {
+            String name = productMap.get("name");
+            if (name.length() < 3 || name.length() > 30) {
+                throw new IllegalArgumentException("Product name: " + name + " is incompatible. Provide a product code of valid length.");
+            }
+            if (name.trim().length() == 0) {
+                throw new IllegalArgumentException("Product name cannot be empty. Please provide a valid product name.");
+            }
+        } else {
+            throw new IllegalArgumentException("Product name not entered.");
         }
-        if (!unitCodeKey.equals("unitcode")) {
-            throw new IllegalArgumentException("Invalid key provided. " + unitCodeKey + " doesn't exist.");
+        if (productMap.containsKey("unitcode")) {
+            String unitCode = productMap.get("unitcode");
+            if (unitCode.trim().length() == 0) {
+                throw new IllegalArgumentException("Product unit code cannot be empty. Please provide a valid product unit code.");
+            }
+        } else {
+            throw new IllegalArgumentException("Product unit code not entered.");
         }
-        if (!typeKey.equals("type")) {
-            throw new IllegalArgumentException("Invalid key provided. " + typeKey + " doesn't exist.");
+        if (productMap.containsKey("type")) {
+            String type = productMap.get("type");
+            if (type.trim().length() == 0) {
+                throw new IllegalArgumentException("Product type cannot be empty. Please provide a valid product type.");
+            }
+        } else {
+            throw new IllegalArgumentException("Product type not entered.");
         }
-        if (!priceKey.equals("price")) {
-            throw new IllegalArgumentException("Invalid key provided. " + priceKey + " doesn't exist.");
+        if (productMap.containsKey("price")) {
+            try {
+                String price = productMap.get("price");
+                float castedPrice = Float.parseFloat(price);
+                if (castedPrice < 0) {
+                    throw new IllegalArgumentException("Product price cannot be negative.");
+                }
+            } catch (NumberFormatException exception) {
+                throw new TypeMismatchException("'" + productMap.get("price") + "'. Provided input is incompatible.");
+            }
+        } else {
+            throw new IllegalArgumentException("Product price not entered.");
         }
-        if (!stockKey.equals("stock")) {
-            throw new IllegalArgumentException("Invalid key provided. " + stockKey + " doesn't exist.");
+        if (productMap.containsKey("stock")) {
+            try {
+                String stock = productMap.get("stock");
+                float castedStock = Float.parseFloat(stock);
+                if (castedStock < 0) {
+                    throw new IllegalArgumentException("Product stock cannot be negative.");
+                }
+            } catch(NumberFormatException exception) {
+                throw new TypeMismatchException("'" + productMap.get("stock") + "'. Provided input is incompatible.");
+            }
+        } else {
+            throw new IllegalArgumentException("Product stock not entered.");
         }
         return true;
-
     }
 
 

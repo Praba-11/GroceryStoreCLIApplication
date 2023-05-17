@@ -14,7 +14,7 @@ public class StockCLI {
             if (action.equals("update")) {
                 stockController.update(attributes);
             } else {
-                throw new IllegalArgumentException("Invalid attribute '" + action + "' in provided command. \n" +
+                throw new IllegalArgumentException("Invalid attribute '" + action + "' provided in command. \n" +
                         "Please provide a valid command.");
             }
         } catch (IllegalArgumentException exception) {

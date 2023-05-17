@@ -78,7 +78,6 @@ public class ProductService implements ProductServiceInterface {
     }
 
     public boolean priceUpdate(String code, float price) throws SQLException {
-        System.out.println(code + price);
         return productDAO.setPrice(code, price);
     }
 }

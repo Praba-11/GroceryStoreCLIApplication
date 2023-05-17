@@ -22,11 +22,11 @@ public class ProductController {
     private Validator validator = new Validator();
 
 
-    public Product create(ArrayList<String> values) throws ClassNotFoundException, SQLException, TemplateMismatchException, IllegalArgumentException, TypeMismatchException, ObjectNullPointerException {
+    public Product create(List<String> values) throws ClassNotFoundException, SQLException, TemplateMismatchException, IllegalArgumentException, TypeMismatchException, ObjectNullPointerException {
 
         int expectedLength = 6;
         int actualLength = values.size();
-        validator.validateProductDetails(values);
+        validator.validateValues(values);
         if (actualLength == expectedLength) {
             product = setValues(values, false);
             return productServiceInterface.create(product);
@@ -37,34 +37,14 @@ public class ProductController {
 
 
 
-    public Product edit(ArrayList<String> values) throws SQLException, ClassNotFoundException, NullPointerException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
+    public Product edit(Map<String, String> values) throws SQLException, ClassNotFoundException, NullPointerException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
 
-        int expectedLength = 14;
+        int expectedLength = 7;
         int actualLength = values.size();
-
-        valueList = new ArrayList<>();
-        keyList = new ArrayList<>();
-
         if (actualLength == expectedLength) {
-            for (int index = 0; index < values.size(); index += 2) {
-                String key = values.get(index);
-                String value = values.get(index + 1);
-                keyList.add(key);
-                valueList.add(value);
-            }
-
-            List<String> keys = new ArrayList<>(keyList.subList(1, keyList.size()));
-            List<String> details = new ArrayList<>(valueList.subList(1, valueList.size()));
-
-            String key = keyList.get(0);
-            String identifier = valueList.get(0);
-
-            validator.validateId(key, identifier);
-            validator.validateProductKeys(keys);
-            validator.validateProductDetails(details);
-
+            validator.validateMap(values);
+            valueList = new ArrayList<>(values.values());
             product = setValues(valueList, true);
-
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
@@ -75,7 +55,7 @@ public class ProductController {
 
 
 
-    public boolean delete(ArrayList<String> values) throws TemplateMismatchException, SQLException, ClassNotFoundException, CodeNotFoundException {
+    public boolean delete(List<String> values) throws TemplateMismatchException, SQLException, ClassNotFoundException, CodeNotFoundException {
         boolean flag = false;
 
         int expectedLength = 1;
