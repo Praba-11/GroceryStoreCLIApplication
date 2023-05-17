@@ -72,4 +72,13 @@ public class ProductService implements ProductServiceInterface {
         }
         return list;
     }
+
+    public boolean stockUpdate(String code, float stock) throws SQLException {
+        return productDAO.setStock(code, stock);
+    }
+
+    public boolean priceUpdate(String code, float price) throws SQLException {
+        System.out.println(code + price);
+        return productDAO.setPrice(code, price);
+    }
 }

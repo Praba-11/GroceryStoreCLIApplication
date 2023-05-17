@@ -15,4 +15,6 @@ public interface ProductDAO {
     Product find(int id) throws SQLException, ClassNotFoundException;
     int count() throws SQLException, ClassNotFoundException;
     float getPrice(String code) throws SQLException, ClassNotFoundException;
+    boolean setStock(String code, float stock) throws SQLException;
+    boolean setPrice(String code, float price) throws SQLException;
 }

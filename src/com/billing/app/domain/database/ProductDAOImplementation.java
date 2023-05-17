@@ -118,7 +118,7 @@ public class ProductDAOImplementation implements ProductDAO {
         return preparedStatement;
     }
 
-    public float getPrice(String code) throws SQLException, ClassNotFoundException {
+    public float getPrice(String code) throws SQLException {
         float price = 0;
         String query = "SELECT price FROM product WHERE code = ?";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
@@ -130,7 +130,7 @@ public class ProductDAOImplementation implements ProductDAO {
         return price;
     }
 
-    public boolean setStock(String code, float stock) throws SQLException, ClassNotFoundException {
+    public boolean setStock(String code, float stock) throws SQLException {
         String query = "UPDATE product SET stock = ? WHERE code = ?";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.setFloat(1, stock);
@@ -139,7 +139,7 @@ public class ProductDAOImplementation implements ProductDAO {
         return rowsAffected > 0;
     }
 
-    public boolean setPrice(String code, float price) throws SQLException, ClassNotFoundException {
+    public boolean setPrice(String code, float price) throws SQLException {
         String query = "UPDATE product SET price = ? WHERE code = ?";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.setFloat(1, price);

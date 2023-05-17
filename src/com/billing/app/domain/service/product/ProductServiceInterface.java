@@ -17,5 +17,6 @@ public interface ProductServiceInterface {
     Product edit(Product product) throws ClassNotFoundException, SQLException, ObjectNullPointerException, CodeNotFoundException;
     boolean delete(int id) throws SQLException, ClassNotFoundException, CodeNotFoundException;
     List<Product> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException, IllegalArgumentException;
-
+    boolean stockUpdate(String code, float stock) throws SQLException;
+    boolean priceUpdate(String code, float price) throws SQLException;
 }
