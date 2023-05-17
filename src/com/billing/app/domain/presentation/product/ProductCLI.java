@@ -19,8 +19,8 @@ public class ProductCLI {
     Main main = new Main();
     List<String> splitBySpaces;
 
-    public void execute(String command) {
-        splitBySpaces = main.splitBySpaces(command);
+    public void execute(String productCommand) {
+        splitBySpaces = main.splitBySpaces(productCommand);
         String action = splitBySpaces.get(0);
         System.out.println(action);
 
@@ -30,16 +30,21 @@ public class ProductCLI {
         switch (action) {
             case "create":
                 try {
-                    String createCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    String create = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
+                    System.out.println(create);
+
+                    String regex = "\\s*,\\s*";
+
+                    String[] created = create.trim().split(regex);
+                    List<String> createCommand = Arrays.asList(created);
                     System.out.println(createCommand);
-                    List<String> arraylist = new ArrayList<>();
-                    if (arraylist.size() == 1 && arraylist.get(0).equals("help")) {
+                    if (createCommand.size() == 1 && createCommand.get(0).equals("help")) {
                         productHelp = new ProductHelp();
                         productHelp.createProduct();
                     } else {
-                        System.out.println(arraylist);
+                        System.out.println(createCommand);
                         Product productCreated = null;
-                        productCreated = productController.create(arraylist);
+                        productCreated = productController.create(createCommand);
                         System.out.println("Product created successfully.");
                         System.out.println("Created product: " + productCreated);
                         break;
@@ -66,13 +71,24 @@ public class ProductCLI {
 
             case "edit":
                 try {
-                    String editCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    String edit = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
+                    System.out.println(edit);
+                    String formattedInput = edit.replaceAll("\\s*:\\s*", ":");
+                    String[] keyValuePairs = formattedInput.split("\\s*,\\s*");
+                    ArrayList<String> pairs = new ArrayList<>(Arrays.asList(keyValuePairs));
+                    LinkedHashMap<String, String> editCommand = new LinkedHashMap<>();
+                    for (String pair : pairs) {
+                        String[] keyValue = pair.split(":");
+                        String key = keyValue[0].trim();
+                        String value = keyValue[1].trim();
+                        editCommand.put(key, value);
+                    }
                     System.out.println(editCommand);
-                    if (arraylist.size() == 3 && arraylist.get(2).equals("help")) {
+                    if (editCommand.size() == 3 && editCommand.get(2).equals("help")) {
                         productHelp = new ProductHelp();
                         productHelp.editProduct();
                     } else {
-                        Product productEdited = productController.edit(arraylist);
+                        Product productEdited = productController.edit(editCommand);
                         System.out.println("Product edited successfully.");
                         System.out.println(productEdited);
                     }
@@ -95,19 +111,22 @@ public class ProductCLI {
                     System.out.println("Invalid product id. " + exception.getMessage());
                 }
                 break;
-
-
-
+//
+//
+//
             case "delete":
                 try {
-                    String deleteCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-                    System.out.println(deleteCommand);
-                    if (arraylist.size() == 1 && arraylist.get(0).equals("help")) {
+                    String delete = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
+                    System.out.println(delete);
+                    List<String> deleteCommand = new ArrayList<>();
+                    deleteCommand.add(productCommand);
+
+                    if (deleteCommand.size() == 1 && deleteCommand.get(0).equals("help")) {
                         productHelp = new ProductHelp();
                         productHelp.deleteProduct();
                     } else {
                         boolean isDeleted = false;
-                        isDeleted = productController.delete(arraylist);
+                        isDeleted = productController.delete(deleteCommand);
                         System.out.println(isDeleted);
                     }
                 } catch (TemplateMismatchException exception) {
@@ -127,13 +146,23 @@ public class ProductCLI {
 
 
             case "list":
-                String listCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                String list = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
+                System.out.println(list);
+                String regex = "\\s*-\\w+|\\b\\w+\\b";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(list);
+                List<String> listCommand = new ArrayList<>();
+                while (matcher.find()) {
+                    String part = matcher.group().trim();
+                    listCommand.add(part);
+                }
+
                 System.out.println(listCommand);
-                if (command.size() == 3 && command.get(2).equals("help")) {
+                if (listCommand.size() == 3 && listCommand.get(2).equals("help")) {
                     productHelp = new ProductHelp();
                     productHelp.listProduct();
                 } else {
-                    values = new ArrayList<>(command.subList(2, command.size()));
+                    values = new ArrayList<>(listCommand.subList(2, listCommand.size()));
                     try {
                         List<Product> productArray = productController.list(values);
                         System.out.println("List returned successfully.");

@@ -36,18 +36,12 @@ public class Router {
 
 
 
-
-
-
         switch (module) {
             case "product":
                 productCLI = new ProductCLI();
                 splitBySpaces = main.splitBySpaces(command);
                 String productCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
                 System.out.println(productCommand);
-
-//                List<String> list = main.splitByCommas(productCommand);
-//                System.out.println(list);
 
                 productCLI.execute(productCommand);
                 break;
