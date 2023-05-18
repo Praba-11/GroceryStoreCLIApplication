@@ -14,9 +14,9 @@ public class Store {
     private String name;
     private long phoneNumber;
     private String address;
-    private long gstNumber;
+    private String gstNumber;
 
-    public Store(int id, String name, long gstNumber, long phoneNumber, String address) {
+    public Store(int id, String name, String gstNumber, long phoneNumber, String address) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -51,11 +51,11 @@ public class Store {
         this.address = address;
     }
 
-    public long getGstNumber() {
+    public String getGstNumber() {
         return gstNumber;
     }
 
-    public void setGstNumber(long gstNumber) {
+    public void setGstNumber(String gstNumber) {
         this.gstNumber = gstNumber;
     }
 

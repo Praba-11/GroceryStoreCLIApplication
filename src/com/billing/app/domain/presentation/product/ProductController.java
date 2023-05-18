@@ -26,8 +26,8 @@ public class ProductController {
 
         int expectedLength = 6;
         int actualLength = values.size();
-        validator.validateValues(values);
         if (actualLength == expectedLength) {
+            validator.validateValues(values);
             product = setValues(values, false);
             return productServiceInterface.create(product);
         } else {
@@ -38,7 +38,6 @@ public class ProductController {
 
 
     public Product edit(Map<String, String> values) throws SQLException, ClassNotFoundException, NullPointerException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
-
         int expectedLength = 7;
         int actualLength = values.size();
         if (actualLength == expectedLength) {
@@ -55,19 +54,16 @@ public class ProductController {
 
 
 
-    public boolean delete(List<String> values) throws TemplateMismatchException, SQLException, ClassNotFoundException, CodeNotFoundException {
+    public boolean delete(String value) throws SQLException, ClassNotFoundException, CodeNotFoundException, IllegalArgumentException {
         boolean flag = false;
-
-        int expectedLength = 1;
-        int actualLength = values.size();
-
-        if (actualLength == expectedLength) {
-            int id = Integer.parseInt(values.get(0));
-            flag = productServiceInterface.delete(id);
-            return flag;
-        } else {
-            throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Provided: " + actualLength);
+        int id;
+        try {
+            id = Integer.parseInt(value);
+        } catch (NumberFormatException exception) {
+            throw new IllegalArgumentException("Unparseable id provided for deletion. Please try again.");
         }
+        flag = productServiceInterface.delete(id);
+        return flag;
     }
 
 

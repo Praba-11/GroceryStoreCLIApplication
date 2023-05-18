@@ -16,7 +16,7 @@ public class UnitDAOImplementation implements UnitDAO {
     ArrayList<Unit> unitArrayList = new ArrayList<>();
 
     @Override
-    public Unit create(Unit unit) throws SQLException, ClassNotFoundException {
+    public Unit create(Unit unit) throws SQLException {
 
         String query = "INSERT INTO unit (name, code, description, isdividable) VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
@@ -31,11 +31,11 @@ public class UnitDAOImplementation implements UnitDAO {
 
 
     @Override
-    public Unit edit(Unit unit) throws SQLException, ClassNotFoundException {
+    public Unit edit(Unit unit) throws SQLException {
         String query = "UPDATE unit SET name = ?, code = ?, description = ?, isdividable = ? WHERE id = ?";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, unit);
-        statement.setInt(8, unit.getId());
+        statement.setInt(5, unit.getId());
         statement.executeUpdate();
         return unit;
 
@@ -45,7 +45,7 @@ public class UnitDAOImplementation implements UnitDAO {
 
 
     @Override
-    public boolean delete(int id) throws SQLException, ClassNotFoundException {
+    public boolean delete(int id) throws SQLException {
 
         String query = "DELETE FROM unit WHERE id = " + id ;
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
@@ -58,7 +58,7 @@ public class UnitDAOImplementation implements UnitDAO {
 
 
     @Override
-    public List<Unit> list() throws SQLException, ClassNotFoundException {
+    public List<Unit> list() throws SQLException {
 
         ConnectionDB connectionDB = new ConnectionDB();
         String query = "SELECT * FROM unit";
@@ -71,7 +71,7 @@ public class UnitDAOImplementation implements UnitDAO {
 
 
 
-    public Unit find(int id) throws SQLException, ClassNotFoundException {
+    public Unit find(int id) throws SQLException {
         Unit unitFound = null;
         String query = "SELECT * FROM unit WHERE id = '" + id + "'";
         Statement statement = connectionDB.getConnection().createStatement();
@@ -83,7 +83,7 @@ public class UnitDAOImplementation implements UnitDAO {
         return unitFound;
     }
 
-    public int count() throws SQLException, ClassNotFoundException {
+    public int count() throws SQLException {
         int count = 0;
         String query = "SELECT COUNT(*) FROM unit";
         Statement statement = connectionDB.getConnection().createStatement();

@@ -10,7 +10,7 @@ public class StoreDAOImplementation implements StoreDAO {
     ConnectionDB connectionDB = new ConnectionDB();
     Store store;
     @Override
-    public boolean create(Store store) throws SQLException, ClassNotFoundException {
+    public boolean create(Store store) throws SQLException {
 
         // Storing Store details in Database table
         String query = "INSERT INTO store (gstnumber, name, phonenumber, address) VALUES (?, ?, ?, ?)" ;
@@ -18,7 +18,7 @@ public class StoreDAOImplementation implements StoreDAO {
         preparedStatement.setString(2, store.getName());
         preparedStatement.setLong(3, store.getPhoneNumber());
         preparedStatement.setString(4, store.getAddress());
-        preparedStatement.setLong(1, store.getGstNumber());
+        preparedStatement.setString(1, store.getGstNumber());
         int rowsAffected = preparedStatement.executeUpdate();
         preparedStatement.close();
 
@@ -26,7 +26,7 @@ public class StoreDAOImplementation implements StoreDAO {
     }
 
     @Override
-    public boolean edit(Store store) throws SQLException, ClassNotFoundException {
+    public boolean edit(Store store) throws SQLException {
 
         // Editing Store details in Database table
         String query = "UPDATE store SET gstnumber = ?, name = ?, phonenumber = ?, address = ? WHERE id = 1" ;
@@ -34,7 +34,7 @@ public class StoreDAOImplementation implements StoreDAO {
         preparedStatement.setString(2, store.getName());
         preparedStatement.setLong(3, store.getPhoneNumber());
         preparedStatement.setString(4, store.getAddress());
-        preparedStatement.setLong(1, store.getGstNumber());
+        preparedStatement.setString(1, store.getGstNumber());
         int rowsAffected = preparedStatement.executeUpdate();
         preparedStatement.close();
 
@@ -42,7 +42,7 @@ public class StoreDAOImplementation implements StoreDAO {
     }
 
     @Override
-    public boolean delete() throws SQLException, ClassNotFoundException {
+    public boolean delete() throws SQLException {
 
         // Delete Store operation
         ConnectionDB connectionDB = new ConnectionDB();
@@ -57,14 +57,14 @@ public class StoreDAOImplementation implements StoreDAO {
 
 
 
-    public Store getStore() throws SQLException, ClassNotFoundException {
+    public Store getStore() throws SQLException {
         String query = "SELECT * FROM store";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         while (resultSet.next()) {
             int id = resultSet.getInt(1);
             String name = resultSet.getString(2);
-            long gstNumber = resultSet.getLong(3);
+            String gstNumber = resultSet.getString(3);
             long phoneNumber = resultSet.getLong(4);
             String address = resultSet.getString(5);
             store = new Store(id, name, gstNumber, phoneNumber, address);
@@ -72,7 +72,7 @@ public class StoreDAOImplementation implements StoreDAO {
         return store;
     }
 
-    public int getCount() throws SQLException, ClassNotFoundException {
+    public int getCount() throws SQLException {
         int count = 0;
         String query = "SELECT COUNT(id) FROM store";
         Statement statement = connectionDB.getConnection().createStatement();

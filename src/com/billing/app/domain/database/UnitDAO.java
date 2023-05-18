@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface UnitDAO {
-    Unit create(Unit unit) throws SQLException, ClassNotFoundException;
-    Unit edit(Unit unit) throws SQLException, ClassNotFoundException;
-    boolean delete(int id) throws SQLException, ClassNotFoundException;
-    List<Unit> list() throws SQLException, ClassNotFoundException;
-    Unit find(int id) throws SQLException, ClassNotFoundException;
-    int count() throws SQLException, ClassNotFoundException;
+    Unit create(Unit unit) throws SQLException;
+    Unit edit(Unit unit) throws SQLException;
+    boolean delete(int id) throws SQLException;
+    List<Unit> list() throws SQLException;
+    Unit find(int id) throws SQLException;
+    int count() throws SQLException;
 }

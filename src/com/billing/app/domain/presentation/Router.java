@@ -34,26 +34,41 @@ public class Router {
         String module = splitCommand[0];
 
 
-
-
         switch (module) {
             case "product":
                 productCLI = new ProductCLI();
                 splitBySpaces = main.splitBySpaces(command);
-                String productCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-                System.out.println(productCommand);
-
-                productCLI.execute(productCommand);
+                if (splitBySpaces.size() == 1) {
+                    System.out.println("Action not provided. Please provide a valid command.\n" +
+                            "For queries, please use command 'help'");
+                } else {
+                    String productCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    productCLI.execute(productCommand);
+                }
                 break;
 
             case "unit":
                 unitCLI = new UnitCLI();
-//                unitCLI.execute(arrayList);
+                splitBySpaces = main.splitBySpaces(command);
+                if (splitBySpaces.size() == 1) {
+                    System.out.println("Action not provided. Please provide a valid command.\n" +
+                            "For queries, please use command 'help'");
+                } else {
+                    String unitCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    unitCLI.execute(unitCommand);
+                }
                 break;
 
             case "store":
                 storeCLI = new StoreCLI();
-//                storeCLI.execute(arrayList);
+                splitBySpaces = main.splitBySpaces(command);
+                if (splitBySpaces.size() == 1) {
+                    System.out.println("Action not provided. Please provide a valid command.\n" +
+                            "For queries, please use command 'help'");
+                } else {
+                    String storeCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    storeCLI.execute(storeCommand);
+                }
                 break;
 
             case "user":
@@ -84,6 +99,19 @@ public class Router {
                 priceCLI = new PriceCLI();
                 priceCLI.execute(splitBySpaces);
                 break;
+
+            default:
+                System.out.println("Invalid module named " + module + ". Please provide a valid command. \nFor queries, please use command 'help'");
+                break;
         }
+    }
+
+
+
+    private String help() {
+        System.out.println("--------------------------------------------- HELP ---------------------------------------------");
+        System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s%n", "Store", "User", "Product", "Unit", "Purchase", "Sales");
+        System.out.println("--------------------------------------------");
+return null;
     }
 }

@@ -11,6 +11,7 @@ import com.billing.app.domain.service.unit.UnitServiceInterface;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class UnitController {
@@ -20,12 +21,13 @@ public class UnitController {
     UnitServiceInterface unitServiceInterface = new UnitService();
     UnitValidator unitValidator = new UnitValidator();
 
-    public Unit create(ArrayList<String> values) throws SQLException, ClassNotFoundException, TypeMismatchException, IllegalArgumentException, TemplateMismatchException, ObjectNullPointerException {
+    public Unit create(List<String> values) throws SQLException, TypeMismatchException, IllegalArgumentException, TemplateMismatchException, ObjectNullPointerException {
 
         int expectedLength = 4;
         int actualLength = values.size();
-        unitValidator.validateDetails(values);
+
         if (actualLength == expectedLength) {
+            unitValidator.validateDetails(values);
             unit = setValues(values, false);
             return unitServiceInterface.create(unit);
         } else {
@@ -34,56 +36,34 @@ public class UnitController {
     }
 
 
-    public Unit edit(ArrayList<String> values) throws SQLException, ClassNotFoundException, IllegalAccessException, NullPointerException, CodeNullException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
+    public Unit edit(Map<String, String> values) throws SQLException, NullPointerException, CodeNullException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
 
-        int expectedLength = 10;
+        int expectedLength = 5;
         int actualLength = values.size();
-
-        valueList = new ArrayList<>();
-        keyList = new ArrayList<>();
-
         if (actualLength == expectedLength) {
-            for (int index = 0; index < values.size(); index += 2) {
-                String key = values.get(index);
-                String value = values.get(index + 1);
-                keyList.add(key);
-                valueList.add(value);
-            }
-
-            List<String> keys = new ArrayList<>(keyList.subList(1, keyList.size()));
-            List<String> details = new ArrayList<>(valueList.subList(1, valueList.size()));
-
-            String key = keyList.get(0);
-            String identifier = valueList.get(0);
-
-            unitValidator.validateId(key, identifier);
-            unitValidator.validateKeys(keys);
-            unitValidator.validateDetails(details);
-
+            unitValidator.validateMap(values);
+            valueList = new ArrayList<>(values.values());
             unit = setValues(valueList, true);
-
+            System.out.println(unit);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
-
         return unitServiceInterface.edit(unit);
     }
 
-        public boolean delete (ArrayList <String> values) throws TemplateMismatchException, SQLException, CodeNotFoundException, ClassNotFoundException {
+        public boolean delete (String values) throws SQLException, CodeNotFoundException, IllegalArgumentException {
             boolean flag = false;
-
-            int expectedLength = 1;
-            int actualLength = values.size();
-            if (actualLength == expectedLength) {
-                int id = Integer.parseInt(values.get(0));
-                flag = unitServiceInterface.delete(id);
-                return flag;
-            } else {
-                throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Provided: " + actualLength);
+            int id;
+            try {
+                id = Integer.parseInt(values);
+            } catch (NumberFormatException exception) {
+                throw new IllegalArgumentException("Unparseable id provided for deletion. Please try again.");
             }
+            flag = unitServiceInterface.delete(id);
+            return flag;
         }
 
-        public List<Unit> list () throws SQLException, ClassNotFoundException {
+        public List<Unit> list () throws SQLException {
             unitServiceInterface = new UnitService();
             List<Unit> unitArrayList = unitServiceInterface.list();
             return unitArrayList;
@@ -92,11 +72,9 @@ public class UnitController {
     private static Unit setValues(List<String> values, boolean setId) {
         Unit unit = new Unit();
         int startIndex = setId ? 0 : -1;
-
         if (setId) {
             unit.setId(Integer.parseInt(values.get(startIndex)));
         }
-
         unit.setName(values.get(startIndex + 1));
         unit.setCode(values.get(startIndex + 2));
         unit.setDescription(values.get(startIndex + 3));

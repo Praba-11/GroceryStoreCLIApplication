@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface UnitServiceInterface {
-    Unit create(Unit unit) throws SQLException, ClassNotFoundException, ObjectNullPointerException;
-    Unit edit(Unit unit) throws SQLException, ClassNotFoundException, CodeNotFoundException, ObjectNullPointerException;
-    boolean delete(int id) throws SQLException, ClassNotFoundException, CodeNotFoundException;
-    List<Unit> list() throws SQLException, ClassNotFoundException;
+    Unit create(Unit unit) throws SQLException, ObjectNullPointerException;
+    Unit edit(Unit unit) throws SQLException, CodeNotFoundException, ObjectNullPointerException;
+    boolean delete(int id) throws SQLException, CodeNotFoundException;
+    List<Unit> list() throws SQLException;
 
 
 }

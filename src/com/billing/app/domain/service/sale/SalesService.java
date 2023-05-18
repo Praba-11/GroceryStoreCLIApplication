@@ -1,13 +1,10 @@
 package com.billing.app.domain.service.sale;
 
 import com.billing.app.domain.database.*;
-import com.billing.app.domain.entity.Purchase;
-import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.IllegalArgumentException;
-import com.billing.app.domain.service.purchase.PurchaseValidator;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,7 +22,9 @@ public class SalesService implements SalesServiceInterface {
                 salesItem.setInvoice(sales.getInvoice());
                 salesItem.setCostPrice(productDAO.getPrice(salesItem.getCode()));
                 grandTotal += (salesItem.getQuantity() * salesItem.getCostPrice());
+
                 sales.setGrandTotal(grandTotal);
+
                 salesItemDAO.create(salesItem);
             }
 

@@ -10,17 +10,16 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws ParseException {
-
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(">> ");
-        String input = scanner.nextLine();
-        if (input.equals("exit")) {
-            System.out.println("exit");
-        } else {
-            Router router = new Router();
-            router.module(input);
-
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.print(">> ");
+            String input = scanner.nextLine();
+            if (input.equals("exit")) {
+                break;
+            } else {
+                Router router = new Router();
+                router.module(input);
+            }
         }
     }
 

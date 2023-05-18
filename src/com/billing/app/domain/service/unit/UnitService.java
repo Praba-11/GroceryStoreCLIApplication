@@ -11,7 +11,7 @@ import java.util.List;
 public class UnitService implements UnitServiceInterface {
     private UnitDAO unitDAO = new UnitDAOImplementation();
     UnitValidator unitValidator = new UnitValidator();
-    public Unit create(Unit unit) throws SQLException, ClassNotFoundException, ObjectNullPointerException {
+    public Unit create(Unit unit) throws SQLException, ObjectNullPointerException {
         try {
             unitValidator.validate(unit);
             return unitDAO.create(unit);
@@ -21,7 +21,7 @@ public class UnitService implements UnitServiceInterface {
     }
 
     @Override
-    public Unit edit(Unit unit) throws ClassNotFoundException, SQLException, CodeNotFoundException, ObjectNullPointerException {
+    public Unit edit(Unit unit) throws SQLException, CodeNotFoundException, ObjectNullPointerException {
 
         try {
             unitValidator.validate(unit);
@@ -34,7 +34,7 @@ public class UnitService implements UnitServiceInterface {
         }
     }
 
-    public boolean delete(int id) throws SQLException, ClassNotFoundException, CodeNotFoundException {
+    public boolean delete(int id) throws SQLException, CodeNotFoundException {
         boolean isDeleted;
         isDeleted = unitDAO.delete(id);
         if (!isDeleted) {
@@ -43,7 +43,7 @@ public class UnitService implements UnitServiceInterface {
         return true;
     }
 
-    public List<Unit> list() throws SQLException, ClassNotFoundException {
+    public List<Unit> list() throws SQLException {
         unitDAO = new UnitDAOImplementation();
         List<Unit> units = unitDAO.list();
         return units;

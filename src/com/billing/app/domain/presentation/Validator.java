@@ -66,9 +66,11 @@ public class Validator {
             return "Provided product code already exists. \n" + exception.getMessage();
         if (sqlState.equals("23503")) {
             return "Invalid unit provided, please ensure whether the unit is already created (or) present. \n" + exception.getMessage();
-        } else {
-            throw new RuntimeException(exception);
         }
+        if (sqlState.equals("42703")) {
+            return "Provided 'attribute' column does not exist.";
+        }
+        return "Unrecognised SQL state error.";
     }
 
 
@@ -181,12 +183,10 @@ public class Validator {
             if (notation.equals("-p")) {
                 range = Integer.parseInt(values.get(1));
                 page = Integer.parseInt(values.get(2));
-            }
-            else if (notation.equals("-s")) {
+            } else if (notation.equals("-s")) {
                 attribute = values.get(1);
                 searchText = values.get(2);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Invalid notation provided. Provide a valid list notation.");
             }
 
@@ -198,6 +198,8 @@ public class Validator {
                 page = Integer.parseInt(values.get(5));
                 attribute = values.get(1);
                 searchText = values.get(2);
+            } else {
+                throw new IllegalArgumentException("Invalid notation provided. Provide a valid list notation.");
             }
         } else {
             throw new TemplateMismatchException("Invalid number of parameters provided. Please provide with right attributes according to the template.");
@@ -215,26 +217,12 @@ public class Validator {
 
 //    --------------------------------------------------------------------------------------------------------------------
 
-    public void unitEditValidate(Unit unit, String key, String value) throws TemplateMismatchException {
-
-        if (key.equals("name")) {
-            unit.setName(value);
-        } else if (key.equals("code")) {
-            unit.setCode(value);
-        } else if (key.equals("description")) {
-            unit.setDescription(value);
-        } else if (key.equals("isdividable")) {
-            unit.setDividable(Boolean.parseBoolean(value));
-        } else {
-            throw new TemplateMismatchException("Replace the string '" + key + "' with proper attribute string according to the template.");
-        }
-    }
 
 
 
     public void storeEditValidate(Store store, String key, String value) throws TemplateMismatchException {
         if (key.equals("gstnumber")) {
-            store.setGstNumber(Long.parseLong(value));
+//            store.setGstNumber(Long.parseLong(value));
         } else if (key.equals("name")) {
             store.setName(value);
         } else if (key.equals("phonenumber")) {
