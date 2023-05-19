@@ -19,37 +19,35 @@ import java.util.Map;
 public class SalesController {
     Sales sales = new Sales();
     SalesItem salesItem;
+    List<SalesItem> listOfSalesItem = new ArrayList<>();
     List<String> salesItemDetails;
-    List<SalesItem> salesItems;
     SalesServiceInterface salesServiceInterface = new SalesService();
     SalesCLIValidator salesCLIValidator = new SalesCLIValidator();
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
 
-    public Sales create(ArrayList<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeNotFoundException, TemplateMismatchException {
+    public Sales create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeNotFoundException, TemplateMismatchException {
 
-        List<String> create = new ArrayList<>(stringArrayList.subList(1, 3));
-        List<String> items = new ArrayList<>(stringArrayList.subList(3, stringArrayList.size()));
-        for (String item : items) {
-            item = item.replaceAll("\\[|\\]", "");
-            create.add(item);
-        }
-        salesItems = new ArrayList<>();
-        salesItemDetails = new ArrayList<>(create.subList(3, create.size()));
+        System.out.println(stringArrayList);
+
+        List<String> create = new ArrayList<>(stringArrayList.subList(0, 2));
+        List<String> salesItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
         System.out.println(salesItemDetails);
+
         if (salesItemDetails.size() % 2 == 0) {
             for (int index = 0; index < salesItemDetails.size(); index += 2) {
                 salesItem = new SalesItem();
                 salesItem.setCode(salesItemDetails.get(index));
                 salesItem.setQuantity(Float.parseFloat(salesItemDetails.get(index + 1)));
-
+                listOfSalesItem.add(salesItem);
             }
         } else {
             throw new TemplateMismatchException("Incompatible purchase item details. Please provide according to the template.");
         }
-        sales.setDate(new Date(format.parse(create.get(1)).getTime()));
-        sales.setInvoice(Integer.parseInt(create.get(2)));
-        sales.setListOfSalesItem(salesItems);
+        sales.setDate(new Date(format.parse(create.get(0)).getTime()));
+        sales.setInvoice(Integer.parseInt(create.get(1)));
+        sales.setListOfSalesItem(listOfSalesItem);
+        System.out.println(sales);
         return salesServiceInterface.create(sales);
     }
 

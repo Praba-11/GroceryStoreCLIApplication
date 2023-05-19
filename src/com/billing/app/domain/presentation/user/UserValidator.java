@@ -231,7 +231,6 @@ public class UserValidator {
 
     public static boolean isValidUserType(String userType) {
         for (User.UserType value : User.UserType.values()) {
-            System.out.println(value);
             if (value.toString().equals(userType.toUpperCase())) {
                 return true;
             }

@@ -15,22 +15,23 @@ public class SalesService implements SalesServiceInterface {
     SalesItemDAO salesItemDAO = new SalesItemDAOImplementation();
     SalesValidator salesValidator = new SalesValidator();
     public Sales create(Sales sales) throws SQLException, ClassNotFoundException, CodeNotFoundException {
-        if (salesValidator.valid(sales)) {
-            float grandTotal = 0;
-            salesDAO.create(sales);
-            for (SalesItem salesItem : sales.getListOfSalesItem()) {
-                salesItem.setInvoice(sales.getInvoice());
-                salesItem.setCostPrice(productDAO.getPrice(salesItem.getCode()));
-                grandTotal += (salesItem.getQuantity() * salesItem.getCostPrice());
 
-                sales.setGrandTotal(grandTotal);
+        float grandTotal = 0;
 
-                salesItemDAO.create(salesItem);
-            }
+        List<SalesItem> listOfSalesItem = sales.getListOfSalesItem();
+        for (SalesItem salesItem : listOfSalesItem) {
+
+            SalesItem newSalesItem = new SalesItem();
+
+            newSalesItem.setCode(salesItem.getCode());
+            newSalesItem.setQuantity(salesItem.getQuantity());
+            newSalesItem.setCostPrice(productDAO.getPrice(salesItem.getCode()));
+
+            grandTotal += newSalesItem.getCostPrice() * newSalesItem.getQuantity();
 
         }
-        return sales;
     }
+
 
     public boolean delete(int invoice) throws CodeNotFoundException, SQLException, ClassNotFoundException {
         boolean isDeleted;

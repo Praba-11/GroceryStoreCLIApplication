@@ -107,6 +107,10 @@ public class Router {
                 priceCLI.execute(splitBySpaces);
                 break;
 
+            case "help":
+                System.out.println(help());
+                break;
+
             default:
                 System.out.println("Invalid module named " + module + ". Please provide a valid command. \nFor queries, please use command 'help'");
                 break;
@@ -116,9 +120,33 @@ public class Router {
 
 
     private String help() {
-        System.out.println("--------------------------------------------- HELP ---------------------------------------------");
-        System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s%n", "Store", "User", "Product", "Unit", "Purchase", "Sales");
-        System.out.println("--------------------------------------------");
-        return null;
+        String help = """
+        
+        ----------------------------------------------------------------------------------------------------------------
+         STORE                        USER                        PRODUCT                        UNIT       
+        ----------------------------------------------------------------------------------------------------------------        
+         store create help            user create help            product create help            unit create help    
+         store create <arguments>     user create <arguments>     product create <arguments>     unit create <arguments>
+         store edit help              user edit help              product edit help              unit edit help      
+         store edit <arguments>       user edit <arguments>       product edit <arguments>       unit edit <arguments>
+         store delete help            user delete help            product delete help            unit delete help
+         store delete                 user delete <argument>      product delete <argument>      unit delete <argument> 
+         store view help              user list help              product list help              unit list help
+         store view                   user list <arguments>       product list <arguments>       unit list <arguments>  
+         
+        ----------------------------------------------------------------------------------------------------------------
+         PURCHASE                     SALES                       PRICE                          STOCK
+        ----------------------------------------------------------------------------------------------------------------
+         purchase create help         sell create help            price update help              stock update <arguments>
+         purchase create <arguments>  sell create <arguments>     price update <arguments>       stock update help
+         purchase delete help         sell delete help            
+         purchase delete <argument>   sell delete <argument>      
+         purchase count help          sell count help
+         purchase count               sell count
+         purchase list help           sell list help
+         purchase list <arguments>    sell list <arguments>
+        ----------------------------------------------------------------------------------------------------------------
+        """;
+        return help;
     }
 }

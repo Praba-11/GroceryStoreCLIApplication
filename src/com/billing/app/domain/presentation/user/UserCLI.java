@@ -25,7 +25,9 @@ public class UserCLI {
 
         splitBySpaces = main.splitBySpaces(userCommand);
         String action = splitBySpaces.get(0);
+
         switch (action) {
+
             case "create":
                 splitBySpaces = main.splitBySpaces(userCommand);
                 String create;
@@ -38,6 +40,7 @@ public class UserCLI {
                 }
                 break;
 
+
             case "edit":
                 splitBySpaces = main.splitBySpaces(userCommand);
                 String edit;
@@ -49,6 +52,7 @@ public class UserCLI {
                     editor(edit);
                 }
                 break;
+
 
             case "delete":
                 splitBySpaces = main.splitBySpaces(userCommand);
@@ -108,6 +112,8 @@ public class UserCLI {
         }
     }
 
+
+
     private void editor(String edit) {
         try {
             String formattedInput = edit.replaceAll("\\s*:\\s*", ":");
@@ -152,6 +158,8 @@ public class UserCLI {
         }
     }
 
+
+
     private void deleter(String delete) {
         try {
             if (delete.equals("help")) {
@@ -174,6 +182,8 @@ public class UserCLI {
             System.out.println("Invalid argument. " + exception.getMessage());
         }
     }
+
+
 
 
     private void lister(String list) {
