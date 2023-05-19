@@ -2,15 +2,11 @@ package com.billing.app.domain.presentation.unit;
 
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.presentation.Main;
-import com.billing.app.domain.presentation.Validator;
-import com.billing.app.domain.presentation.store.StoreHelp;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UnitCLI {
     UnitValidator unitValidator = new UnitValidator();
@@ -53,7 +49,7 @@ public class UnitCLI {
                     System.out.println("Type mismatch occurred at " + exception.getMessage());
                 } catch (TemplateMismatchException exception) {
                     System.out.println("Template mismatch. " + exception.getMessage());
-                } catch (IllegalArgumentException exception) {
+                } catch (InvalidArgumentException exception) {
                     System.out.println("Invalid argument provided. " + exception.getMessage());
                 }
                 break;
@@ -97,7 +93,7 @@ public class UnitCLI {
                     System.out.println("Type mismatch occurred at " + exception.getMessage());
                 } catch (CodeNotFoundException exception) {
                     System.out.println("Invalid unit id. " + exception.getMessage());
-                } catch (IllegalArgumentException exception) {
+                } catch (InvalidArgumentException exception) {
                     System.out.println("Invalid argument provided. " + exception.getMessage());
                 }
                 break;
@@ -128,7 +124,7 @@ public class UnitCLI {
                     System.out.println(sqlMessage);
                 } catch (CodeNotFoundException exception) {
                     System.out.println("Provided Id not found. " + exception.getMessage());
-                } catch (IllegalArgumentException exception) {
+                } catch (InvalidArgumentException exception) {
                     System.out.println("Invalid argument. " + exception.getMessage());
                 }
                 break;
@@ -161,6 +157,7 @@ public class UnitCLI {
                     String sqlMessage = unitValidator.validateSQLState(exception);
                     System.out.println(sqlMessage);
                 }
+                break;
 
             default:
                 System.out.println("Invalid action provided. Please provide a valid command.\n" +

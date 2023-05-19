@@ -2,7 +2,7 @@ package com.billing.app.domain.presentation.purchase;
 
 import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 
 import java.sql.SQLException;
@@ -66,7 +66,7 @@ public class PurchaseCLI {
                         for (Purchase purchases : purchaseArray) {
                             System.out.println(purchases);
                         }
-                    } catch (IllegalArgumentException exception) {
+                    } catch (InvalidArgumentException exception) {
                         System.out.println("Incompatible argument. " + exception.getMessage());
                     } catch (TemplateMismatchException exception) {
                         System.out.println("Template mismatch. " + exception.getMessage());

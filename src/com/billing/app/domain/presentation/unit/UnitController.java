@@ -1,10 +1,8 @@
 package com.billing.app.domain.presentation.unit;
 
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
-import com.billing.app.domain.presentation.Validator;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.service.unit.UnitService;
 import com.billing.app.domain.service.unit.UnitServiceInterface;
 
@@ -21,7 +19,7 @@ public class UnitController {
     UnitServiceInterface unitServiceInterface = new UnitService();
     UnitValidator unitValidator = new UnitValidator();
 
-    public Unit create(List<String> values) throws SQLException, TypeMismatchException, IllegalArgumentException, TemplateMismatchException, ObjectNullPointerException {
+    public Unit create(List<String> values) throws SQLException, TypeMismatchException, InvalidArgumentException, TemplateMismatchException, ObjectNullPointerException {
 
         int expectedLength = 4;
         int actualLength = values.size();
@@ -36,7 +34,7 @@ public class UnitController {
     }
 
 
-    public Unit edit(Map<String, String> values) throws SQLException, NullPointerException, CodeNullException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
+    public Unit edit(Map<String, String> values) throws SQLException, NullPointerException, CodeNullException, TemplateMismatchException, TypeMismatchException, InvalidArgumentException, ObjectNullPointerException, CodeNotFoundException {
 
         int expectedLength = 5;
         int actualLength = values.size();
@@ -51,13 +49,13 @@ public class UnitController {
         return unitServiceInterface.edit(unit);
     }
 
-        public boolean delete (String values) throws SQLException, CodeNotFoundException, IllegalArgumentException {
+        public boolean delete (String values) throws SQLException, CodeNotFoundException, InvalidArgumentException {
             boolean flag = false;
             int id;
             try {
                 id = Integer.parseInt(values);
             } catch (NumberFormatException exception) {
-                throw new IllegalArgumentException("Unparseable id provided for deletion. Please try again.");
+                throw new InvalidArgumentException("Unparseable id provided for deletion. Please try again.");
             }
             flag = unitServiceInterface.delete(id);
             return flag;

@@ -1,11 +1,9 @@
 package com.billing.app.domain.presentation.sale;
 
-import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
-import com.billing.app.domain.presentation.purchase.PurchaseController;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -68,7 +66,7 @@ public class SalesCLI {
                         for (Sales sales : salesArray) {
                             System.out.println(sales);
                         }
-                    } catch (IllegalArgumentException exception) {
+                    } catch (InvalidArgumentException exception) {
                         System.out.println("Incompatible argument. " + exception.getMessage());
                     } catch (TemplateMismatchException exception) {
                         System.out.println("Template mismatch. " + exception.getMessage());

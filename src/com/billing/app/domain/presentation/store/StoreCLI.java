@@ -1,21 +1,15 @@
 package com.billing.app.domain.presentation.store;
 
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Store;
-import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.presentation.Main;
-import com.billing.app.domain.presentation.Validator;
-import com.billing.app.domain.presentation.product.ProductHelp;
-import com.billing.app.domain.presentation.unit.UnitHelp;
-import com.billing.app.domain.presentation.unit.UnitValidator;
 
 import java.sql.SQLException;
 import java.util.*;
 
 public class StoreCLI {
-    StoreHelp storeHelp;
+    StoreHelp storeHelp = new StoreHelp();
     Main main = new Main();
     List<String> splitBySpaces;
     Scanner scanner = new Scanner(System.in);
@@ -50,56 +44,61 @@ public class StoreCLI {
                     editor(edit);
                 }
                 break;
-//
-//
-//            case "delete":
-//                try {
-//                    String deleteCommand = storeCommand.substring(storeCommand.indexOf(splitBySpaces.get(1)));
-//                    if (deleteCommand.equals("help")) {
-//                        storeHelp = new StoreHelp();
-//                        storeHelp.deleteStore();
-//                    } else {
-//                        boolean isDeleted = false;
-//                        isDeleted = storeController.delete(deleteCommand);
-//                        System.out.println(isDeleted);
-//                    }
-//                } catch (SQLException exception) {
-//                    System.out.print("Unable to delete product. ");
-//                    String sqlMessage = storeValidator.validateSQLState(exception);
-//                    System.out.println(sqlMessage);
-//                } catch (CodeNotFoundException exception) {
-//                    System.out.println("Provided id not found. " + exception.getMessage());
-//                } catch (ClassNotFoundException e) {
-//                    throw new RuntimeException(e);
-//                } catch (IllegalArgumentException exception) {
-//                    System.out.println("Invalid argument. " + exception.getMessage());
-//                }
-//                break;
-//
-//
-//            case "view":
-//                try {
-//                    String regex = "\\s+";
-//                    List<String> listCommand = Arrays.asList(storeCommand.split(regex));
-//                    if (listCommand.size() == 2) {
-//                        if (listCommand.get(1).equals("help")) {
-//                            storeHelp = new StoreHelp();
-////                            storeHelp.listStore();
-//                        } else {
-//                            System.out.println("Template mismatch. Please provide a valid command.");
-//                        }
-//                    } else if (listCommand.size() == 1) {
-//                        Store store = storeController.list();
-//                        System.out.println("Store details returned successfully.");
-////                        System.out.println("id: " + store.getId() + ", name: " + store.getName() + ", code: " + store.getCode() + ", description: " + store.getDescription() + ", isdividable: " + store.isDividable());
-//                    } else {
-//                        System.out.println("Template mismatch. Please provide a valid command.");
-//                    }
-//                } catch (SQLException exception) {
-//                    System.out.print("Unable to list store. ");
-//                    String sqlMessage = storeValidator.validateSQLState(exception);
-//                    System.out.println(sqlMessage);
-//                }
+
+
+            case "delete":
+                try {
+                    String regex = "\\s+";
+                    List<String> deleteCommand = Arrays.asList(storeCommand.split(regex));
+                    if (deleteCommand.size() == 2) {
+                        if (deleteCommand.get(1).equals("help")) {
+                            storeHelp.deleteStore();
+                        } else {
+                            System.out.println("Template mismatch. Please provide a valid command.");
+                        }
+                    } else if (deleteCommand.size() == 1) {
+                        boolean isDeleted = false;
+                        isDeleted = storeController.delete();
+                        System.out.println(isDeleted);
+                    } else {
+                        System.out.println("Template mismatch. Please provide a valid command.");
+                    }
+                } catch (SQLException exception) {
+                    System.out.print("Unable to delete store. ");
+                    String sqlMessage = storeValidator.validateSQLState(exception);
+                    System.out.println(sqlMessage);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+
+
+            case "view":
+                try {
+                    String regex = "\\s+";
+                    List<String> viewCommand = Arrays.asList(storeCommand.split(regex));
+                    if (viewCommand.size() == 2) {
+                        if (viewCommand.get(1).equals("help")) {
+                            storeHelp.deleteStore();
+                        } else {
+                            System.out.println("Template mismatch. Please provide a valid command.");
+                        }
+                    } else if (viewCommand.size() == 1) {
+                        Store store = storeController.view();
+                        System.out.println("Store details returned successfully.");
+                        System.out.println("id: " + store.getId() + ", name: " + store.getName() + ", phonenumber: " + store.getPhoneNumber() + ", address: " + store.getAddress() + ", gstnumber: " + store.getGstNumber());
+                    } else {
+                        System.out.println("Template mismatch. Please provide a valid command.");
+                    }
+                } catch (SQLException exception) {
+                    System.out.print("Unable to view store. ");
+                    String sqlMessage = storeValidator.validateSQLState(exception);
+                    System.out.println(sqlMessage);
+                }
+
+            default:
+                System.out.println("Invalid action provided. Please provide a valid command.\n" +
+                        "For queries, please use command 'help'");
 
         }
     }
@@ -130,7 +129,7 @@ public class StoreCLI {
             System.out.println("Template mismatch. " + exception.getMessage());
         } catch (ClassNotFoundException exception) {
             throw new RuntimeException(exception);
-        } catch (IllegalArgumentException exception) {
+        } catch (InvalidArgumentException exception) {
             System.out.println("Invalid argument provided. " + exception.getMessage());
         } catch (TypeMismatchException exception) {
             System.out.println("Type mismatch occurred at " + exception.getMessage());
@@ -173,7 +172,7 @@ public class StoreCLI {
             System.out.println("Template mismatch. " + exception.getMessage());
         } catch (TypeMismatchException exception) {
             System.out.println("Type mismatch occurred at " + exception.getMessage());
-        } catch (IllegalArgumentException exception) {
+        } catch (InvalidArgumentException exception) {
             System.out.println("Incompatible argument. " + exception.getMessage());
         } catch (ArrayIndexOutOfBoundsException exception) {
             System.out.println("Template mismatch. Please provide a valid command.");

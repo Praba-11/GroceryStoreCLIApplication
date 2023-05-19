@@ -73,7 +73,14 @@ public class Router {
 
             case "user":
                 userCLI = new UserCLI();
-//                userCLI.execute(arrayList);
+                splitBySpaces = main.splitBySpaces(command);
+                if (splitBySpaces.size() == 1) {
+                    System.out.println("Action not provided. Please provide a valid command.\n" +
+                            "For queries, please use command 'help'");
+                } else {
+                    String userCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    userCLI.execute(userCommand);
+                }
                 break;
 
             case "purchase":
@@ -112,6 +119,6 @@ public class Router {
         System.out.println("--------------------------------------------- HELP ---------------------------------------------");
         System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s%n", "Store", "User", "Product", "Unit", "Purchase", "Sales");
         System.out.println("--------------------------------------------");
-return null;
+        return null;
     }
 }

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class StoreService implements StoreServiceInterface {
     StoreDAO storeDAO;
-    public Store create(Store store) throws SQLException, ClassNotFoundException {
+    public Store create(Store store) throws SQLException {
         storeDAO = new StoreDAOImplementation();
         if (storeDAO.getCount() > 0) {
             return null;
@@ -21,7 +21,7 @@ public class StoreService implements StoreServiceInterface {
         return null;
     }
 
-    public Store edit(Store store) throws SQLException, ClassNotFoundException {
+    public Store edit(Store store) throws SQLException {
         storeDAO = new StoreDAOImplementation();
         if (storeDAO.edit(store)) {
             return storeDAO.getStore();
@@ -29,7 +29,7 @@ public class StoreService implements StoreServiceInterface {
         return null;
     }
 
-    public boolean delete() throws SQLException, ClassNotFoundException {
+    public boolean delete() throws SQLException {
         storeDAO = new StoreDAOImplementation();
         if (storeDAO.getStore() != null) {
             storeDAO.delete();
@@ -38,7 +38,7 @@ public class StoreService implements StoreServiceInterface {
         return false;
     }
 
-    public Store view() throws SQLException, ClassNotFoundException {
+    public Store view() throws SQLException {
         storeDAO = new StoreDAOImplementation();
         return storeDAO.getStore();
     }

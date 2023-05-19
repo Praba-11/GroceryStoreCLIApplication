@@ -1,6 +1,6 @@
 package com.billing.app.domain.presentation.store;
 
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TypeMismatchException;
 
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ public class StoreValidator {
         }
     }
 
-    public boolean validateValues(List<String> values) throws IllegalArgumentException, TypeMismatchException {
+    public boolean validateValues(List<String> values) throws InvalidArgumentException, TypeMismatchException {
         String name = values.get(0);
         String phoneNumber = values.get(1);
         String address = values.get(2);
@@ -27,21 +27,25 @@ public class StoreValidator {
 
 
         if (name.length() < 3 || name.length() > 30) {
-            throw new IllegalArgumentException("Name: " + name + " is incompatible. Provide a name of valid length.");
+            throw new InvalidArgumentException("Name: " + name + " is incompatible. Provide a name of valid length.");
         }
         if (name.trim().length() == 0) {
-            throw new IllegalArgumentException("Name cannot be empty. Please provide a valid name.");
+            throw new InvalidArgumentException("Name cannot be empty. Please provide a valid name.");
         }
         if (address.trim().length() == 0) {
-            throw new IllegalArgumentException("Address cannot be empty. Please provide a valid address.");
+            throw new InvalidArgumentException("Address cannot be empty. Please provide a valid address.");
         }
         if (!isGSTNumberValid(gstNumber)) {
-            throw new IllegalArgumentException("Invalid GST number. Please provide a valid number.");
+            throw new InvalidArgumentException("Invalid GST number. Please provide a valid number.");
         }
         try {
-            long castedPhoneNumber = Long.parseLong(phoneNumber);
-            if (castedPhoneNumber < 0) {
-                throw new IllegalArgumentException("Invalid phone number. Please provide a valid phone number.");
+            if (phoneNumber.length() == 10) {
+                long castedPhoneNumber = Long.parseLong(phoneNumber);
+                if (castedPhoneNumber < 0) {
+                    throw new InvalidArgumentException("Invalid phone number. Please provide a valid phone number.");
+                }
+            } else {
+                throw new InvalidArgumentException("Invalid phone number. Please provide a valid phone number.");
             }
         } catch (NumberFormatException exception) {
             throw new TypeMismatchException("'" + values.get(1) + "'. Provided phone number is incompatible.");
@@ -49,54 +53,54 @@ public class StoreValidator {
         return true;
     }
 
-    public boolean validateMap(Map<String, String> productMap) throws IllegalArgumentException, TypeMismatchException {
+    public boolean validateMap(Map<String, String> storeMap) throws InvalidArgumentException, TypeMismatchException {
 
-        if (productMap.containsKey("name")) {
-            String name = productMap.get("name");
+        if (storeMap.containsKey("name")) {
+            String name = storeMap.get("name");
             if (name.length() < 3 || name.length() > 30) {
-                throw new IllegalArgumentException("Store name: " + name + " is incompatible. Provide a store name of valid length.");
+                throw new InvalidArgumentException("Store name: " + name + " is incompatible. Provide a store name of valid length.");
             }
             if (name.trim().length() == 0) {
-                throw new IllegalArgumentException("Store name cannot be empty. Please provide a valid store name.");
+                throw new InvalidArgumentException("Store name cannot be empty. Please provide a valid store name.");
             }
         } else {
-            throw new IllegalArgumentException("Store name not entered.");
+            throw new InvalidArgumentException("Store name not entered.");
         }
-        if (productMap.containsKey("gstnumber")) {
-            String gstNumber = productMap.get("gstnumber");
+        if (storeMap.containsKey("gstnumber")) {
+            String gstNumber = storeMap.get("gstnumber");
             if (gstNumber.trim().length() == 0) {
-                throw new IllegalArgumentException("GST number cannot be empty. Please provide a valid GST number.");
+                throw new InvalidArgumentException("GST number cannot be empty. Please provide a valid GST number.");
             }
             if (!isGSTNumberValid(gstNumber)) {
-                throw new IllegalArgumentException("Incompatible GST number. Please provide a valid GST number.");
+                throw new InvalidArgumentException("Incompatible GST number. Please provide a valid GST number.");
             }
         } else {
-            throw new IllegalArgumentException("GST number not entered.");
+            throw new InvalidArgumentException("GST number not entered.");
         }
-        if (productMap.containsKey("phonenumber")) {
+        if (storeMap.containsKey("phonenumber")) {
             try {
-                String phoneNumber = productMap.get("phonenumber");
-                if (phoneNumber.length() == 10) {
+                String phoneNumber = storeMap.get("phonenumber");
+                if (phoneNumber.length() != 10) {
                     long castedPhoneNumber = Long.parseLong(phoneNumber);
                     if (castedPhoneNumber < 0) {
-                        throw new IllegalArgumentException("Incompatible phone number. Please provide a valid number.");
+                        throw new InvalidArgumentException("Incompatible phone number. Please provide a valid number.");
                     }
                 } else {
-                    throw new IllegalArgumentException("Incompatible phone number. Please provide a valid number.");
+                    throw new InvalidArgumentException("Incompatible phone number. Please provide a valid number.");
                 }
             } catch (NumberFormatException exception) {
-                throw new TypeMismatchException("'" + productMap.get("phonenumber") + "'. Provided input is incompatible.");
+                throw new TypeMismatchException("'" + storeMap.get("phonenumber") + "'. Provided input is incompatible.");
             }
         } else {
-            throw new IllegalArgumentException("Phone number not entered.");
+            throw new InvalidArgumentException("Phone number not entered.");
         }
-        if (productMap.containsKey("address")) {
-            String address = productMap.get("address");
+        if (storeMap.containsKey("address")) {
+            String address = storeMap.get("address");
             if (address.trim().length() == 0) {
-                throw new IllegalArgumentException("Address cannot be empty. Please provide a valid address.");
+                throw new InvalidArgumentException("Address cannot be empty. Please provide a valid address.");
             }
         } else {
-            throw new IllegalArgumentException("GST number not entered.");
+            throw new InvalidArgumentException("GST number not entered.");
         }
         return true;
     }

@@ -2,7 +2,7 @@ package com.billing.app.domain.presentation.product;
 
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Main;
 import com.billing.app.domain.presentation.Validator;
@@ -68,7 +68,7 @@ public class ProductCLI {
                     System.out.println("Provided id not found. " + exception.getMessage());
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
-                } catch (IllegalArgumentException exception) {
+                } catch (InvalidArgumentException exception) {
                     System.out.println("Invalid argument. " + exception.getMessage());
                 }
                 break;
@@ -95,7 +95,7 @@ public class ProductCLI {
                         for (Product products : productArray) {
                             System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
                         }
-                    } catch (IllegalArgumentException exception) {
+                    } catch (InvalidArgumentException exception) {
                         System.out.println("Incompatible argument. " + exception.getMessage());
                     } catch (TemplateMismatchException exception) {
                         System.out.println("Template mismatch. " + exception.getMessage());
@@ -139,7 +139,7 @@ public class ProductCLI {
             System.out.println("Template mismatch. " + exception.getMessage());
         } catch (ClassNotFoundException exception) {
             throw new RuntimeException(exception);
-        } catch (IllegalArgumentException exception) {
+        } catch (InvalidArgumentException exception) {
             System.out.println("Invalid argument provided. " + exception.getMessage());
         } catch (TypeMismatchException exception) {
             System.out.println("Type mismatch occurred at " + exception.getMessage());
@@ -184,7 +184,7 @@ public class ProductCLI {
             System.out.println("Template mismatch. " + exception.getMessage());
         } catch (TypeMismatchException exception) {
             System.out.println("Type mismatch occurred at " + exception.getMessage());
-        } catch (IllegalArgumentException exception) {
+        } catch (InvalidArgumentException exception) {
             System.out.println("Incompatible argument. " + exception.getMessage());
         } catch (ObjectNullPointerException exception) {
             System.out.println("Unable to edit product. " + exception.getMessage());

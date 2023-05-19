@@ -1,11 +1,10 @@
 package com.billing.app.domain.service.purchase;
 
 import com.billing.app.domain.database.*;
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -35,7 +34,7 @@ public class PurchaseService implements PurchaseServiceInterface {
         return true;
     }
 
-    public List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException, IllegalArgumentException {
+    public List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException, InvalidArgumentException {
         List<Purchase> list;
         if (attribute == null && searchText != null && range == 0 && page == 0) {
             list = purchaseDAO.list(searchText);
@@ -56,7 +55,7 @@ public class PurchaseService implements PurchaseServiceInterface {
             } else if (attribute != null && searchText != null && range > 0 && page > 0) {
                 page = (page - 1) * range;
             } else {
-                throw new IllegalArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
+                throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
             }
             list = purchaseDAO.list(range, page, attribute, searchText);
         }

@@ -1,42 +1,68 @@
 package com.billing.app.domain.entity;
 
 public class User {
-    private String type;
+    public enum UserType {
+        ADMIN("Administrator"),
+        PURCHASE("Purchase User"),
+        SALES("Sales User");
+
+        private String value;
+
+        UserType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static UserType fromValue(String value) {
+            for (UserType userType : UserType.values()) {
+                if (userType.getValue().equals(value)) {
+                    return userType;
+                }
+            }
+            throw new IllegalArgumentException("Invalid value for UserType: " + value);
+        }
+    }
+
+    private UserType userType;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userType=" + userType +
+                ", id=" + id +
+                ", username='" + username + '\'' +
+                ", isAvailable=" + isAvailable +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phoneNumber=" + phoneNumber +
+                '}';
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
     private int id;
     private String username;
-    private boolean isavailable;
+    private boolean isAvailable;
 
     public boolean isAvailable() {
-        return isavailable;
+        return isAvailable;
     }
 
-    public void setIsAvailable(boolean isavailable) {
-        this.isavailable = isavailable;
-    }
-
-    public User(int id, String username, String password, String firstName, String lastName, String type, long phoneNumber, boolean isavailable) {
-        this.type = type;
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-    }
-
-    public User() {
-
+    public void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 
     private String password;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public int getId() {
         return id;
@@ -90,16 +116,4 @@ public class User {
     private String lastName;
     private long phoneNumber;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "type='" + type + '\'' +
-                ", id=" + id +
-                ", name='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phoneNumber=" + phoneNumber +
-                '}';
-    }
 }

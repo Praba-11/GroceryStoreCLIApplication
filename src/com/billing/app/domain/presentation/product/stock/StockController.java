@@ -1,6 +1,6 @@
 package com.billing.app.domain.presentation.product.stock;
 
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.service.product.ProductService;
 import com.billing.app.domain.service.product.ProductServiceInterface;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class StockController {
     ProductServiceInterface productServiceInterface = new ProductService();
-    public void update(List<String> stockUpdate) throws TemplateMismatchException, SQLException, IllegalArgumentException {
+    public void update(List<String> stockUpdate) throws TemplateMismatchException, SQLException, InvalidArgumentException {
         try {
             int expectedLength = 2;
             int actualLength = stockUpdate.size();
@@ -24,7 +24,7 @@ public class StockController {
             }
         }
         catch (NumberFormatException exception) {
-            throw new IllegalArgumentException("Price cannot be a string.");
+            throw new InvalidArgumentException("Price cannot be a string.");
         }
     }
 }

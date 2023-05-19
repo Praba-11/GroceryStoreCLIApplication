@@ -1,5 +1,6 @@
 package com.billing.app.domain.database;
 
+import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.AnonymousException;
 import com.billing.app.domain.exceptions.PrimaryKeyException;
@@ -10,56 +11,38 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAOImplementation implements UserDAO {
     User user;
     ConnectionDB connectionDB = new ConnectionDB();
-    ArrayList<User> userArrayList;
-     public boolean create(User user) throws ClassNotFoundException, PrimaryKeyException, AnonymousException {
-         try {
-             String query = "INSERT INTO users (username, type, password, firstname, lastname, phonenumber, isavailable) VALUES (?, ?, ?, ?, ?, ?, ?)";
-             PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-             preparedStatement.setString(1, user.getUsername());
-             preparedStatement.setString(2, user.getType());
-             preparedStatement.setString(3, user.getPassword());
-             preparedStatement.setString(4, user.getFirstName());
-             preparedStatement.setString(5, user.getLastName());
-             preparedStatement.setLong(6, user.getPhoneNumber());
-             preparedStatement.setBoolean(7, user.isAvailable());
-             int rowsAffected = preparedStatement.executeUpdate();
-             preparedStatement.close();
-             return rowsAffected > 0;
-         } catch (SQLException exception) {
-             if (exception.getSQLState().equals("23505")) {
-                 throw new PrimaryKeyException(user.getUsername() + " already exists. " + exception.getMessage());
-             } else {
-                 throw new AnonymousException(exception.getMessage());
-             }
-         }
-     }
+    private List<User> userList;
+    @Override
+    public User create(User user) throws SQLException {
+        System.out.println(user);
+        String query = "INSERT INTO users (usertype, username, password, firstname, lastname, phonenumber, isavailable) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        PreparedStatement statement = setQuery(preparedStatement, user);
+        statement.executeUpdate();
+        return user;
+    }
 
-
-    public boolean edit(User user) throws ClassNotFoundException, IllegalAccessException, SQLException {
-
-        // Edit User in Database table
-        Statement statement = connectionDB.getConnection().createStatement();
-        int rowsAffected = 0;
-        Field[] fields = user.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Object value = field.get(user);
-            String query = "UPDATE users SET " + field.getName() + " = '" + value + "' WHERE username = '" + user.getUsername() + "'";
-            rowsAffected = statement.executeUpdate(query);
-        }
-        return rowsAffected > 0;
+    @Override
+    public User edit(User user) throws SQLException {
+        String query = "UPDATE users SET usertype = ?, username = ?, password = ?, firstname = ?, lastname = ?, phonenumber = ?, " +
+                "isavailable = ? WHERE id = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        PreparedStatement statement = setQuery(preparedStatement, user);
+        statement.setInt(8, user.getId());
+        statement.executeUpdate();
+        return user;
     }
 
 
-    public boolean delete(String key, String value) throws SQLException, ClassNotFoundException {
-
-        // Delete User in Database table
-        ConnectionDB connectionDB = new ConnectionDB();
-        String query = "UPDATE users SET isavailable = " + false + " WHERE " + key + " = '" + value + "'";
+    @Override
+    public boolean delete(String username) throws SQLException {
+        String query = "UPDATE users SET isavailable = " + false + " WHERE username = '" + username + "'";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         int rowsAffected = preparedStatement.executeUpdate();
         preparedStatement.close();
@@ -67,75 +50,83 @@ public class UserDAOImplementation implements UserDAO {
     }
 
 
-    public ArrayList<User> list() throws SQLException, ClassNotFoundException {
+    public List<User> list(int range, int page, String attribute, String searchText) throws SQLException {
 
-        // Returns arraylist of Users from Database table
-        userArrayList = new ArrayList<>();
-        ConnectionDB connectionDB = new ConnectionDB();
-        String query = "SELECT * FROM users";
+        String query = "SELECT * FROM users WHERE CAST(" + attribute + " AS TEXT) ILIKE '%" + searchText + "%' " +
+                "LIMIT " + range + " OFFSET " + page;
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        List<User> users = listUsers(resultSet);
+        return users;
+    }
+
+    public List<User> list(String searchText) throws SQLException {
+
+        String query = "SELECT * FROM users WHERE CAST(id AS TEXT) ILIKE '%" + searchText + "%' OR type ILIKE '%" +
+                searchText + "%' OR username ILIKE '%" + searchText + "%' OR password ILIKE '%" + searchText + "%' " +
+                "OR firstname ILIKE '%" + searchText + "%' OR lastname ILIKE '%" + searchText + "%' OR " +
+                "CAST(phonenumber AS TEXT) ILIKE '%" + searchText + "%' OR isavailable ILIKE '%" + searchText + "%'";
+
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        List<User> users = listUsers(resultSet);
+        return users;
+    }
+
+
+    public User find(int id) throws SQLException {
+        User userFound = null;
+        String query = "SELECT * FROM users WHERE id = '" + id + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        user = new User();
+        while (resultSet.next()) {
+            userFound = setUser(user, resultSet);
+        }
+        return userFound;
+    }
+
+    public int count() throws SQLException {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM users";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         while (resultSet.next()) {
-            user = new User();
-            user.setId(resultSet.getInt(1));
-            user.setType(resultSet.getString(2));
-            user.setUsername(resultSet.getString(3));
-            user.setPassword(resultSet.getString(4));
-            user.setFirstName(resultSet.getString(5));
-            user.setLastName(resultSet.getString(6));
-            user.setPhoneNumber(resultSet.getLong(7));
-            user.setIsAvailable(resultSet.getBoolean(8));
-            userArrayList.add(user);
+            count = resultSet.getInt(1);
         }
-        statement.close();
-        resultSet.close();
-        return userArrayList;
-
+        return count;
     }
 
-
-     public User getUser(String username) throws ClassNotFoundException, AnonymousException {
-         try {
-             String query = "SELECT * FROM users WHERE username = '" + username + "'";
-             Statement statement = connectionDB.getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(query);
-             while (resultSet.next()) {
-                 user = new User();
-                 user.setId(resultSet.getInt(1));
-                 user.setType(resultSet.getString(2));
-                 user.setUsername(resultSet.getString(3));
-                 user.setPassword(resultSet.getString(4));
-                 user.setFirstName(resultSet.getString(5));
-                 user.setLastName(resultSet.getString(6));
-                 user.setPhoneNumber(resultSet.getLong(7));
-             }
-             return user;
-         } catch (SQLException exception) {
-             throw new AnonymousException(exception.getMessage());
-         }
-     }
-
-
-    public boolean isUsernamePresent(String username) throws SQLException, ClassNotFoundException {
-
-        boolean flag = false;
-        String query = "SELECT EXISTS(SELECT 1 FROM users WHERE username = '" + username + "')";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next())
-            flag = resultSet.getBoolean(1);
-        return flag;
-
+    private PreparedStatement setQuery(PreparedStatement preparedStatement, User user) throws SQLException {
+        preparedStatement.setString(1, user.getUserType().getValue());
+        preparedStatement.setString(2, user.getUsername());
+        preparedStatement.setString(3, user.getPassword());
+        preparedStatement.setString(4, user.getFirstName());
+        preparedStatement.setString(5, user.getLastName());
+        preparedStatement.setLong(6, user.getPhoneNumber());
+        preparedStatement.setBoolean(7, user.isAvailable());
+        return preparedStatement;
     }
 
+    private User setUser(User user, ResultSet resultSet) throws SQLException {
+        user.setId(resultSet.getInt(1));
+        user.setUserType(User.UserType.fromValue(resultSet.getString(2)));
+        user.setUsername(resultSet.getString(3));
+        user.setPassword(resultSet.getString(4));
+        user.setFirstName(resultSet.getString(5));
+        user.setLastName(resultSet.getString(6));
+        user.setPhoneNumber(resultSet.getLong(7));
+        user.setIsAvailable(resultSet.getBoolean(8));
+        return user;
+    }
 
-    public boolean isIdPresent(String id) throws SQLException, ClassNotFoundException {
-        boolean flag = false;
-        String query = "SELECT EXISTS(SELECT 1 FROM users WHERE id = '" + id + "')";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next())
-            flag = resultSet.getBoolean(1);
-        return flag;
+    private List<User> listUsers(ResultSet resultSet) throws SQLException {
+        userList = new ArrayList<>();
+        while (resultSet.next()) {
+            user = new User();
+            User setUser = setUser(user, resultSet);
+            userList.add(setUser);
+        }
+        return userList;
     }
 }

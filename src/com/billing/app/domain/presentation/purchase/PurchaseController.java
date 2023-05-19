@@ -1,23 +1,18 @@
 package com.billing.app.domain.presentation.purchase;
 
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
-import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.purchase.PurchaseService;
 import com.billing.app.domain.service.purchase.PurchaseServiceInterface;
-import com.billing.app.domain.service.purchase.PurchaseValidator;
 
-import java.sql.Array;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +74,7 @@ public class PurchaseController {
         }
     }
 
-    public List<Purchase> list(List<String> values) throws IllegalArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {
+    public List<Purchase> list(List<String> values) throws InvalidArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {
 
         int range, page;
         String attribute, searchText;

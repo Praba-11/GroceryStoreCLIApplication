@@ -1,6 +1,6 @@
 package com.billing.app.domain.presentation.sale;
 
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SalesCLIValidator {
-    public Map<String, Object> validateList(List<String> values) throws IllegalArgumentException, TemplateMismatchException {
+    public Map<String, Object> validateList(List<String> values) throws InvalidArgumentException, TemplateMismatchException {
         Map<String, Object> parseMap = new HashMap<>();
         int range = 0, page = 0;
         String attribute = null, searchText = null;
@@ -24,7 +24,7 @@ public class SalesCLIValidator {
                 searchText = values.get(1);
             }
             else {
-                throw new IllegalArgumentException("Invalid notation provided. Provide a valid list notation.");
+                throw new InvalidArgumentException("Invalid notation provided. Provide a valid list notation.");
             }
 
         } else if (values.size() == 3) {
@@ -39,7 +39,7 @@ public class SalesCLIValidator {
                 searchText = values.get(2);
             }
             else {
-                throw new IllegalArgumentException("Invalid notation provided. Provide a valid list notation.");
+                throw new InvalidArgumentException("Invalid notation provided. Provide a valid list notation.");
             }
 
         } else if (values.size() == 6) {

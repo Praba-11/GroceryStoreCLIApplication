@@ -1,15 +1,10 @@
 package com.billing.app.domain.presentation.sale;
 
-import com.billing.app.domain.entity.Purchase;
-import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
-import com.billing.app.domain.presentation.purchase.PurchaseCLIValidator;
-import com.billing.app.domain.service.purchase.PurchaseService;
-import com.billing.app.domain.service.purchase.PurchaseServiceInterface;
 import com.billing.app.domain.service.sale.SalesService;
 import com.billing.app.domain.service.sale.SalesServiceInterface;
 
@@ -72,7 +67,7 @@ public class SalesController {
         }
     }
 
-    public List<Sales> list(List<String> values) throws IllegalArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {
+    public List<Sales> list(List<String> values) throws InvalidArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {
 
         int range, page;
         String attribute, searchText;

@@ -1,7 +1,7 @@
 package com.billing.app.domain.presentation.product;
 
 import com.billing.app.domain.exceptions.*;
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.product.ProductService;
@@ -22,7 +22,7 @@ public class ProductController {
     private Validator validator = new Validator();
 
 
-    public Product create(List<String> values) throws ClassNotFoundException, SQLException, TemplateMismatchException, IllegalArgumentException, TypeMismatchException, ObjectNullPointerException {
+    public Product create(List<String> values) throws ClassNotFoundException, SQLException, TemplateMismatchException, InvalidArgumentException, TypeMismatchException, ObjectNullPointerException {
 
         int expectedLength = 6;
         int actualLength = values.size();
@@ -37,7 +37,10 @@ public class ProductController {
 
 
 
-    public Product edit(Map<String, String> values) throws SQLException, ClassNotFoundException, NullPointerException, TemplateMismatchException, TypeMismatchException, IllegalArgumentException, ObjectNullPointerException, CodeNotFoundException {
+    public Product edit(Map<String, String> values) throws SQLException, ClassNotFoundException, NullPointerException,
+            TemplateMismatchException, TypeMismatchException, InvalidArgumentException, ObjectNullPointerException,
+            CodeNotFoundException {
+
         int expectedLength = 7;
         int actualLength = values.size();
         if (actualLength == expectedLength) {
@@ -54,13 +57,13 @@ public class ProductController {
 
 
 
-    public boolean delete(String value) throws SQLException, ClassNotFoundException, CodeNotFoundException, IllegalArgumentException {
+    public boolean delete(String value) throws SQLException, ClassNotFoundException, CodeNotFoundException, InvalidArgumentException {
         boolean flag = false;
         int id;
         try {
             id = Integer.parseInt(value);
         } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException("Unparseable id provided for deletion. Please try again.");
+            throw new InvalidArgumentException("Unparseable id provided for deletion. Please try again.");
         }
         flag = productServiceInterface.delete(id);
         return flag;
@@ -68,7 +71,7 @@ public class ProductController {
 
 
 
-    public List<Product> list(List<String> values) throws IllegalArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {
+    public List<Product> list(List<String> values) throws InvalidArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {
 
         int range, page;
         String attribute, searchText;

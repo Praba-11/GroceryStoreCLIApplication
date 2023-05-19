@@ -1,6 +1,6 @@
 package com.billing.app.domain.presentation.product.stock;
 
-import com.billing.app.domain.exceptions.IllegalArgumentException;
+import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 
 import java.sql.SQLException;
@@ -14,10 +14,10 @@ public class StockCLI {
             if (action.equals("update")) {
                 stockController.update(attributes);
             } else {
-                throw new IllegalArgumentException("Invalid attribute '" + action + "' provided in command. \n" +
+                throw new InvalidArgumentException("Invalid attribute '" + action + "' provided in command. \n" +
                         "Please provide a valid command.");
             }
-        } catch (IllegalArgumentException exception) {
+        } catch (InvalidArgumentException exception) {
             System.out.println("Attribute error in command: " + exception.getMessage());
         } catch (TemplateMismatchException exception) {
             System.out.println("Incompatible length. " + exception.getMessage());
