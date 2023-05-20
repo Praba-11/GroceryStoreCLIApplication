@@ -27,7 +27,6 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     }
 
     public List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
-        System.out.println(attribute);
         String query = "SELECT * FROM purchase WHERE CAST(" + attribute + " AS TEXT) ILIKE '%" + searchText + "%' LIMIT " + range + " OFFSET " + page;
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -66,6 +65,14 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
 
     public int count(String from, String to) throws SQLException, ClassNotFoundException {
         int count = 0;
+        System.out.println(from);
+        System.out.println(to);
+        String query = "SELECT COUNT(*) AS count_purchase FROM purchase WHERE purchase_date BETWEEN '" + from + "' AND '" + to + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            count = resultSet.getInt(1);
+        }
         return count;
     }
 

@@ -21,18 +21,7 @@ public class Main {
                 break;
             } else {
                 Router router = new Router();
-                SalesController salesController = new SalesController();
-                List<String> sale = new ArrayList<>();
-                sale.add("11-07-2023");
-                sale.add("21734");
-                sale.add("101e");
-                sale.add("3");
-                sale.add("103a");
-                sale.add("4");
-                salesController.create(sale);
-
-
-//                router.module(input);
+                router.module(input);
             }
         }
     }

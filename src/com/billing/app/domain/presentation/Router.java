@@ -85,7 +85,14 @@ public class Router {
 
             case "purchase":
                 purchaseCLI = new PurchaseCLI();
-//                purchaseCLI.execute(arrayList);
+                splitBySpaces = main.splitBySpaces(command);
+                if (splitBySpaces.size() == 1) {
+                    System.out.println("Action not provided. Please provide a valid command.\n" +
+                            "For queries, please use command 'help'");
+                } else {
+                    String productCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    purchaseCLI.execute(productCommand);
+                }
                 break;
 
             case "sales":

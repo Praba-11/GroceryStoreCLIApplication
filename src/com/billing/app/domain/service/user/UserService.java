@@ -68,6 +68,10 @@ public class UserService implements UserServiceInterface {
             } else {
                 throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
             }
+            System.out.println(range);
+            System.out.println(page);
+            System.out.println(attribute);
+            System.out.println(searchText);
             list = userDAO.list(range, page, attribute, searchText);
         }
         return list;

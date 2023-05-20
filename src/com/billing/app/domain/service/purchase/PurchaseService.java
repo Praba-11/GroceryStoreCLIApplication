@@ -57,6 +57,10 @@ public class PurchaseService implements PurchaseServiceInterface {
             } else {
                 throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
             }
+            System.out.println(range);
+            System.out.println(page);
+            System.out.println(attribute);
+            System.out.println(searchText);
             list = purchaseDAO.list(range, page, attribute, searchText);
         }
         return list;

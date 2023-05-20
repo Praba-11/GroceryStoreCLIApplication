@@ -25,20 +25,15 @@ public class PurchaseController {
     PurchaseServiceInterface purchaseServiceInterface = new PurchaseService();
     PurchaseCLIValidator purchaseCLIValidator = new PurchaseCLIValidator();
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    public Purchase create(ArrayList<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeNotFoundException, TemplateMismatchException {
+    public Purchase create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeNotFoundException, TemplateMismatchException {
 
-        List<String> create = new ArrayList<>(stringArrayList.subList(1, 3));
-        List<String> items = new ArrayList<>(stringArrayList.subList(3, stringArrayList.size()));
-        for (String item : items) {
-            item = item.replaceAll("\\[|\\]", "");
-            create.add(item);
-        }
+        List<String> create = new ArrayList<>(stringArrayList.subList(0, 2));
+        List<String> purchaseItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
 
 
         purchase = new Purchase();
         purchaseItems = new ArrayList<>();
         float grandTotal = 0;
-        purchaseItemDetails = new ArrayList<>(create.subList(3, create.size()));
 
         if (purchaseItemDetails.size() % 3 == 0) {
             for (int index = 0; index < purchaseItemDetails.size(); index += 3) {
@@ -54,24 +49,25 @@ public class PurchaseController {
             throw new TemplateMismatchException("Incompatible purchase item details. Please provide according to the template.");
         }
         purchase.setDate(new Date(format.parse(create.get(1)).getTime()));
-        purchase.setInvoice(Integer.parseInt(create.get(2)));
+        purchase.setInvoice(Integer.parseInt(create.get(0)));
         purchase.setListOfPurchaseItem(purchaseItems);
         purchase.setGrandTotal(grandTotal);
+        System.out.println(purchase);
         return purchaseServiceInterface.create(purchase);
     }
 
-    public boolean delete(List<String> values) throws TemplateMismatchException, SQLException, CodeNotFoundException, ClassNotFoundException {
-        boolean flag = false;
-        int expectedLength = 1;
-        int actualLength = values.size();
 
-        if (actualLength == expectedLength) {
-            int invoice = Integer.parseInt(values.get(0));
-            flag = purchaseServiceInterface.delete(invoice);
-            return flag;
-        } else {
-            throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Provided: " + actualLength);
+
+    public boolean delete(String value) throws TemplateMismatchException, SQLException, CodeNotFoundException, ClassNotFoundException, InvalidArgumentException {
+        boolean flag = false;
+        int invoice;
+        try {
+            invoice = Integer.parseInt(value);
+        } catch (NumberFormatException exception) {
+            throw new InvalidArgumentException("Incompatible invoice number. Invoice cannot be string.");
         }
+        flag = purchaseServiceInterface.delete(invoice);
+        return flag;
     }
 
     public List<Purchase> list(List<String> values) throws InvalidArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {

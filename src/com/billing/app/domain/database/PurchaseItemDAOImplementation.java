@@ -22,4 +22,6 @@ public class PurchaseItemDAOImplementation implements PurchaseItemDAO {
         preparedStatement.setFloat(4, purchaseItem.getCostPrice());
         return preparedStatement;
     }
+
+
 }

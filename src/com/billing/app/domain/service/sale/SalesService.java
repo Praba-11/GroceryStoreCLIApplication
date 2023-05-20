@@ -30,6 +30,7 @@ public class SalesService implements SalesServiceInterface {
             grandTotal += newSalesItem.getCostPrice() * newSalesItem.getQuantity();
 
         }
+        return null;
     }
 
 
