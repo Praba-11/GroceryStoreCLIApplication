@@ -10,6 +10,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PurchaseCLI {
     PurchaseController purchaseController = new PurchaseController();
@@ -19,6 +21,30 @@ public class PurchaseCLI {
         String action = stringArrayList.get(1);
         switch (action) {
             case "products":
+                String modifiedInput = input.replaceAll("\\s", "");
+
+                // Splitting the modified input into two parts
+                Pattern pattern = Pattern.compile("^(\\d+,\\d{2}-\\d{2}-\\d{4}),(\\[.+\\])$");
+                Matcher matcher = pattern.matcher(modifiedInput);
+
+                if (matcher.find()) {
+                    String part1 = matcher.group(1);
+                    String part2 = matcher.group(2);
+                    System.out.println(part2);
+                    // Split part2 into individual elements
+                    part2 = part2.substring(1, part2.length() - 1);
+                    List<String> list = new ArrayList<>(List.of(part1.split(",")));
+                    // Split part2 into individual elements
+                    List<String> elementsList = new ArrayList<>(List.of(part2.split("\\],\\[")));
+                    // Print the individual elements
+                    for (String element : elementsList) {
+                        list.addAll(List.of(element.split(",")));
+                    }
+                    System.out.println(list);
+                } else {
+                    System.out.println("No match found");
+                }
+
                 try {
                     purchaseController.create(stringArrayList);
                 } catch (SQLException exception) {
