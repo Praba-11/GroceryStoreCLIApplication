@@ -1,5 +1,7 @@
 package com.billing.app.domain.presentation.sale;
 
+import com.billing.app.domain.entity.Purchase;
+import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
@@ -23,46 +25,51 @@ public class SalesController {
     List<String> salesItemDetails;
     SalesServiceInterface salesServiceInterface = new SalesService();
     SalesCLIValidator salesCLIValidator = new SalesCLIValidator();
+    List<SalesItem> salesItems;
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
 
     public Sales create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeNotFoundException, TemplateMismatchException {
 
-        System.out.println(stringArrayList);
-
         List<String> create = new ArrayList<>(stringArrayList.subList(0, 2));
-        List<String> salesItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
-        System.out.println(salesItemDetails);
+        List<String> purchaseItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
 
-        if (salesItemDetails.size() % 2 == 0) {
-            for (int index = 0; index < salesItemDetails.size(); index += 2) {
+
+        sales = new Sales();
+        salesItems = new ArrayList<>();
+        float grandTotal = 0;
+
+        if (salesItemDetails.size() % 3 == 0) {
+            for (int index = 0; index < purchaseItemDetails.size(); index += 3) {
                 salesItem = new SalesItem();
-                salesItem.setCode(salesItemDetails.get(index));
-                salesItem.setQuantity(Float.parseFloat(salesItemDetails.get(index + 1)));
-                listOfSalesItem.add(salesItem);
+                salesItem.setCode(purchaseItemDetails.get(index));
+                salesItem.setQuantity(Float.parseFloat(purchaseItemDetails.get(index + 1)));
+                salesItem.setCostPrice(Float.parseFloat(purchaseItemDetails.get(index + 2)));
+                grandTotal += (salesItem.getQuantity() * salesItem.getCostPrice());
+                salesItems.add(salesItem);
+
             }
         } else {
             throw new TemplateMismatchException("Incompatible purchase item details. Please provide according to the template.");
         }
-        sales.setDate(new Date(format.parse(create.get(0)).getTime()));
-        sales.setInvoice(Integer.parseInt(create.get(1)));
-        sales.setListOfSalesItem(listOfSalesItem);
+        sales.setDate(new Date(format.parse(create.get(1)).getTime()));
+        sales.setInvoice(Integer.parseInt(create.get(0)));
+        sales.setListOfSalesItem(salesItems);
+        sales.setGrandTotal(grandTotal);
         System.out.println(sales);
         return salesServiceInterface.create(sales);
     }
 
-    public boolean delete(List<String> values) throws TemplateMismatchException, SQLException, CodeNotFoundException, ClassNotFoundException {
+    public boolean delete(String value) throws TemplateMismatchException, SQLException, CodeNotFoundException, ClassNotFoundException, InvalidArgumentException {
         boolean flag = false;
-        int expectedLength = 1;
-        int actualLength = values.size();
-
-        if (actualLength == expectedLength) {
-            int invoice = Integer.parseInt(values.get(0));
-            flag = salesServiceInterface.delete(invoice);
-            return flag;
-        } else {
-            throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Provided: " + actualLength);
+        int invoice;
+        try {
+            invoice = Integer.parseInt(value);
+        } catch (NumberFormatException exception) {
+            throw new InvalidArgumentException("Incompatible invoice number. Invoice cannot be string.");
         }
+        flag = salesServiceInterface.delete(invoice);
+        return flag;
     }
 
     public List<Sales> list(List<String> values) throws InvalidArgumentException, TemplateMismatchException, SQLException, ClassNotFoundException {

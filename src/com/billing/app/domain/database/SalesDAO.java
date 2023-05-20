@@ -13,4 +13,5 @@ public interface SalesDAO {
     List<Sales> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException;
     List<Sales> list(String searchText) throws SQLException, ClassNotFoundException;
     int count(String from, String to) throws SQLException, ClassNotFoundException;
+    void setGrandTotal(Sales sales) throws SQLException;
 }

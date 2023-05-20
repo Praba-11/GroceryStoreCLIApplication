@@ -13,6 +13,9 @@ public class PurchaseValidator {
         if (sqlState.equals("42703")) {
             return "Provided 'attribute' column does not exist.";
         }
+        if (sqlState.equals("22007")) {
+            return "Invalid date provided. Please provide a valid date.";
+        }
         return "Unrecognised SQL state error.";
     }
 }

@@ -66,6 +66,14 @@ public class SalesDAOImplementation implements SalesDAO {
     }
     public int count(String from, String to) throws SQLException, ClassNotFoundException {
         int count = 0;
+        System.out.println(from);
+        System.out.println(to);
+        String query = "SELECT COUNT(*) AS count_sales FROM sales WHERE sales_date BETWEEN '" + from + "' AND '" + to + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            count = resultSet.getInt(1);
+        }
         return count;
     }
 
@@ -82,5 +90,11 @@ public class SalesDAOImplementation implements SalesDAO {
         preparedStatement.setDate(2, sales.getDate());
         preparedStatement.setFloat(3, sales.getGrandTotal());
         return preparedStatement;
+    }
+
+    public void setGrandTotal(Sales sales) throws SQLException {
+        String query = "UPDATE sales SET grand_total = " + sales.getGrandTotal() + "WHERE invoice_id = " + sales.getInvoice();
+        Statement statement = connectionDB.getConnection().createStatement();
+        statement.executeQuery(query);
     }
 }

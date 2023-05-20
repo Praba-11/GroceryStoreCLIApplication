@@ -69,7 +69,7 @@ public class PurchaseCLI {
                 splitBySpaces = main.splitBySpaces(purchaseCommand);
                 String count = null;
                 if (splitBySpaces.size() == 1) {
-                    counter(count);
+                    counter(null);
                 } else {
                     count = purchaseCommand.substring(purchaseCommand.indexOf(splitBySpaces.get(1)));
                     counter(count);
@@ -194,12 +194,13 @@ public class PurchaseCLI {
         } else {
             list = new ArrayList<>(List.of(date.split(",")));
         }
-        System.out.println(list);
         try {
             int count = purchaseController.count(list);
             System.out.println(count);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException exception) {
+            System.out.print("Unable to count purchase. ");
+            String sqlMessage = purchaseValidator.validateSQLState(exception);
+            System.out.println(sqlMessage);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (TemplateMismatchException e) {

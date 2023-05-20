@@ -90,14 +90,21 @@ public class Router {
                     System.out.println("Action not provided. Please provide a valid command.\n" +
                             "For queries, please use command 'help'");
                 } else {
-                    String productCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-                    purchaseCLI.execute(productCommand);
+                    String purchaseCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    purchaseCLI.execute(purchaseCommand);
                 }
                 break;
 
             case "sales":
                 salesCLI = new SalesCLI();
-//                salesCLI.execute(arrayList);
+                splitBySpaces = main.splitBySpaces(command);
+                if (splitBySpaces.size() == 1) {
+                    System.out.println("Action not provided. Please provide a valid command.\n" +
+                            "For queries, please use command 'help'");
+                } else {
+                    String salesCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+                    salesCLI.execute(salesCommand);
+                }
                 break;
 
             case "stock":
