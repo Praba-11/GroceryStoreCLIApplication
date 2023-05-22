@@ -1,4 +1,4 @@
-package com.billing.app.domain.presentation;
+package com.billing.app.domain.presentation.product;
 
 import com.billing.app.domain.entity.Store;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class Validator {
+public class ProductValidator {
 
     public boolean validateValues(List<String> values) throws InvalidArgumentException, TypeMismatchException {
         String code = values.get(0);

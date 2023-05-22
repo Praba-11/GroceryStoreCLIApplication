@@ -95,11 +95,8 @@ public class UserValidator {
         }
         if (userMap.containsKey("username")) {
             String userName = userMap.get("username");
-            if (userName.length() < 3 || userName.length() > 30) {
-                throw new InvalidArgumentException("User name: " + userName + " is incompatible. Provide a product code of valid length.");
-            }
-            if (userName.trim().length() == 0) {
-                throw new InvalidArgumentException("User name cannot be empty. Please provide a valid product name.");
+            if (!isValidUsername(userName)) {
+                throw new InvalidArgumentException("User name: " + userName + " is incompatible. Provide a username of valid length.");
             }
         } else {
             throw new InvalidArgumentException("User name not entered.");
@@ -210,6 +207,13 @@ public class UserValidator {
         return parseMap;
     }
 
+    private boolean isValidUsername(String userName) {
+        if ((userName.length() < 3 || userName.length() > 30) && userName.trim().length() == 0) {
+            return false;
+        }
+        return true;
+    }
+
     public String validateSQLState(SQLException exception) {
         String sqlState = exception.getSQLState();
         if (sqlState.equals("23505"))
@@ -236,5 +240,12 @@ public class UserValidator {
             }
         }
         return false;
+    }
+
+    public boolean validateLogin(String username, String password) throws InvalidArgumentException {
+        if (isValidUsername(username) && isValidPassword(password)) {
+            return true;
+        }
+        throw new InvalidArgumentException("Invalid username and password. Please try again.");
     }
 }

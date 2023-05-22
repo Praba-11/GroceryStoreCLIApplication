@@ -11,7 +11,7 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     Purchase purchase;
     List<Purchase> purchaseList;
     ConnectionDB connectionDB = new ConnectionDB();
-    public Purchase create(Purchase purchase) throws SQLException, ClassNotFoundException {
+    public Purchase create(Purchase purchase) throws SQLException {
         String query = "INSERT INTO purchase (invoice_id, purchase_date, grand_total) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, purchase);
@@ -27,7 +27,7 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     }
 
     public List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
-        String query = "SELECT * FROM purchase WHERE CAST(" + attribute + " AS TEXT) ILIKE '%" + searchText + "%' LIMIT " + range + " OFFSET " + page;
+        String query = "SELECT * FROM purchase WHERE CAST(" + attribute + " AS TEXT) ILIKE '" + searchText + "' LIMIT " + range + " OFFSET " + page;
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         List<Purchase> purchases = listPurchases(resultSet);
@@ -35,7 +35,7 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
     }
 
     public List<Purchase> list(String searchText) throws SQLException, ClassNotFoundException {
-        String query = "SELECT * FROM purchase WHERE CAST(invoice_id AS TEXT) ILIKE '%" + searchText + "%' OR CAST(purchase_date AS TEXT) ILIKE '%" + searchText + "%' OR CAST(grand_total AS TEXT) ILIKE '%" + searchText + "%'";
+        String query = "SELECT * FROM purchase WHERE CAST(invoice_id AS TEXT) ILIKE '" + searchText + "' OR CAST(purchase_date AS TEXT) ILIKE '" + searchText + "' OR CAST(grand_total AS TEXT) ILIKE '" + searchText + "'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         List<Purchase> purchases = listPurchases(resultSet);
@@ -52,7 +52,7 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
         return purchaseList;
     }
 
-    public boolean find(String code) throws SQLException, ClassNotFoundException {
+    public boolean find(String code) throws SQLException {
         boolean flag = false;
         String query = "SELECT EXISTS(SELECT 1 FROM product WHERE code = '" + code + "') AS code_exists";
         Statement statement = connectionDB.getConnection().createStatement();
@@ -65,8 +65,6 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
 
     public int count(String from, String to) throws SQLException, ClassNotFoundException {
         int count = 0;
-        System.out.println(from);
-        System.out.println(to);
         String query = "SELECT COUNT(*) AS count_purchase FROM purchase WHERE purchase_date BETWEEN '" + from + "' AND '" + to + "'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);

@@ -44,14 +44,15 @@ public class StoreDAOImplementation implements StoreDAO {
     @Override
     public boolean delete() throws SQLException {
 
-        // Delete Store operation
         ConnectionDB connectionDB = new ConnectionDB();
         Statement statement = connectionDB.getConnection().createStatement();
         Statement statement1 = connectionDB.getConnection().createStatement();
         String query = "DELETE FROM store";
         String sql = "ALTER SEQUENCE store_id_seq RESTART WITH 1";
+        String userQuery = "UPDATE users SET isavailable = false WHERE usertype != 'Administrator'";
         statement.execute(sql);
         int rowsAffected = statement1.executeUpdate(query);
+        statement.execute(userQuery);
         return rowsAffected > 0;
     }
 

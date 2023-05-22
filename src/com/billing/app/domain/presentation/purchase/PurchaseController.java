@@ -23,9 +23,9 @@ public class PurchaseController {
     ArrayList<String> purchaseItemDetails;
     ArrayList<PurchaseItem> purchaseItems;
     PurchaseServiceInterface purchaseServiceInterface = new PurchaseService();
-    PurchaseCLIValidator purchaseCLIValidator = new PurchaseCLIValidator();
+    PurchaseValidator purchaseValidator = new PurchaseValidator();
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    public Purchase create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeNotFoundException, TemplateMismatchException {
+    public Purchase create(List<String> stringArrayList) throws ParseException, SQLException, CodeNotFoundException, TemplateMismatchException {
 
         List<String> create = new ArrayList<>(stringArrayList.subList(0, 2));
         List<String> purchaseItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
@@ -52,8 +52,8 @@ public class PurchaseController {
         purchase.setInvoice(Integer.parseInt(create.get(0)));
         purchase.setListOfPurchaseItem(purchaseItems);
         purchase.setGrandTotal(grandTotal);
-        System.out.println(purchase);
-        return purchaseServiceInterface.create(purchase);
+        Purchase purchaseHeld =  purchaseServiceInterface.create(purchase);
+        return purchaseHeld;
     }
 
 
@@ -74,7 +74,7 @@ public class PurchaseController {
 
         int range, page;
         String attribute, searchText;
-        Map<String, Object> parameters = purchaseCLIValidator.validateList(values);
+        Map<String, Object> parameters = purchaseValidator.validateList(values);
 
         range = Integer.parseInt(parameters.get("range").toString());
         page = Integer.parseInt(parameters.get("page").toString());

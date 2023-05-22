@@ -12,8 +12,7 @@ import java.util.List;
 public class SalesService implements SalesServiceInterface {
     ProductDAO productDAO = new ProductDAOImplementation();
     SalesDAO salesDAO = new SalesDAOImplementation();
-    SalesItemDAO salesItemDAO = new SalesItemDAOImplementation();
-    SalesValidator salesValidator = new SalesValidator();
+
     public Sales create(Sales sales) throws SQLException, ClassNotFoundException, CodeNotFoundException {
 
         float grandTotal = 0;

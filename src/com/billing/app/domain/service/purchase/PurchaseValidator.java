@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class PurchaseValidator {
     PurchaseDAO purchaseDAO = new PurchaseDAOImplementation();
-    public boolean valid(Purchase purchase) throws SQLException, ClassNotFoundException, CodeNotFoundException {
+    public boolean valid(Purchase purchase) throws SQLException, CodeNotFoundException {
         int flag = 0;
         for (PurchaseItem purchaseItem : purchase.getListOfPurchaseItem()) {
             if (purchaseDAO.find(purchaseItem.getCode())) {

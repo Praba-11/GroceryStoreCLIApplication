@@ -1,11 +1,11 @@
 package com.billing.app.domain.presentation.product;
 
 import com.billing.app.domain.entity.Product;
+import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Main;
-import com.billing.app.domain.presentation.Validator;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProductCLI {
-    Validator validator;
+    ProductValidator productValidator;
     ProductHelp productHelp;
     Main main = new Main();
     List<String> splitBySpaces;
@@ -49,64 +49,26 @@ public class ProductCLI {
                 break;
 
             case "delete":
-                try {
-                    String deleteCommand = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
-                    if (deleteCommand.equals("help")) {
-                        productHelp = new ProductHelp();
-                        productHelp.deleteProduct();
-                    } else {
-                        boolean isDeleted = false;
-                        isDeleted = productController.delete(deleteCommand);
-                        System.out.println(isDeleted);
-                    }
-                } catch (SQLException exception) {
-                    validator = new Validator();
-                    System.out.print("Unable to delete product. ");
-                    String sqlMessage = validator.validateSQLState(exception);
-                    System.out.println(sqlMessage);
-                } catch (CodeNotFoundException exception) {
-                    System.out.println("Provided id not found. " + exception.getMessage());
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                } catch (InvalidArgumentException exception) {
-                    System.out.println("Invalid argument. " + exception.getMessage());
+                splitBySpaces = main.splitBySpaces(productCommand);
+                String delete;
+                if (splitBySpaces.size() == 1) {
+                    System.out.println("Template mismatch. Please provide a valid command.");
+                } else {
+                    delete = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
+                    deleter(delete);
                 }
                 break;
 
             case "list":
-                String list = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
-                String regex = "\\s*-\\w+|\\b\\w+\\b";
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(list);
-                List<String> listCommand = new ArrayList<>();
-                while (matcher.find()) {
-                    String part = matcher.group().trim();
-                    listCommand.add(part);
-                }
 
-                if (listCommand.size() == 1 && listCommand.get(0).equals("help")) {
-                    productHelp = new ProductHelp();
-                    productHelp.listProduct();
+                splitBySpaces = main.splitBySpaces(productCommand);
+                String list;
+                if (splitBySpaces.size() == 1) {
+                    list = "";
+                    lister(list);
                 } else {
-                    try {
-                        List<Product> productArray = productController.list(listCommand);
-                        System.out.println("List returned successfully.");
-                        System.out.println(productArray);
-                        for (Product products : productArray) {
-                            System.out.println("id: " + products.getId() + ", code: " + products.getCode() + ", name: " + products.getName() + ", unitcode: " + products.getUnitCode() + ", type: " + products.getType() + ", price: " + products.getPrice() + ", stock: " + products.getStock());
-                        }
-                    } catch (InvalidArgumentException exception) {
-                        System.out.println("Incompatible argument. " + exception.getMessage());
-                    } catch (TemplateMismatchException exception) {
-                        System.out.println("Template mismatch. " + exception.getMessage());
-                    } catch (SQLException exception) {
-                        validator = new Validator();
-                        System.out.print("Unable to list product. ");
-                        String sqlMessage = validator.validateSQLState(exception);
-                        System.out.println(sqlMessage);
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
+                    list = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
+                    lister(list);
                 }
                 break;
 
@@ -131,9 +93,9 @@ public class ProductCLI {
                 System.out.println("Created product: " + productCreated);
             }
         } catch (SQLException exception) {
-            validator = new Validator();
+            productValidator = new ProductValidator();
             System.out.print("Unable to create product. ");
-            String sqlMessage = validator.validateSQLState(exception);
+            String sqlMessage = productValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
         } catch (TemplateMismatchException exception) {
             System.out.println("Template mismatch. " + exception.getMessage());
@@ -174,9 +136,9 @@ public class ProductCLI {
             }
 
         } catch (SQLException exception) {
-            validator = new Validator();
+            productValidator = new ProductValidator();
             System.out.print("Unable to edit product. ");
-            String sqlMessage = validator.validateSQLState(exception);
+            String sqlMessage = productValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -192,6 +154,65 @@ public class ProductCLI {
             System.out.println("Invalid product id. " + exception.getMessage());
         } catch (ArrayIndexOutOfBoundsException exception) {
             System.out.println("Template mismatch. Please provide a valid command.");
+        }
+    }
+
+    private void deleter(String delete) {
+        try {
+            if (delete.equals("help")) {
+                productHelp.deleteProduct();
+            } else {
+                boolean isDeleted = false;
+                isDeleted = productController.delete(delete);
+                System.out.println(isDeleted);
+                System.out.println("User '" + delete + "' deleted successfully.");
+            }
+        } catch (SQLException exception) {
+            System.out.print("Unable to delete product. ");
+            String sqlMessage = productValidator.validateSQLState(exception);
+            System.out.println(sqlMessage);
+        } catch (CodeNotFoundException exception) {
+            System.out.println("Provided Id not found. " + exception.getMessage());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidArgumentException exception) {
+            System.out.println("Invalid argument. " + exception.getMessage());
+        }
+    }
+
+    private void lister(String delete) {
+        String regex = "\\s*-\\w+|\\b\\w+\\b";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(delete);
+        List<String> listCommand = new ArrayList<>();
+        while (matcher.find()) {
+            String part = matcher.group().trim();
+            listCommand.add(part);
+        }
+
+        if (listCommand.size() == 1 && listCommand.get(0).equals("help")) {
+            productHelp.listProduct();
+        } else {
+            try {
+                List<Product> productArray = productController.list(listCommand);
+                System.out.println("List returned successfully.");
+                for (Product product : productArray) {
+                    String output = String.format("id: %-4d, code: %-12s, name: %-22s, unitcode: %-14s, type: %-15s, price: %-15.2f, stock: %-15.2f, isdeleted: %b",
+                            product.getId(), product.getCode(), product.getName(), product.getUnitCode(),
+                            product.getType(), product.getPrice(), product.getStock(), product.isDeleted());
+                    System.out.println(output);
+                }
+            } catch (InvalidArgumentException exception) {
+                System.out.println("Incompatible argument. " + exception.getMessage());
+            } catch (TemplateMismatchException exception) {
+                System.out.println("Template mismatch. " + exception.getMessage());
+            } catch (SQLException exception) {
+                System.out.print("Unable to list product. ");
+                String sqlMessage = productValidator.validateSQLState(exception);
+                System.out.println(sqlMessage);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

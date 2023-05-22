@@ -60,6 +60,8 @@ public class StoreCLI {
                         boolean isDeleted = false;
                         isDeleted = storeController.delete();
                         System.out.println(isDeleted);
+                        System.out.println("Thank You! ");
+                        break;
                     } else {
                         System.out.println("Template mismatch. Please provide a valid command.");
                     }
@@ -85,8 +87,14 @@ public class StoreCLI {
                         }
                     } else if (viewCommand.size() == 1) {
                         Store store = storeController.view();
-                        System.out.println("Store details returned successfully.");
-                        System.out.println("id: " + store.getId() + ", name: " + store.getName() + ", phonenumber: " + store.getPhoneNumber() + ", address: " + store.getAddress() + ", gstnumber: " + store.getGstNumber());
+                        if (store != null) {
+                            System.out.println("Store details returned successfully.");
+                            System.out.println("id: " + store.getId() + ", name: " + store.getName() + ", phonenumber: "
+                                    + store.getPhoneNumber() + ", address: " + store.getAddress() + ", gstnumber: "
+                                    + store.getGstNumber());
+                        } else {
+                            System.out.println("Cannot view store. Store not created.");
+                        }
                     } else {
                         System.out.println("Template mismatch. Please provide a valid command.");
                     }
@@ -95,6 +103,7 @@ public class StoreCLI {
                     String sqlMessage = storeValidator.validateSQLState(exception);
                     System.out.println(sqlMessage);
                 }
+                break;
 
             default:
                 System.out.println("Invalid action provided. Please provide a valid command.\n" +

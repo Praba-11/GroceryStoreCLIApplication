@@ -1,11 +1,7 @@
 package com.billing.app.domain.database;
 
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.User;
-import com.billing.app.domain.exceptions.AnonymousException;
-import com.billing.app.domain.exceptions.PrimaryKeyException;
 
-import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -97,6 +93,18 @@ public class UserDAOImplementation implements UserDAO {
         return count;
     }
 
+    public User login(String username, String password) throws SQLException {
+        User userfound = null;
+        String query = "SELECT * FROM users WHERE username = '" + username+ "' AND password = '" + password + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        User user = new User();
+        while (resultSet.next()) {
+            userfound = setUser(user, resultSet);
+        }
+        return userfound;
+    }
+
     private PreparedStatement setQuery(PreparedStatement preparedStatement, User user) throws SQLException {
         preparedStatement.setString(1, user.getUserType().getValue());
         preparedStatement.setString(2, user.getUsername());
@@ -129,4 +137,6 @@ public class UserDAOImplementation implements UserDAO {
         }
         return userList;
     }
+
+
 }

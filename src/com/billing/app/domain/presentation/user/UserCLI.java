@@ -1,12 +1,9 @@
 package com.billing.app.domain.presentation.user;
 
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.presentation.Main;
-import com.billing.app.domain.presentation.Validator;
-import com.billing.app.domain.presentation.product.ProductHelp;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -129,7 +126,7 @@ public class UserCLI {
                     editCommand.put(key, value);
                 }
                 if (editCommand.size() == 3 && editCommand.get(2).equals("help")) {
-//                    userHelp.editUser();
+                    userHelp.editUser();
                 } else {
                     User userEdited = userController.edit(editCommand);
                     System.out.println("Product edited successfully.");
@@ -163,7 +160,7 @@ public class UserCLI {
     private void deleter(String delete) {
         try {
             if (delete.equals("help")) {
-//                        userHelp.deleteProduct();
+                        userHelp.deleteUser();
             } else {
                 boolean isDeleted = false;
                 isDeleted = userController.delete(delete);
@@ -197,7 +194,7 @@ public class UserCLI {
         }
 
         if (listCommand.size() == 1 && listCommand.get(0).equals("help")) {
-//                    userHelp.listUser();
+            userHelp.listUser();
         } else {
             try {
                 List<User> userArray = userController.list(listCommand);

@@ -1,11 +1,12 @@
 package com.billing.app.domain.entity;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Purchase {
     private Date date;
     private int invoice;
-    private ArrayList<PurchaseItem> listOfPurchaseItem;
+    private List<PurchaseItem> listOfPurchaseItem;
     private float grandTotal;
 
     public float getGrandTotal() {
@@ -32,11 +33,11 @@ public class Purchase {
         this.invoice = invoice;
     }
 
-    public ArrayList<PurchaseItem> getListOfPurchaseItem() {
+    public List<PurchaseItem> getListOfPurchaseItem() {
         return listOfPurchaseItem;
     }
 
-    public void setListOfPurchaseItem(ArrayList<PurchaseItem> listOfPurchaseItem) {
+    public void setListOfPurchaseItem(List<PurchaseItem> listOfPurchaseItem) {
         this.listOfPurchaseItem = listOfPurchaseItem;
     }
 

@@ -76,4 +76,10 @@ public class UserService implements UserServiceInterface {
         }
         return list;
     }
+
+    public User find(String username, String password) throws SQLException {
+        User loginUser;
+        loginUser = userDAO.login(username, password);
+        return loginUser;
+    }
 }

@@ -1,6 +1,7 @@
 package com.billing.app.domain.presentation.purchase;
 
 import com.billing.app.domain.entity.Purchase;
+import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
@@ -37,6 +38,7 @@ public class PurchaseCLI {
                     create = purchaseCommand.substring(purchaseCommand.indexOf(splitBySpaces.get(1)));
                 }
                 purchaser(create);
+
                 break;
 
 
@@ -81,17 +83,18 @@ public class PurchaseCLI {
 
     private void purchase(List<String> purchase) {
         try {
-            purchaseController.create(purchase);
+            Purchase purchaseHeld = purchaseController.create(purchase);
+            bill(purchaseHeld);
         } catch (SQLException exception) {
-            System.out.println("Cannot purchase products." + exception.getMessage());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.print("Unable to purchase products. ");
+            String sqlMessage = purchaseValidator.validateSQLState(exception);
+            System.out.println(sqlMessage);
         } catch (CodeNotFoundException exception) {
             System.out.println("Invalid product code. " + exception.getMessage());
         } catch (TemplateMismatchException exception) {
             System.out.println("Template mismatch. " + exception.getMessage());
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            System.out.println("Invalid date. Provided date cannot be parsed.");
         }
     }
 
@@ -109,8 +112,6 @@ public class PurchaseCLI {
             for (String element : elementsList) {
                 purchase.addAll(List.of(element.split(",")));
             }
-        } else {
-            System.out.println("Template mismatch. Please provide a valid command.");
         }
         return purchase;
     }
@@ -119,10 +120,9 @@ public class PurchaseCLI {
     private void purchaser(String create) {
         List<String> purchaseDetails;
         purchaseDetails = separator(create);
-        if (!purchaseDetails.isEmpty()) {
+        if (purchaseDetails != null) {
             purchase(purchaseDetails);
-        }
-        else {
+        } else {
             System.out.println("Template mismatch. Please provide a valid command.");
         }
     }
@@ -206,5 +206,17 @@ public class PurchaseCLI {
         } catch (TemplateMismatchException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    private void bill(Purchase purchase) {
+        System.out.println("Bill printed successfully!\n");
+        String template = "Invoice ID: %s\nDate: %s\n\nPurchase Items:\n----------------------\n%s\n----------------------\n\nTotal: %s\n";
+        StringBuilder itemLines = new StringBuilder();
+        for (PurchaseItem item : purchase.getListOfPurchaseItem()) {
+            itemLines.append(String.format("%s (Quantity: %.2f, Price: ₹%.2f)\n", item.getName(), item.getQuantity(), item.getCostPrice()));
+        }
+        String invoice = String.format(template, purchase.getInvoice(), purchase.getDate(), itemLines.toString(), purchase.getGrandTotal());
+        System.out.println(invoice);
     }
 }

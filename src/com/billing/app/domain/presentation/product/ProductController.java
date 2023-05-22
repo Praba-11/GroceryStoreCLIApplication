@@ -3,7 +3,6 @@ package com.billing.app.domain.presentation.product;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
-import com.billing.app.domain.presentation.Validator;
 import com.billing.app.domain.service.product.ProductService;
 import com.billing.app.domain.service.product.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
@@ -19,7 +18,7 @@ public class ProductController {
     private List<String> keyList;
     private Product product;
     private ProductServiceInterface productServiceInterface = new ProductService();
-    private Validator validator = new Validator();
+    private ProductValidator productValidator = new ProductValidator();
 
 
     public Product create(List<String> values) throws ClassNotFoundException, SQLException, TemplateMismatchException, InvalidArgumentException, TypeMismatchException, ObjectNullPointerException {
@@ -27,7 +26,7 @@ public class ProductController {
         int expectedLength = 6;
         int actualLength = values.size();
         if (actualLength == expectedLength) {
-            validator.validateValues(values);
+            productValidator.validateValues(values);
             product = setValues(values, false);
             return productServiceInterface.create(product);
         } else {
@@ -44,7 +43,7 @@ public class ProductController {
         int expectedLength = 7;
         int actualLength = values.size();
         if (actualLength == expectedLength) {
-            validator.validateMap(values);
+            productValidator.validateMap(values);
             valueList = new ArrayList<>(values.values());
             product = setValues(valueList, true);
         } else {
@@ -76,8 +75,8 @@ public class ProductController {
         int range, page;
         String attribute, searchText;
 
-        validator = new Validator();
-        Map<String, Object> parameters = validator.validateProductList(values);
+        productValidator = new ProductValidator();
+        Map<String, Object> parameters = productValidator.validateProductList(values);
 
         range = Integer.parseInt(parameters.get("range").toString());
         page = Integer.parseInt(parameters.get("page").toString());

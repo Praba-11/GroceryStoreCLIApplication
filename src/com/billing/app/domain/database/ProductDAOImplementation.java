@@ -12,7 +12,7 @@ public class ProductDAOImplementation implements ProductDAO {
     private List<Product> productList;
 
     @Override
-    public Product create(Product product) throws ClassNotFoundException, SQLException {
+    public Product create(Product product) throws SQLException {
         String query = "INSERT INTO product (code, name, unitcode, type, price, stock, isdeleted) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
@@ -128,6 +128,18 @@ public class ProductDAOImplementation implements ProductDAO {
             price = resultSet.getFloat(1);
         }
         return price;
+    }
+
+    public String getName(String code) throws SQLException {
+        String name = null;
+        String query = "SELECT name FROM product WHERE code = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        preparedStatement.setString(1, code);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()) {
+            name = resultSet.getString(1);
+        }
+        return name;
     }
 
     public boolean setStock(String code, float stock) throws SQLException {

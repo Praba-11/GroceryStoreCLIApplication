@@ -1,6 +1,9 @@
 package com.billing.app.domain.presentation.sale;
 
+import com.billing.app.domain.entity.Purchase;
+import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.entity.Sales;
+import com.billing.app.domain.entity.SalesItem;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
@@ -20,7 +23,7 @@ public class SalesCLI {
     Scanner scanner = new Scanner(System.in);
     Main main = new Main();
     List<String> splitBySpaces;
-    SalesCLIValidator salesCLIValidator = new SalesCLIValidator();
+    SalesValidator salesValidator = new SalesValidator();
     public void execute(String salesCommand) throws ParseException {
         splitBySpaces = main.splitBySpaces(salesCommand);
         String action = splitBySpaces.get(0);
@@ -78,7 +81,8 @@ public class SalesCLI {
 
     private void sales(List<String> purchase) {
         try {
-            salesController.create(purchase);
+            Sales sales = salesController.create(purchase);
+            bill(sales);
         } catch (SQLException exception) {
             System.out.println("Cannot purchase products." + exception.getMessage());
         } catch (ClassNotFoundException e) {
@@ -136,7 +140,7 @@ public class SalesCLI {
             }
         } catch (SQLException exception) {
             System.out.print("Unable to delete purchase. ");
-            String sqlMessage = salesCLIValidator.validateSQLState(exception);
+            String sqlMessage = salesValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
         } catch (CodeNotFoundException exception) {
             System.out.println("Provided invoice not found. " + exception.getMessage());
@@ -176,7 +180,7 @@ public class SalesCLI {
                 System.out.println("Template mismatch. " + exception.getMessage());
             } catch (SQLException exception) {
                 System.out.print("Unable to list purchase. ");
-                String sqlMessage = salesCLIValidator.validateSQLState(exception);
+                String sqlMessage = salesValidator.validateSQLState(exception);
                 System.out.println(sqlMessage);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
@@ -196,12 +200,23 @@ public class SalesCLI {
             System.out.println(count);
         } catch (SQLException exception) {
             System.out.print("Unable to count purchase. ");
-            String sqlMessage = salesCLIValidator.validateSQLState(exception);
+            String sqlMessage = salesValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (TemplateMismatchException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void bill(Sales sales) {
+        System.out.println("Bill printed successfully!\n");
+        String template = "Invoice ID: %s\nDate: %s\n\nPurchase Items:\n----------------------\n%s\n----------------------\n\nTotal: %s\n";
+        StringBuilder itemLines = new StringBuilder();
+        for (SalesItem item : sales.getListOfSalesItem()) {
+            itemLines.append(String.format("%s (Quantity: %.2f, Price: ₹%.2f)\n", item.getName(), item.getQuantity(), item.getCostPrice()));
+        }
+        String invoice = String.format(template, sales.getInvoice(), sales.getDate(), itemLines.toString(), sales.getGrandTotal());
+        System.out.println(invoice);
     }
 }

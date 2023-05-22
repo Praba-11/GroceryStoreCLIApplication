@@ -13,4 +13,5 @@ public interface UserServiceInterface {
     User edit(User user) throws SQLException, IllegalAccessException, CodeNotFoundException, ObjectNullPointerException;
     boolean delete(String username) throws SQLException, ClassNotFoundException, CodeNotFoundException;
     List<User> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException, InvalidArgumentException;
+    User find(String username, String password) throws SQLException;
 }

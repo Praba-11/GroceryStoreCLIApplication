@@ -64,7 +64,7 @@ public class UserController {
 
     }
 
-    private static User setValues(List<String> values, boolean setId) {
+    private User setValues(List<String> values, boolean setId) {
         User user = new User();
         int startIndex = setId ? 0 : -1;
 
@@ -80,5 +80,12 @@ public class UserController {
         user.setPhoneNumber(Long.parseLong(values.get(startIndex + 6)));
         user.setIsAvailable(true);
         return user;
+    }
+
+    public User find(String username, String password) throws InvalidArgumentException, SQLException {
+        User loginUser;
+        userValidator.validateLogin(username, password);
+        loginUser = userServiceInterface.find(username, password);
+        return loginUser;
     }
 }

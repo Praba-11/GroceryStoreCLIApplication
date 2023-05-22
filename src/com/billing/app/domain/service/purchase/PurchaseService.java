@@ -7,21 +7,28 @@ import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PurchaseService implements PurchaseServiceInterface {
     PurchaseDAO purchaseDAO = new PurchaseDAOImplementation();
     PurchaseItemDAO purchaseItemDAO = new PurchaseItemDAOImplementation();
     PurchaseValidator purchaseValidator = new PurchaseValidator();
-    Purchase result;
-    public Purchase create(Purchase purchase) throws SQLException, ClassNotFoundException, CodeNotFoundException {
+    ProductDAO productDAO = new ProductDAOImplementation();
+    List<PurchaseItem> listOfPurchaseItems = new ArrayList<>();
+    public Purchase create(Purchase purchase) throws SQLException, CodeNotFoundException {
         if (purchaseValidator.valid(purchase)) {
+
             purchaseDAO.create(purchase);
             for (PurchaseItem purchaseItem : purchase.getListOfPurchaseItem()) {
                 purchaseItem.setInvoice(purchase.getInvoice());
+                purchaseItem.setName(productDAO.getName(purchaseItem.getCode()));
+                productDAO.setStock(purchaseItem.getCode(), purchaseItem.getQuantity());
                 purchaseItemDAO.create(purchaseItem);
+                listOfPurchaseItems.add(purchaseItem);
             }
         }
+        purchase.setListOfPurchaseItem(listOfPurchaseItems);
         return purchase;
     }
 

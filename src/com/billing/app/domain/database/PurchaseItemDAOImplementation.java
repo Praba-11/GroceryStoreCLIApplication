@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class PurchaseItemDAOImplementation implements PurchaseItemDAO {
     ConnectionDB connectionDB = new ConnectionDB();
-    public void create(PurchaseItem purchaseItem) throws SQLException, ClassNotFoundException {
+    public void create(PurchaseItem purchaseItem) throws SQLException {
         String query = "INSERT INTO purchase_item (invoice_id, product_code, quantity, price) VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, purchaseItem);

@@ -12,6 +12,16 @@ public class PurchaseItem {
     }
 
     private String code;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private float quantity;
     private float costPrice;
 
@@ -42,8 +52,8 @@ public class PurchaseItem {
     @Override
     public String toString() {
         return "PurchaseItem{" +
-                "invoice=" + invoice +
-                ", code='" + code + '\'' +
+                "code='" + code + '\'' +
+                ", name='" + name + '\'' +
                 ", quantity=" + quantity +
                 ", costPrice=" + costPrice +
                 '}';

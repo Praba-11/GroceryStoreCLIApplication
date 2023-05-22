@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Sales {
     private Date date;
+
     private int invoice;
     List<SalesItem> listOfSalesItem;
     float grandTotal;

@@ -1,7 +1,5 @@
 package com.billing.app.domain.presentation.sale;
 
-import com.billing.app.domain.entity.Purchase;
-import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
 import com.billing.app.domain.exceptions.CodeNotFoundException;
@@ -24,7 +22,7 @@ public class SalesController {
     List<SalesItem> listOfSalesItem = new ArrayList<>();
     List<String> salesItemDetails;
     SalesServiceInterface salesServiceInterface = new SalesService();
-    SalesCLIValidator salesCLIValidator = new SalesCLIValidator();
+    SalesValidator salesValidator = new SalesValidator();
     List<SalesItem> salesItems;
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -76,7 +74,7 @@ public class SalesController {
 
         int range, page;
         String attribute, searchText;
-        Map<String, Object> parameters = salesCLIValidator.validateList(values);
+        Map<String, Object> parameters = salesValidator.validateList(values);
 
         range = Integer.parseInt(parameters.get("range").toString());
         page = Integer.parseInt(parameters.get("page").toString());
