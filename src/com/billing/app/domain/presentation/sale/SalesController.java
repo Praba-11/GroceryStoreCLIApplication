@@ -2,11 +2,12 @@ package com.billing.app.domain.presentation.sale;
 
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
+import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
+import com.billing.app.domain.exceptions.NegativeStockException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
+import com.billing.app.domain.service.sale.SalesServiceImplementation;
 import com.billing.app.domain.service.sale.SalesService;
-import com.billing.app.domain.service.sale.SalesServiceInterface;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -21,28 +22,27 @@ public class SalesController {
     SalesItem salesItem;
     List<SalesItem> listOfSalesItem = new ArrayList<>();
     List<String> salesItemDetails;
-    SalesServiceInterface salesServiceInterface = new SalesService();
+    SalesService salesService = new SalesServiceImplementation();
     SalesValidator salesValidator = new SalesValidator();
     List<SalesItem> salesItems;
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
 
-    public Sales create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeNotFoundException, TemplateMismatchException {
+    public Sales create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeOrIDNotFoundException, TemplateMismatchException, NegativeStockException {
 
         List<String> create = new ArrayList<>(stringArrayList.subList(0, 2));
-        List<String> purchaseItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
+        List<String> salesItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
 
 
         sales = new Sales();
         salesItems = new ArrayList<>();
         float grandTotal = 0;
 
-        if (salesItemDetails.size() % 3 == 0) {
-            for (int index = 0; index < purchaseItemDetails.size(); index += 3) {
+        if (salesItemDetails.size() % 2 == 0) {
+            for (int index = 0; index < salesItemDetails.size(); index += 2) {
                 salesItem = new SalesItem();
-                salesItem.setCode(purchaseItemDetails.get(index));
-                salesItem.setQuantity(Float.parseFloat(purchaseItemDetails.get(index + 1)));
-                salesItem.setCostPrice(Float.parseFloat(purchaseItemDetails.get(index + 2)));
+                salesItem.setCode(salesItemDetails.get(index));
+                salesItem.setQuantity(Float.parseFloat(salesItemDetails.get(index + 1)));
                 grandTotal += (salesItem.getQuantity() * salesItem.getCostPrice());
                 salesItems.add(salesItem);
 
@@ -54,11 +54,10 @@ public class SalesController {
         sales.setInvoice(Integer.parseInt(create.get(0)));
         sales.setListOfSalesItem(salesItems);
         sales.setGrandTotal(grandTotal);
-        System.out.println(sales);
-        return salesServiceInterface.create(sales);
+        return salesService.create(sales);
     }
 
-    public boolean delete(String value) throws TemplateMismatchException, SQLException, CodeNotFoundException, ClassNotFoundException, InvalidArgumentException {
+    public boolean delete(String value) throws TemplateMismatchException, SQLException, CodeOrIDNotFoundException, ClassNotFoundException, InvalidArgumentException {
         boolean flag = false;
         int invoice;
         try {
@@ -66,7 +65,7 @@ public class SalesController {
         } catch (NumberFormatException exception) {
             throw new InvalidArgumentException("Incompatible invoice number. Invoice cannot be string.");
         }
-        flag = salesServiceInterface.delete(invoice);
+        flag = salesService.delete(invoice);
         return flag;
     }
 
@@ -81,7 +80,7 @@ public class SalesController {
         attribute = (String) parameters.get("attribute");
         searchText = (String) parameters.get("searchtext");
 
-        return salesServiceInterface.list(range, page, attribute, searchText);
+        return salesService.list(range, page, attribute, searchText);
 
     }
 
@@ -89,16 +88,16 @@ public class SalesController {
         int actualLength;
         actualLength = values.size();
         if (actualLength == 0) {
-            return salesServiceInterface.count("1970-01-01", "40000-01-01");
+            return salesService.count("1970-01-01", "40000-01-01");
         }
         else if (actualLength == 1) {
             String date = values.get(0);
-            return salesServiceInterface.count(date, date);
+            return salesService.count(date, date);
         } else if (actualLength == 2) {
             String from, to;
             from = values.get(0);
             to = values.get(1);
-            return salesServiceInterface.count(from, to);
+            return salesService.count(from, to);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Provided: " + actualLength);
         }

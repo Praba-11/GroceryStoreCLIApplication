@@ -3,8 +3,8 @@ package com.billing.app.domain.presentation.product;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
+import com.billing.app.domain.service.product.ProductServiceImplementation;
 import com.billing.app.domain.service.product.ProductService;
-import com.billing.app.domain.service.product.ProductServiceInterface;
 import com.billing.app.domain.entity.Product;
 
 
@@ -17,7 +17,7 @@ public class ProductController {
     private List<String> valueList;
     private List<String> keyList;
     private Product product;
-    private ProductServiceInterface productServiceInterface = new ProductService();
+    private ProductService productService = new ProductServiceImplementation();
     private ProductValidator productValidator = new ProductValidator();
 
 
@@ -28,7 +28,7 @@ public class ProductController {
         if (actualLength == expectedLength) {
             productValidator.validateValues(values);
             product = setValues(values, false);
-            return productServiceInterface.create(product);
+            return productService.create(product);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
@@ -38,7 +38,7 @@ public class ProductController {
 
     public Product edit(Map<String, String> values) throws SQLException, ClassNotFoundException, NullPointerException,
             TemplateMismatchException, TypeMismatchException, InvalidArgumentException, ObjectNullPointerException,
-            CodeNotFoundException {
+            CodeOrIDNotFoundException {
 
         int expectedLength = 7;
         int actualLength = values.size();
@@ -50,13 +50,13 @@ public class ProductController {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
 
-        return productServiceInterface.edit(product);
+        return productService.edit(product);
     }
 
 
 
 
-    public boolean delete(String value) throws SQLException, ClassNotFoundException, CodeNotFoundException, InvalidArgumentException {
+    public boolean delete(String value) throws SQLException, ClassNotFoundException, CodeOrIDNotFoundException, InvalidArgumentException {
         boolean flag = false;
         int id;
         try {
@@ -64,7 +64,7 @@ public class ProductController {
         } catch (NumberFormatException exception) {
             throw new InvalidArgumentException("Unparseable id provided for deletion. Please try again.");
         }
-        flag = productServiceInterface.delete(id);
+        flag = productService.delete(id);
         return flag;
     }
 
@@ -83,7 +83,7 @@ public class ProductController {
         attribute = (String) parameters.get("attribute");
         searchText = (String) parameters.get("searchtext");
 
-        return productServiceInterface.list(range, page, attribute, searchText);
+        return productService.list(range, page, attribute, searchText);
 
     }
 

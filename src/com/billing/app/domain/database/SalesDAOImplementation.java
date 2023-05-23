@@ -13,7 +13,7 @@ public class SalesDAOImplementation implements SalesDAO {
     Sales sales;
     List<Sales> salesList;
     ConnectionDB connectionDB = new ConnectionDB();
-    public Sales create(Sales sales) throws SQLException, ClassNotFoundException {
+    public Sales create(Sales sales) throws SQLException {
         String query = "INSERT INTO sales (invoice_id, sales_date, grand_total) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, sales);
@@ -21,14 +21,14 @@ public class SalesDAOImplementation implements SalesDAO {
         return sales;
     }
 
-    public boolean delete(int invoice) throws SQLException, ClassNotFoundException {
+    public boolean delete(int invoice) throws SQLException {
         String query = "DELETE FROM sales WHERE invoice_id = " + invoice;
         Statement statement = connectionDB.getConnection().createStatement();
         int rowsAffected = statement.executeUpdate(query);
         return rowsAffected > 0;
     }
 
-    public List<Sales> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
+    public List<Sales> list(int range, int page, String attribute, String searchText) throws SQLException {
         String query = "SELECT * FROM sales WHERE CAST(" + attribute + " AS TEXT) ILIKE '%" + searchText + "%' LIMIT " + range + " OFFSET " + page;
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -36,7 +36,7 @@ public class SalesDAOImplementation implements SalesDAO {
         return sales;
     }
 
-    public List<Sales> list(String searchText) throws SQLException, ClassNotFoundException {
+    public List<Sales> list(String searchText) throws SQLException {
         String query = "SELECT * FROM sales WHERE CAST(id AS TEXT) ILIKE '%" + searchText + "%' OR code ILIKE '%" + searchText + "%' OR name ILIKE '%" + searchText + "%' OR unitcode ILIKE '%" + searchText + "%' OR type ILIKE '%" + searchText + "%' OR CAST(price AS TEXT) ILIKE '%" + searchText + "%' OR CAST(stock AS TEXT) ILIKE '%" + searchText + "%'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -54,7 +54,7 @@ public class SalesDAOImplementation implements SalesDAO {
         return salesList;
     }
 
-    public boolean find(String code) throws SQLException, ClassNotFoundException {
+    public boolean find(String code) throws SQLException {
         boolean flag = false;
         String query = "SELECT EXISTS(SELECT 1 FROM product WHERE code = '" + code + "') AS code_exists";
         Statement statement = connectionDB.getConnection().createStatement();
@@ -64,7 +64,7 @@ public class SalesDAOImplementation implements SalesDAO {
         }
         return flag;
     }
-    public int count(String from, String to) throws SQLException, ClassNotFoundException {
+    public int count(String from, String to) throws SQLException {
         int count = 0;
         System.out.println(from);
         System.out.println(to);
@@ -95,6 +95,6 @@ public class SalesDAOImplementation implements SalesDAO {
     public void setGrandTotal(Sales sales) throws SQLException {
         String query = "UPDATE sales SET grand_total = " + sales.getGrandTotal() + "WHERE invoice_id = " + sales.getInvoice();
         Statement statement = connectionDB.getConnection().createStatement();
-        statement.executeQuery(query);
+        statement.execute(query);
     }
 }

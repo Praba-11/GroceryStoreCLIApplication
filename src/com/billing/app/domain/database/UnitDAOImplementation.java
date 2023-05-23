@@ -28,8 +28,6 @@ public class UnitDAOImplementation implements UnitDAO {
 
 
 
-
-
     @Override
     public Unit edit(Unit unit) throws SQLException {
         String query = "UPDATE unit SET name = ?, code = ?, description = ?, isdividable = ? WHERE id = ?";

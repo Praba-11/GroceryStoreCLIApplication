@@ -1,85 +1,77 @@
 package com.billing.app.domain.service.user;
 
-
-import com.billing.app.domain.database.UserDAO;
-import com.billing.app.domain.database.UserDAOImplementation;
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class UserService implements UserServiceInterface {
-    private UserDAO userDAO = new UserDAOImplementation();
-    UserValidator userValidator = new UserValidator();
-    public User create(User user) throws SQLException, ObjectNullPointerException {
-        try {
-            userValidator.validate(user);
-            return userDAO.create(user);
-        } catch (ObjectNullPointerException exception) {
-            throw new ObjectNullPointerException("Error while creating user: " + exception.getMessage());
-        }
-    }
+public interface UserService {
 
-    public User edit(User user) throws CodeNotFoundException, ObjectNullPointerException, SQLException {
+    /**
+     * Service layer interface for creating a user.
+     * This interface defines a method to create a user based on the provided user object.
+     * Implementations of this interface should handle the necessary business logic for creating users.
+     * If any SQLException occurs during the process or if a required object is null, the respective exceptions will be thrown.
+     * @param user The User object representing the user to be created.
+     * @return The created User object with additional details, such as the generated user ID.
+     * @throws SQLException If an error occurs during the user creation process.
+     * @throws ObjectNullPointerException If any required object, such as the user object itself, is null.
+     */
+    User create(User user) throws SQLException, ObjectNullPointerException;
 
-        try {
-            userValidator.validate(user);
-            if (userDAO.find(user.getId()) != null) {
-                return userDAO.edit(user);
-            }
-            throw new CodeNotFoundException("Provided product id not present in user relation table.");
-        } catch (ObjectNullPointerException exception) {
-            throw new ObjectNullPointerException("Error while editing product: " + exception.getMessage());
-        }
-    }
 
-    public boolean delete(String username) throws SQLException, CodeNotFoundException {
-        boolean isDeleted;
-        isDeleted = userDAO.delete(username);
-        if (!isDeleted) {
-            throw new CodeNotFoundException("(Username: " + username + ") not present in user relational table.");
-        }
-        return true;
-    }
+    /**
+     * Service layer interface for editing a user.
+     * This interface defines a method to edit a user based on the provided user object.
+     * Implementations of this interface should handle the necessary business logic for editing users.
+     * If any SQLException occurs during the process, if a required object is null, or if the user's code or ID is not found, the respective exceptions will be thrown.
+     * @param user The User object representing the user to be edited.
+     * @return The updated User object with the modified details.
+     * @throws SQLException If an error occurs during the user editing process.
+     * @throws CodeOrIDNotFoundException If the user's code or ID is not found.
+     * @throws ObjectNullPointerException If any required object, such as the user object itself, is null.
+     */
+    User edit(User user) throws SQLException, CodeOrIDNotFoundException, ObjectNullPointerException;
 
-    public List<User> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException, InvalidArgumentException {
-        List<User> list;
-        if (attribute == null && searchText != null && range == 0 && page == 0) {
-            list = userDAO.list(searchText);
-        } else {
-            if (attribute == null && searchText == null && range == 0 && page == 0) {
-                attribute = "isavailable";
-                searchText = "";
-                range = userDAO.count();
-            } else if (attribute == null && searchText == null && range > 0 && page == 0) {
-                attribute = "isavailable";
-                searchText = "";
-            } else if (attribute == null && searchText == null && range > 0 && page > 0) {
-                attribute = "isavailable";
-                searchText = "";
-                page = (page - 1) * range;
-            } else if (attribute != null && searchText != null && range == 0 && page == 0) {
-                range = userDAO.count();
-            } else if (attribute != null && searchText != null && range > 0 && page > 0) {
-                page = (page - 1) * range;
-            } else {
-                throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
-            }
-            System.out.println(range);
-            System.out.println(page);
-            System.out.println(attribute);
-            System.out.println(searchText);
-            list = userDAO.list(range, page, attribute, searchText);
-        }
-        return list;
-    }
+    /**
+     * Service layer interface for deleting a user.
+     * This interface defines a method to delete a user based on the provided username.
+     * Implementations of this interface should handle the necessary business logic for deleting users.
+     * If any SQLException occurs during the process or if the user's code or ID is not found, the respective exceptions will be thrown.
+     * @param username The username of the user to be deleted.
+     * @return A boolean indicating whether the deletion was successful or not.
+     * @throws SQLException If an error occurs during the user deletion process.
+     * @throws CodeOrIDNotFoundException If the user's code or ID is not found.
+     */
+    boolean delete(String username) throws SQLException, CodeOrIDNotFoundException;
 
-    public User find(String username, String password) throws SQLException {
-        User loginUser;
-        loginUser = userDAO.login(username, password);
-        return loginUser;
-    }
+
+    /**
+     * Service layer interface for listing users.
+     * This interface defines a method to retrieve a list of users based on the specified range, page, attribute, and search text.
+     * Implementations of this interface should handle the necessary business logic for listing users.
+     * If any SQLException occurs during the process or if an invalid argument is provided, the respective exceptions will be thrown.
+     * @param range The number of users to retrieve in a single fetch.
+     * @param page The page number of results to retrieve.
+     * @param attribute The attribute name to filter the search on (e.g., "username", "email").
+     * @param searchText The text to search for in the specified attribute.
+     * @return A list of User objects matching the specified criteria.
+     * @throws SQLException If an error occurs during the user listing process.
+     * @throws InvalidArgumentException If an invalid argument is provided, such as a negative range or page number.
+     */
+    List<User> list(int range, int page, String attribute, String searchText) throws SQLException, InvalidArgumentException;
+
+
+    /**
+     * Service layer interface for finding a user.
+     * This interface defines a method to find a user based on the provided username and password.
+     * Implementations of this interface should handle the necessary business logic for finding users.
+     * If any SQLException occurs during the process, the respective exception will be thrown.
+     * @param username The username of the user to find.
+     * @param password The password of the user to find.
+     * @return The User object representing the found user, or null if not found.
+     * @throws SQLException If an error occurs during the user finding process.
+     */
+    User find(String username, String password) throws SQLException;
 }

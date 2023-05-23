@@ -1,11 +1,10 @@
 package com.billing.app.domain.presentation.sale;
 
-import com.billing.app.domain.entity.Purchase;
-import com.billing.app.domain.entity.PurchaseItem;
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
+import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
+import com.billing.app.domain.exceptions.NegativeStockException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Main;
 
@@ -24,7 +23,7 @@ public class SalesCLI {
     Main main = new Main();
     List<String> splitBySpaces;
     SalesValidator salesValidator = new SalesValidator();
-    public void execute(String salesCommand) throws ParseException {
+    public void execute(String salesCommand) {
         splitBySpaces = main.splitBySpaces(salesCommand);
         String action = splitBySpaces.get(0);
         switch (action) {
@@ -84,14 +83,16 @@ public class SalesCLI {
             Sales sales = salesController.create(purchase);
             bill(sales);
         } catch (SQLException exception) {
-            System.out.println("Cannot purchase products." + exception.getMessage());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (CodeNotFoundException exception) {
+            System.out.println("Cannot sell products." + exception.getMessage());
+        } catch (CodeOrIDNotFoundException exception) {
             System.out.println("Invalid product code. " + exception.getMessage());
         } catch (TemplateMismatchException exception) {
             System.out.println("Template mismatch. " + exception.getMessage());
-        } catch (ParseException e) {
+        } catch (ParseException exception) {
+            System.out.println("Invalid date. Provided date cannot be parsed. " + exception.getMessage());
+        } catch (NegativeStockException e) {
+            System.out.println("Incompatible Stock. " + e.getMessage());
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -110,20 +111,17 @@ public class SalesCLI {
             for (String element : elementsList) {
                 purchase.addAll(List.of(element.split(",")));
             }
-        } else {
-            System.out.println("Template mismatch. Please provide a valid command.");
         }
         return purchase;
     }
 
 
     private void seller(String create) {
-        List<String> purchaseDetails;
-        purchaseDetails = separator(create);
-        if (!purchaseDetails.isEmpty()) {
-            sales(purchaseDetails);
-        }
-        else {
+        List<String> salesDetails;
+        salesDetails = separator(create);
+        if (salesDetails != null) {
+            sales(salesDetails);
+        } else {
             System.out.println("Template mismatch. Please provide a valid command.");
         }
     }
@@ -136,13 +134,13 @@ public class SalesCLI {
                 boolean isDeleted = false;
                 isDeleted = salesController.delete(delete);
                 System.out.println(isDeleted);
-                System.out.println("Purchase '" + delete + "' deleted successfully.");
+                System.out.println("Sales '" + delete + "' deleted successfully.");
             }
         } catch (SQLException exception) {
-            System.out.print("Unable to delete purchase. ");
+            System.out.print("Unable to delete sales. ");
             String sqlMessage = salesValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeNotFoundException exception) {
+        } catch (CodeOrIDNotFoundException exception) {
             System.out.println("Provided invoice not found. " + exception.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -211,7 +209,7 @@ public class SalesCLI {
 
     private void bill(Sales sales) {
         System.out.println("Bill printed successfully!\n");
-        String template = "Invoice ID: %s\nDate: %s\n\nPurchase Items:\n----------------------\n%s\n----------------------\n\nTotal: %s\n";
+        String template = "Invoice ID: %s\nDate: %s\n\nSold Items:\n----------------------\n%s\n----------------------\n\nTotal: %s\n";
         StringBuilder itemLines = new StringBuilder();
         for (SalesItem item : sales.getListOfSalesItem()) {
             itemLines.append(String.format("%s (Quantity: %.2f, Price: ₹%.2f)\n", item.getName(), item.getQuantity(), item.getCostPrice()));

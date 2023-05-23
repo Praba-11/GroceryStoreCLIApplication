@@ -19,14 +19,14 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
         return purchase;
     }
 
-    public boolean delete(int invoice) throws SQLException, ClassNotFoundException {
+    public boolean delete(int invoice) throws SQLException {
         String query = "DELETE FROM purchase WHERE invoice_id = " + invoice;
         Statement statement = connectionDB.getConnection().createStatement();
         int rowsAffected = statement.executeUpdate(query);
         return rowsAffected > 0;
     }
 
-    public List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException {
+    public List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException {
         String query = "SELECT * FROM purchase WHERE CAST(" + attribute + " AS TEXT) ILIKE '" + searchText + "' LIMIT " + range + " OFFSET " + page;
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -34,7 +34,7 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
         return purchases;
     }
 
-    public List<Purchase> list(String searchText) throws SQLException, ClassNotFoundException {
+    public List<Purchase> list(String searchText) throws SQLException {
         String query = "SELECT * FROM purchase WHERE CAST(invoice_id AS TEXT) ILIKE '" + searchText + "' OR CAST(purchase_date AS TEXT) ILIKE '" + searchText + "' OR CAST(grand_total AS TEXT) ILIKE '" + searchText + "'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -52,18 +52,8 @@ public class PurchaseDAOImplementation implements PurchaseDAO {
         return purchaseList;
     }
 
-    public boolean find(String code) throws SQLException {
-        boolean flag = false;
-        String query = "SELECT EXISTS(SELECT 1 FROM product WHERE code = '" + code + "') AS code_exists";
-        Statement statement = connectionDB.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            flag = resultSet.getBoolean(1);
-        }
-        return flag;
-    }
 
-    public int count(String from, String to) throws SQLException, ClassNotFoundException {
+    public int count(String from, String to) throws SQLException {
         int count = 0;
         String query = "SELECT COUNT(*) AS count_purchase FROM purchase WHERE purchase_date BETWEEN '" + from + "' AND '" + to + "'";
         Statement statement = connectionDB.getConnection().createStatement();

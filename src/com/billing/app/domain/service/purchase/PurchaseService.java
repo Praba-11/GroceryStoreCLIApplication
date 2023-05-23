@@ -1,80 +1,68 @@
 package com.billing.app.domain.service.purchase;
 
-import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Purchase;
-import com.billing.app.domain.entity.PurchaseItem;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
+import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class PurchaseService implements PurchaseServiceInterface {
-    PurchaseDAO purchaseDAO = new PurchaseDAOImplementation();
-    PurchaseItemDAO purchaseItemDAO = new PurchaseItemDAOImplementation();
-    PurchaseValidator purchaseValidator = new PurchaseValidator();
-    ProductDAO productDAO = new ProductDAOImplementation();
-    List<PurchaseItem> listOfPurchaseItems = new ArrayList<>();
-    public Purchase create(Purchase purchase) throws SQLException, CodeNotFoundException {
-        if (purchaseValidator.valid(purchase)) {
+public interface PurchaseService {
 
-            purchaseDAO.create(purchase);
-            for (PurchaseItem purchaseItem : purchase.getListOfPurchaseItem()) {
-                purchaseItem.setInvoice(purchase.getInvoice());
-                purchaseItem.setName(productDAO.getName(purchaseItem.getCode()));
-                productDAO.setStock(purchaseItem.getCode(), purchaseItem.getQuantity());
-                purchaseItemDAO.create(purchaseItem);
-                listOfPurchaseItems.add(purchaseItem);
-            }
-        }
-        purchase.setListOfPurchaseItem(listOfPurchaseItems);
-        return purchase;
-    }
+    /**
+     * Service layer interface for creating a purchase.
+     * This interface defines a method to create a purchase based on the provided purchase object.
+     * Implementations of this interface should handle the necessary business logic for creating purchases.
+     * If any SQLException occurs during the process or if the code or ID is not found, it will be thrown.
+     * @param purchase The Purchase object representing the purchase to be created.
+     * @return The created Purchase object with additional details, such as the generated purchase ID.
+     * @throws SQLException If an error occurs during the purchase creation process.
+     * @throws CodeOrIDNotFoundException If the product code or ID specified in the purchase is not found.
+     */
+    Purchase create(Purchase purchase) throws SQLException, CodeOrIDNotFoundException;
 
-    public boolean delete(int invoice) throws CodeNotFoundException, SQLException, ClassNotFoundException {
-        boolean isDeleted;
-        isDeleted = purchaseDAO.delete(invoice);
-        if (!isDeleted) {
-            throw new CodeNotFoundException("(Invoice no: " + invoice + ") not present in purchase relational table.");
-        }
-        return true;
-    }
 
-    public List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, ClassNotFoundException, InvalidArgumentException {
-        List<Purchase> list;
-        if (attribute == null && searchText != null && range == 0 && page == 0) {
-            list = purchaseDAO.list(searchText);
-        } else {
-            if (attribute == null && searchText == null && range == 0 && page == 0) {
-                attribute = "invoice_id";
-                searchText = "";
-                range = purchaseDAO.count("01-01-1970", "01-01-40000");
-            } else if (attribute == null && searchText == null && range > 0 && page == 0) {
-                attribute = "invoice_id";
-                searchText = "";
-            } else if (attribute == null && searchText == null && range > 0 && page > 0) {
-                attribute = "invoice_id";
-                searchText = "";
-                page = (page - 1) * range;
-            } else if (attribute != null && searchText != null && range == 0 && page == 0) {
-                range = purchaseDAO.count("01-01-1970", "01-01-40000");
-            } else if (attribute != null && searchText != null && range > 0 && page > 0) {
-                page = (page - 1) * range;
-            } else {
-                throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
-            }
-            System.out.println(range);
-            System.out.println(page);
-            System.out.println(attribute);
-            System.out.println(searchText);
-            list = purchaseDAO.list(range, page, attribute, searchText);
-        }
-        return list;
-    }
 
-    public int count(String from, String to) throws SQLException, ClassNotFoundException {
-        int count = purchaseDAO.count(from, to);
-        return count;
-    }
+    /**
+     * Service layer interface for deleting a purchase by invoice.
+     * This interface defines a method to delete a purchase based on the provided invoice number.
+     * Implementations of this interface should handle the necessary business logic for deleting purchases.
+     * If the invoice number is not found or if an SQLException occurs during the process, the respective exceptions will be thrown.
+     * @param invoice The invoice number of the purchase to be deleted.
+     * @return A boolean indicating whether the deletion was successful or not.
+     * @throws CodeOrIDNotFoundException If the purchase with the specified invoice number is not found.
+     * @throws SQLException If an error occurs during the purchase deletion process.
+     */
+    boolean delete(int invoice) throws CodeOrIDNotFoundException, SQLException;
+
+
+
+    /**
+     * Service layer interface for listing purchases with pagination and search functionality.
+     * This interface defines a method to retrieve a list of purchases based on the provided range, page, attribute, and search text.
+     * Implementations of this interface should handle the necessary business logic for listing purchases.
+     * If any SQLException occurs during the process or if an invalid argument is provided, the respective exceptions will be thrown.
+     * @param range The number of purchases to retrieve per page.
+     * @param page The page number to retrieve.
+     * @param attribute The attribute to sort the purchases (e.g., "date", "price").
+     * @param searchText The search text to filter the purchases.
+     * @return A list of Purchase objects representing the retrieved purchases.
+     * @throws SQLException If an error occurs during the purchase listing process.
+     * @throws InvalidArgumentException If an invalid argument is provided, such as an invalid range, page, or attribute.
+     */
+    List<Purchase> list(int range, int page, String attribute, String searchText) throws SQLException, InvalidArgumentException;
+
+
+    /**
+     * Service layer interface for counting purchases within a specified date range.
+     * This interface defines a method to count the number of purchases that fall within the specified date range.
+     * Implementations of this interface should handle the necessary business logic for counting purchases.
+     * If any SQLException occurs during the process, it will be thrown.
+     * @param from The starting date of the date range (inclusive) in string format.
+     * @param to The ending date of the date range (inclusive) in string format.
+     * @return The number of purchases within the specified date range.
+     * @throws SQLException If an error occurs during the purchase counting process.
+     */
+    int count(String from, String to) throws SQLException;
+
 }

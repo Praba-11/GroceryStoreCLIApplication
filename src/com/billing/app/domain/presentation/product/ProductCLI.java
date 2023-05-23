@@ -1,7 +1,6 @@
 package com.billing.app.domain.presentation.product;
 
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
@@ -14,7 +13,7 @@ import java.util.regex.Pattern;
 
 public class ProductCLI {
     ProductValidator productValidator;
-    ProductHelp productHelp;
+    ProductHelp productHelp = new ProductHelp();
     Main main = new Main();
     List<String> splitBySpaces;
     ProductController productController = new ProductController();
@@ -60,16 +59,7 @@ public class ProductCLI {
                 break;
 
             case "list":
-
-                splitBySpaces = main.splitBySpaces(productCommand);
-                String list;
-                if (splitBySpaces.size() == 1) {
-                    list = "";
-                    lister(list);
-                } else {
-                    list = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
-                    lister(list);
-                }
+                list(productCommand);
                 break;
 
             default:
@@ -77,6 +67,19 @@ public class ProductCLI {
                         "For queries, please use command 'help'");
         }
     }
+
+    public void list(String productCommand) {
+        String list;
+        splitBySpaces = main.splitBySpaces(productCommand);
+        if (splitBySpaces.size() == 1) {
+            list = "";
+            lister(list);
+        } else {
+            list = productCommand.substring(productCommand.indexOf(splitBySpaces.get(1)));
+            lister(list);
+        }
+    }
+
 
     private void creator(String create) {
         try {
@@ -115,23 +118,28 @@ public class ProductCLI {
         try {
             String formattedInput = edit.replaceAll("\\s*:\\s*", ":");
             String[] keyValuePairs = formattedInput.split("\\s*,\\s*");
-            System.out.println(Arrays.toString(keyValuePairs));
-            ArrayList<String> pairs = new ArrayList<>(Arrays.asList(keyValuePairs));
-            LinkedHashMap<String, String> editCommand = new LinkedHashMap<>();
-            if (pairs.size() == 7) {
-                for (String pair : pairs) {
-                    String[] keyValue = pair.split(":");
-                    String key = keyValue[0].trim();
-                    String value = keyValue[1].trim();
-                    editCommand.put(key, value);
-                }
-                if (editCommand.size() == 3 && editCommand.get(2).equals("help")) {
-                    productHelp = new ProductHelp();
-                    productHelp.editProduct();
+            if (keyValuePairs.length == 1 && keyValuePairs[0].equals("help")) {
+                productHelp = new ProductHelp();
+                productHelp.editProduct();
+            } else {
+                ArrayList<String> pairs = new ArrayList<>(Arrays.asList(keyValuePairs));
+                LinkedHashMap<String, String> editCommand = new LinkedHashMap<>();
+                if (pairs.size() == 7) {
+                    for (String pair : pairs) {
+                        String[] keyValue = pair.split(":");
+                        String key = keyValue[0].trim();
+                        String value = keyValue[1].trim();
+                        editCommand.put(key, value);
+                    }
+                    if (editCommand.size() == 1 && editCommand.get(0).equals("help")) {
+                        productHelp.editProduct();
+                    } else {
+                        Product productEdited = productController.edit(editCommand);
+                        System.out.println("Product edited successfully.");
+                        System.out.println(productEdited);
+                    }
                 } else {
-                    Product productEdited = productController.edit(editCommand);
-                    System.out.println("Product edited successfully.");
-                    System.out.println(productEdited);
+                    System.out.println("Template mismatch. Please provide a valid command.");
                 }
             }
 
@@ -150,7 +158,7 @@ public class ProductCLI {
             System.out.println("Incompatible argument. " + exception.getMessage());
         } catch (ObjectNullPointerException exception) {
             System.out.println("Unable to edit product. " + exception.getMessage());
-        } catch (CodeNotFoundException exception) {
+        } catch (CodeOrIDNotFoundException exception) {
             System.out.println("Invalid product id. " + exception.getMessage());
         } catch (ArrayIndexOutOfBoundsException exception) {
             System.out.println("Template mismatch. Please provide a valid command.");
@@ -165,13 +173,13 @@ public class ProductCLI {
                 boolean isDeleted = false;
                 isDeleted = productController.delete(delete);
                 System.out.println(isDeleted);
-                System.out.println("User '" + delete + "' deleted successfully.");
+                System.out.println("Product ID: '" + delete + "' deleted successfully.");
             }
         } catch (SQLException exception) {
             System.out.print("Unable to delete product. ");
             String sqlMessage = productValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeNotFoundException exception) {
+        } catch (CodeOrIDNotFoundException exception) {
             System.out.println("Provided Id not found. " + exception.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -181,7 +189,8 @@ public class ProductCLI {
     }
 
     private void lister(String delete) {
-        String regex = "\\s*-\\w+|\\b\\w+\\b";
+
+        String regex = "\\s*-\\w+|\\b[^\s,]+\\b";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(delete);
         List<String> listCommand = new ArrayList<>();
@@ -216,3 +225,5 @@ public class ProductCLI {
         }
     }
 }
+
+

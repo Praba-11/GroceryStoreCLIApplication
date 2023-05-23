@@ -14,160 +14,121 @@ import com.billing.app.domain.presentation.unit.UnitCLI;
 import com.billing.app.domain.presentation.user.UserCLI;
 
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.List;
 
 public class Router {
-    ProductCLI productCLI;
-    UnitCLI unitCLI;
-    StoreCLI storeCLI;
-    UserCLI userCLI;
-    PurchaseCLI purchaseCLI;
-    SalesCLI salesCLI;
-    StockCLI stockCLI;
-    PriceCLI priceCLI;
+    ProductCLI productCLI = new ProductCLI();
+    UnitCLI unitCLI = new UnitCLI();
+    StoreCLI storeCLI = new StoreCLI();
+    UserCLI userCLI = new UserCLI();
+    PurchaseCLI purchaseCLI = new PurchaseCLI();
+    SalesCLI salesCLI = new SalesCLI();
+    StockCLI stockCLI = new StockCLI();
+    PriceCLI priceCLI = new PriceCLI();
     Main main = new Main();
     List<String> splitBySpaces;
     StoreController storeController = new StoreController();
     Unit unit;
-    public void admin(String command) throws ParseException, SQLException {
+    public void admin(String command) throws SQLException {
         String[] splitCommand = command.trim().split("\\s+");
         String module = splitCommand[0];
         Store store = storeController.view();
         if (store != null) {
             switch (module) {
-                case "product" -> product(command);
-                case "unit" -> unit(command);
-                case "store" -> store(command);
-                case "user" -> user(command);
-                case "purchase" -> purchase(command);
-                case "sales" -> sales(command);
-                case "stock" -> stock(command);
-                case "price" -> price(command);
+                case "product" -> {
+                    String productCommand = split(command);
+                    productCLI.execute(productCommand);
+                }
+                case "unit" -> {
+                    String unitCommand = split(command);
+                    unitCLI.execute(unitCommand);
+                }
+                case "store" -> {
+                    String storeCommand = split(command);
+                    storeCLI.execute(storeCommand);
+                }
+                case "user" -> {
+                    String userCommand = split(command);
+                    userCLI.execute(userCommand);
+                }
+                case "purchase" -> {
+                    String purchaseCommand = split(command);
+                    purchaseCLI.execute(purchaseCommand);
+                }
+                case "sales" -> {
+                    String salesCommand = split(command);
+                    salesCLI.execute(salesCommand);
+                }
+                case "stock" -> {
+                    splitBySpaces = listSplit(command);
+                    stockCLI.execute(splitBySpaces);
+                }
+                case "price" -> {
+                    splitBySpaces = listSplit(command);
+                    priceCLI.execute(splitBySpaces);
+                }
                 case "help" -> System.out.println(help());
                 default -> System.out.println("Invalid module named " + module + ". Please provide a valid command. " +
                         "\nFor queries, please use command 'help'");
             }
         } else {
             if (module.equals("store")) {
-                store(command);
+                String storeCommand = split(command);
+                storeCLI.execute(storeCommand);
             } else {
                 System.out.println("Store not created. Please create store.");
             }
         }
     }
 
-
-    public void purchaseUser(String command) throws ParseException {
+    public void purchaseUser(String command) {
         String[] splitCommand = command.trim().split("\\s+");
         String module = splitCommand[0];
         switch (module) {
-            case "purchase" -> purchase(command);
-            case "stock" -> stock(command);
-            case "price" -> price(command);
-            default -> System.out.println("Invalid module named " + module + ". Please provide a valid command. \n" +
-                    "For queries, please use command 'help'");
+            case "product":
+                String productCommand = split(command);
+                splitBySpaces = main.splitBySpaces(productCommand);
+                String action = splitBySpaces.get(0);
+                if (action.equals("list")) {
+                    productCLI.list(command);
+                } else {
+                    System.out.println("Invalid command. Please provide a valid command.");
+                }
+                break;
+            case "purchase":
+                String purchaseCommand = split(command);
+                purchaseCLI.execute(purchaseCommand);
+                break;
+            default:
+                System.out.println("Invalid module named " + module + ". Please provide a valid command. \n" +
+                        "For queries, please use command 'help'");
+                break;
         }
     }
 
-    public void salesUser(String command) throws ParseException {
+    public void salesUser(String command) {
         String[] splitCommand = command.trim().split("\\s+");
         String module = splitCommand[0];
         switch (module) {
-            case "sales" -> sales(command);
-            case "stock" -> stock(command);
-            case "price" -> price(command);
-            default -> System.out.println("Invalid module named " + module + ". Please provide a valid command. \n" +
-                            "For queries, please use command 'help'");
+            case "product":
+                String productCommand = split(command);
+                splitBySpaces = main.splitBySpaces(productCommand);
+                String action = splitBySpaces.get(0);
+                if (action.equals("list")) {
+                    productCLI.list(command);
+                } else {
+                    System.out.println("Invalid command. Please provide a valid command.");
+                }
+                break;
+            case "sales":
+                String salesCommand = split(command);
+                salesCLI.execute(salesCommand);
+                break;
+            default:
+                System.out.println("Invalid module named " + module + ". Please provide a valid command. \n" +
+                        "For queries, please use command 'help'");
+                break;
         }
-    }
-
-    private void store(String command) {
-        storeCLI = new StoreCLI();
-        splitBySpaces = main.splitBySpaces(command);
-        if (splitBySpaces.size() == 1) {
-            System.out.println("Action not provided. Please provide a valid command.\n" +
-                    "For queries, please use command 'help'");
-        } else {
-            String storeCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-            storeCLI.execute(storeCommand);
-        }
-    }
-
-    private void product(String command) {
-        productCLI = new ProductCLI();
-        splitBySpaces = main.splitBySpaces(command);
-        String productCommand = null;
-        if (splitBySpaces.size() == 1) {
-            System.out.println("Action not provided. Please provide a valid command.\n" +
-                    "For queries, please use command 'help'");
-        } else {
-            productCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-        }
-        productCLI.execute(productCommand);
-    }
-
-    private void unit(String command) {
-        String unitCommand = null;
-        unitCLI = new UnitCLI();
-        splitBySpaces = main.splitBySpaces(command);
-        if (splitBySpaces.size() == 1) {
-            System.out.println("Action not provided. Please provide a valid command.\n" +
-                    "For queries, please use command 'help'");
-        } else {
-            unitCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-        }
-        unitCLI.execute(unitCommand);
-    }
-
-    private void user(String command) {
-        userCLI = new UserCLI();
-        splitBySpaces = main.splitBySpaces(command);
-        if (splitBySpaces.size() == 1) {
-            System.out.println("Action not provided. Please provide a valid command.\n" +
-                    "For queries, please use command 'help'");
-        } else {
-            String userCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-            userCLI.execute(userCommand);
-        }
-    }
-
-    private void purchase(String command) throws ParseException {
-        purchaseCLI = new PurchaseCLI();
-        splitBySpaces = main.splitBySpaces(command);
-        if (splitBySpaces.size() == 1) {
-            System.out.println("Action not provided. Please provide a valid command.\n" +
-                    "For queries, please use command 'help'");
-        } else {
-            String purchaseCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-            purchaseCLI.execute(purchaseCommand);
-        }
-    }
-
-    private void sales(String command) throws ParseException {
-        salesCLI = new SalesCLI();
-        splitBySpaces = main.splitBySpaces(command);
-        if (splitBySpaces.size() == 1) {
-            System.out.println("Action not provided. Please provide a valid command.\n" +
-                    "For queries, please use command 'help'");
-        } else {
-            String salesCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
-            salesCLI.execute(salesCommand);
-        }
-    }
-
-    private void stock(String command) {
-        splitBySpaces = main.splitBySpaces(command);
-        splitBySpaces.remove(0);
-        stockCLI = new StockCLI();
-        stockCLI.execute(splitBySpaces);
-    }
-
-    private void price(String command) {
-        splitBySpaces = main.splitBySpaces(command);
-        splitBySpaces.remove(0);
-        priceCLI = new PriceCLI();
-        priceCLI.execute(splitBySpaces);
     }
 
 
@@ -200,5 +161,24 @@ public class Router {
         ----------------------------------------------------------------------------------------------------------------
         """;
         return help;
+    }
+
+
+    private List<String> listSplit(String command) {
+        splitBySpaces = main.splitBySpaces(command);
+        splitBySpaces.remove(0);
+        return splitBySpaces;
+    }
+
+    private String split(String command) {
+        String moduleCommand = null;
+        splitBySpaces = main.splitBySpaces(command);
+        if (splitBySpaces.size() == 1) {
+            System.out.println("Action not provided. Please provide a valid command.\n" +
+                    "For queries, please use command 'help'");
+        } else {
+            moduleCommand = command.substring(command.indexOf(splitBySpaces.get(1)));
+        }
+        return moduleCommand;
     }
 }

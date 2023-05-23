@@ -3,8 +3,8 @@ package com.billing.app.domain.presentation.user;
 import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
+import com.billing.app.domain.service.user.UserServiceImplementation;
 import com.billing.app.domain.service.user.UserService;
-import com.billing.app.domain.service.user.UserServiceInterface;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class UserController {
     private List<String> valueList;
     private User user;
-    private UserServiceInterface userServiceInterface = new UserService();
+    private UserService userService = new UserServiceImplementation();
     private UserValidator userValidator = new UserValidator();
     public User create(List<String> values) throws SQLException, ObjectNullPointerException, TypeMismatchException, InvalidArgumentException, TemplateMismatchException {
 
@@ -23,14 +23,14 @@ public class UserController {
         if (actualLength == expectedLength) {
             userValidator.validateValues(values);
             user = setValues(values, false);
-            return userServiceInterface.create(user);
+            return userService.create(user);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
     }
 
     public User edit(Map<String, String> values) throws TypeMismatchException, InvalidArgumentException,
-            TemplateMismatchException, ObjectNullPointerException, SQLException, CodeNotFoundException, IllegalAccessException {
+            TemplateMismatchException, ObjectNullPointerException, SQLException, CodeOrIDNotFoundException, IllegalAccessException {
         int expectedLength = 7;
         int actualLength = values.size();
         if (actualLength == expectedLength) {
@@ -40,12 +40,12 @@ public class UserController {
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
-        return userServiceInterface.edit(user);
+        return userService.edit(user);
     }
 
-    public boolean delete(String username) throws SQLException, ClassNotFoundException, CodeNotFoundException, InvalidArgumentException {
+    public boolean delete(String username) throws SQLException, ClassNotFoundException, CodeOrIDNotFoundException, InvalidArgumentException {
         boolean flag = false;
-        flag = userServiceInterface.delete(username);
+        flag = userService.delete(username);
         return flag;
     }
 
@@ -60,7 +60,7 @@ public class UserController {
         attribute = (String) parameters.get("attribute");
         searchText = (String) parameters.get("searchtext");
 
-        return userServiceInterface.list(range, page, attribute, searchText);
+        return userService.list(range, page, attribute, searchText);
 
     }
 
@@ -85,7 +85,7 @@ public class UserController {
     public User find(String username, String password) throws InvalidArgumentException, SQLException {
         User loginUser;
         userValidator.validateLogin(username, password);
-        loginUser = userServiceInterface.find(username, password);
+        loginUser = userService.find(username, password);
         return loginUser;
     }
 }

@@ -4,8 +4,8 @@ import com.billing.app.domain.entity.Store;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.exceptions.TypeMismatchException;
+import com.billing.app.domain.service.store.StoreServiceImplementation;
 import com.billing.app.domain.service.store.StoreService;
-import com.billing.app.domain.service.store.StoreServiceInterface;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class StoreController {
     private List<String> valueList;
     private Store store;
-    StoreServiceInterface storeServiceInterface = new StoreService();
+    StoreService storeService = new StoreServiceImplementation();
     StoreValidator storeValidator = new StoreValidator();
     public Store create(List<String> values) throws SQLException, ClassNotFoundException, TemplateMismatchException, TypeMismatchException, InvalidArgumentException {
         int expectedLength = 4;
@@ -22,7 +22,7 @@ public class StoreController {
         if (actualLength == expectedLength) {
             storeValidator.validateValues(values);
             store = setValues(values);
-            return storeServiceInterface.create(store);
+            return storeService.create(store);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
@@ -39,18 +39,18 @@ public class StoreController {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
 
-        return storeServiceInterface.edit(store);
+        return storeService.edit(store);
     }
 
 
     public boolean delete() throws SQLException, ClassNotFoundException {
-        storeServiceInterface = new StoreService();
-        return storeServiceInterface.delete();
+        storeService = new StoreServiceImplementation();
+        return storeService.delete();
     }
 
     public Store view() throws SQLException {
-        storeServiceInterface = new StoreService();
-        Store store = storeServiceInterface.view();
+        storeService = new StoreServiceImplementation();
+        Store store = storeService.view();
         return store;
     }
 

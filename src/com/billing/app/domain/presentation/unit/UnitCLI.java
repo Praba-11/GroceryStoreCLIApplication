@@ -78,8 +78,6 @@ public class UnitCLI {
                         System.out.println("Edited unit: " + unitEdited);
                 }
 
-                } catch (CodeNullException exception) {
-                    System.out.println("Unit Code is unique, cannot be edited. " + exception.getMessage());
                 } catch (TemplateMismatchException exception) {
                     System.out.println("Template mismatch. Incompatible attribute provided. " + exception.getMessage());
                 } catch (SQLException exception) {
@@ -91,7 +89,7 @@ public class UnitCLI {
                     System.out.println("Unable to edit unit. " + exception.getMessage());
                 } catch (TypeMismatchException exception) {
                     System.out.println("Type mismatch occurred at " + exception.getMessage());
-                } catch (CodeNotFoundException exception) {
+                } catch (CodeOrIDNotFoundException exception) {
                     System.out.println("Invalid unit id. " + exception.getMessage());
                 } catch (InvalidArgumentException exception) {
                     System.out.println("Invalid argument provided. " + exception.getMessage());
@@ -122,7 +120,7 @@ public class UnitCLI {
                     System.out.print("Unable to delete unit. ");
                     String sqlMessage = unitValidator.validateSQLState(exception);
                     System.out.println(sqlMessage);
-                } catch (CodeNotFoundException exception) {
+                } catch (CodeOrIDNotFoundException exception) {
                     System.out.println("Provided Id not found. " + exception.getMessage());
                 } catch (InvalidArgumentException exception) {
                     System.out.println("Invalid argument. " + exception.getMessage());

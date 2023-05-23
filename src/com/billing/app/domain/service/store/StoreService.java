@@ -1,45 +1,54 @@
 package com.billing.app.domain.service.store;
 
-import com.billing.app.domain.database.StoreDAO;
-import com.billing.app.domain.database.StoreDAOImplementation;
 import com.billing.app.domain.entity.Store;
 
 import java.sql.SQLException;
 
-public class StoreService implements StoreServiceInterface {
-    StoreDAO storeDAO;
-    public Store create(Store store) throws SQLException {
-        storeDAO = new StoreDAOImplementation();
-        if (storeDAO.getCount() > 0) {
-            return null;
-        }
-        else {
-            if (storeDAO.create(store)) {
-                return storeDAO.getStore();
-            }
-        }
-        return null;
-    }
+public interface StoreService {
 
-    public Store edit(Store store) throws SQLException {
-        storeDAO = new StoreDAOImplementation();
-        if (storeDAO.edit(store)) {
-            return storeDAO.getStore();
-        }
-        return null;
-    }
+    /**
+     * Service layer interface for creating a store.
+     * This interface defines a method to create a store based on the provided store object.
+     * Implementations of this interface should handle the necessary business logic for creating stores.
+     * If any SQLException occurs during the process, it will be thrown.
+     * @param store The Store object representing the store to be created.
+     * @return The created Store object with additional details, such as the generated store ID.
+     * @throws SQLException If an error occurs during the store creation process.
+     */
+    Store create(Store store) throws SQLException;
 
-    public boolean delete() throws SQLException {
-        storeDAO = new StoreDAOImplementation();
-        if (storeDAO.getStore() != null) {
-            storeDAO.delete();
-            return true;
-        }
-        return false;
-    }
 
-    public Store view() throws SQLException {
-        storeDAO = new StoreDAOImplementation();
-        return storeDAO.getStore();
-    }
+    /**
+     * Service layer interface for editing a store.
+     * This interface defines a method to edit a store based on the provided store object.
+     * Implementations of this interface should handle the necessary business logic for editing stores.
+     * If any SQLException occurs during the process, it will be thrown.
+     * @param store The Store object representing the store to be edited.
+     * @return The updated Store object with the modified details.
+     * @throws SQLException If an error occurs during the store editing process.
+     */
+    Store edit(Store store) throws SQLException;
+
+
+    /**
+     * Service layer interface for deleting a store.
+     * This interface defines a method to delete a store.
+     * Implementations of this interface should handle the necessary business logic for deleting stores.
+     * If any SQLException occurs during the process, it will be thrown.
+     * @return A boolean indicating whether the deletion was successful or not.
+     * @throws SQLException If an error occurs during the store deletion process.
+     */
+    boolean delete() throws SQLException;
+
+
+    /**
+     * Service layer interface for viewing a store.
+     * This interface defines a method to view a store.
+     * Implementations of this interface should handle the necessary business logic for retrieving store details.
+     * If any SQLException occurs during the process, it will be thrown.
+     * @return The Store object representing the viewed store.
+     * @throws SQLException If an error occurs during the store retrieval process.
+     */
+    Store view() throws SQLException;
+
 }

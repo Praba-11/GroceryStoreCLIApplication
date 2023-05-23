@@ -3,8 +3,8 @@ package com.billing.app.domain.presentation.unit;
 import com.billing.app.domain.entity.Unit;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
+import com.billing.app.domain.service.unit.UnitServiceImplementation;
 import com.billing.app.domain.service.unit.UnitService;
-import com.billing.app.domain.service.unit.UnitServiceInterface;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class UnitController {
     private List<String> valueList;
     private List<String> keyList;
     private Unit unit;
-    UnitServiceInterface unitServiceInterface = new UnitService();
+    UnitService unitService = new UnitServiceImplementation();
     UnitValidator unitValidator = new UnitValidator();
 
     public Unit create(List<String> values) throws SQLException, TypeMismatchException, InvalidArgumentException, TemplateMismatchException, ObjectNullPointerException {
@@ -27,14 +27,14 @@ public class UnitController {
         if (actualLength == expectedLength) {
             unitValidator.validateDetails(values);
             unit = setValues(values, false);
-            return unitServiceInterface.create(unit);
+            return unitService.create(unit);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
     }
 
 
-    public Unit edit(Map<String, String> values) throws SQLException, NullPointerException, CodeNullException, TemplateMismatchException, TypeMismatchException, InvalidArgumentException, ObjectNullPointerException, CodeNotFoundException {
+    public Unit edit(Map<String, String> values) throws SQLException, NullPointerException, TemplateMismatchException, TypeMismatchException, InvalidArgumentException, ObjectNullPointerException, CodeOrIDNotFoundException {
 
         int expectedLength = 5;
         int actualLength = values.size();
@@ -46,10 +46,10 @@ public class UnitController {
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
-        return unitServiceInterface.edit(unit);
+        return unitService.edit(unit);
     }
 
-        public boolean delete (String values) throws SQLException, CodeNotFoundException, InvalidArgumentException {
+        public boolean delete (String values) throws SQLException, CodeOrIDNotFoundException, InvalidArgumentException {
             boolean flag = false;
             int id;
             try {
@@ -57,13 +57,13 @@ public class UnitController {
             } catch (NumberFormatException exception) {
                 throw new InvalidArgumentException("Unparseable id provided for deletion. Please try again.");
             }
-            flag = unitServiceInterface.delete(id);
+            flag = unitService.delete(id);
             return flag;
         }
 
         public List<Unit> list () throws SQLException {
-            unitServiceInterface = new UnitService();
-            List<Unit> unitArrayList = unitServiceInterface.list();
+            unitService = new UnitServiceImplementation();
+            List<Unit> unitArrayList = unitService.list();
             return unitArrayList;
         }
 

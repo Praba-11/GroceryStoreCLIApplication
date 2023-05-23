@@ -1,13 +1,9 @@
 package com.billing.app.domain.service.user;
 
 import com.billing.app.domain.database.UserDAO;
-import com.billing.app.domain.database.UserDAOImplementation;
-import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.User;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
 import com.billing.app.domain.exceptions.ObjectNullPointerException;
 
-import java.sql.SQLException;
 public class UserValidator {
     UserDAO userDAO;
 

@@ -23,5 +23,4 @@ public class PurchaseItemDAOImplementation implements PurchaseItemDAO {
         return preparedStatement;
     }
 
-
 }

@@ -2,8 +2,7 @@ package com.billing.app.domain.presentation.purchase;
 
 import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.entity.PurchaseItem;
-import com.billing.app.domain.entity.User;
-import com.billing.app.domain.exceptions.CodeNotFoundException;
+import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Main;
@@ -11,7 +10,6 @@ import com.billing.app.domain.presentation.Main;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -25,7 +23,7 @@ public class PurchaseCLI {
     List<String> splitBySpaces;
     PurchaseValidator purchaseValidator = new PurchaseValidator();
 
-    public void execute(String purchaseCommand) throws ParseException {
+    public void execute(String purchaseCommand) {
         splitBySpaces = main.splitBySpaces(purchaseCommand);
         String action = splitBySpaces.get(0);
         switch (action) {
@@ -89,12 +87,12 @@ public class PurchaseCLI {
             System.out.print("Unable to purchase products. ");
             String sqlMessage = purchaseValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeNotFoundException exception) {
+        } catch (CodeOrIDNotFoundException exception) {
             System.out.println("Invalid product code. " + exception.getMessage());
         } catch (TemplateMismatchException exception) {
             System.out.println("Template mismatch. " + exception.getMessage());
-        } catch (ParseException e) {
-            System.out.println("Invalid date. Provided date cannot be parsed.");
+        } catch (ParseException exception) {
+            System.out.println("Invalid date. Provided date cannot be parsed. " + exception.getMessage());
         }
     }
 
@@ -141,7 +139,7 @@ public class PurchaseCLI {
             System.out.print("Unable to delete purchase. ");
             String sqlMessage = purchaseValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeNotFoundException exception) {
+        } catch (CodeOrIDNotFoundException exception) {
             System.out.println("Provided invoice not found. " + exception.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);

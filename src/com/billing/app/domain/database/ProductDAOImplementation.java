@@ -23,7 +23,7 @@ public class ProductDAOImplementation implements ProductDAO {
 
 
     @Override
-    public Product edit(Product product) throws ClassNotFoundException, SQLException {
+    public Product edit(Product product) throws SQLException {
         String query = "UPDATE product SET code = ?, name = ?, unitcode = ?, type = ?, price = ?, stock = ?, " +
                 "isdeleted = ? WHERE id = ?";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
@@ -35,7 +35,7 @@ public class ProductDAOImplementation implements ProductDAO {
 
 
     @Override
-    public boolean delete(int id) throws SQLException, ClassNotFoundException {
+    public boolean delete(int id) throws SQLException {
         String query = "UPDATE product SET isdeleted = " + true + " WHERE id = " + id;
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         int rowsAffected = preparedStatement.executeUpdate();
@@ -44,8 +44,7 @@ public class ProductDAOImplementation implements ProductDAO {
     }
 
 
-    public List<Product> list(int range, int page, String attribute, String searchText)
-            throws SQLException, ClassNotFoundException {
+    public List<Product> list(int range, int page, String attribute, String searchText) throws SQLException {
         String query = "SELECT * FROM product WHERE CAST(" + attribute + " AS TEXT) ILIKE '%" + searchText + "%' " +
                 "LIMIT " + range + " OFFSET " + page;
         Statement statement = connectionDB.getConnection().createStatement();
@@ -54,7 +53,7 @@ public class ProductDAOImplementation implements ProductDAO {
         return products;
     }
 
-    public List<Product> list(String searchText) throws SQLException, ClassNotFoundException {
+    public List<Product> list(String searchText) throws SQLException {
         String query = "SELECT * FROM product WHERE CAST(id AS TEXT) ILIKE '%" + searchText + "%' OR code ILIKE '%" + searchText + "%' OR name ILIKE '%" + searchText + "%' OR unitcode ILIKE '%" + searchText + "%' OR type ILIKE '%" + searchText + "%' OR CAST(price AS TEXT) ILIKE '%" + searchText + "%' OR CAST(stock AS TEXT) ILIKE '%" + searchText + "%'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -62,7 +61,7 @@ public class ProductDAOImplementation implements ProductDAO {
         return products;
     }
 
-    public Product find(int id) throws SQLException, ClassNotFoundException {
+    public Product findById(int id) throws SQLException {
         Product productFound = null;
         String query = "SELECT * FROM product WHERE id = '" + id + "'";
         Statement statement = connectionDB.getConnection().createStatement();
@@ -74,7 +73,19 @@ public class ProductDAOImplementation implements ProductDAO {
         return productFound;
     }
 
-    public int count() throws SQLException, ClassNotFoundException {
+    public Product findByCode(String code) throws SQLException {
+        Product productFound = null;
+        String query = "SELECT * FROM product WHERE code = '" + code + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        product = new Product();
+        while (resultSet.next()) {
+            productFound = setProduct(product, resultSet);
+        }
+        return productFound;
+    }
+
+    public int count() throws SQLException {
         int count = 0;
         String query = "SELECT COUNT(*) FROM product";
         Statement statement = connectionDB.getConnection().createStatement();
@@ -83,6 +94,45 @@ public class ProductDAOImplementation implements ProductDAO {
             count = resultSet.getInt(1);
         }
         return count;
+    }
+
+
+    public String getName(String code) throws SQLException {
+        String name = null;
+        String query = "SELECT name FROM product WHERE code = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        preparedStatement.setString(1, code);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()) {
+            name = resultSet.getString(1);
+        }
+        return name;
+    }
+
+
+    public float getPrice(String code) throws SQLException {
+        float price = 0;
+        String query = "SELECT price FROM product WHERE code = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        preparedStatement.setString(1, code);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()) {
+            price = resultSet.getFloat(1);
+        }
+        return price;
+    }
+
+
+    public float getStock(String code) throws SQLException {
+        float stock = 0;
+        String query = "SELECT stock FROM product WHERE code = ?";
+        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
+        preparedStatement.setString(1, code);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()) {
+            stock = resultSet.getFloat(1);
+        }
+        return stock;
     }
 
     private List<Product> listProducts(ResultSet resultSet) throws SQLException {
@@ -118,45 +168,4 @@ public class ProductDAOImplementation implements ProductDAO {
         return preparedStatement;
     }
 
-    public float getPrice(String code) throws SQLException {
-        float price = 0;
-        String query = "SELECT price FROM product WHERE code = ?";
-        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-        preparedStatement.setString(1, code);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while(resultSet.next()) {
-            price = resultSet.getFloat(1);
-        }
-        return price;
-    }
-
-    public String getName(String code) throws SQLException {
-        String name = null;
-        String query = "SELECT name FROM product WHERE code = ?";
-        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-        preparedStatement.setString(1, code);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while(resultSet.next()) {
-            name = resultSet.getString(1);
-        }
-        return name;
-    }
-
-    public boolean setStock(String code, float stock) throws SQLException {
-        String query = "UPDATE product SET stock = ? WHERE code = ?";
-        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-        preparedStatement.setFloat(1, stock);
-        preparedStatement.setString(2, code);
-        int rowsAffected = preparedStatement.executeUpdate();
-        return rowsAffected > 0;
-    }
-
-    public boolean setPrice(String code, float price) throws SQLException {
-        String query = "UPDATE product SET price = ? WHERE code = ?";
-        PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
-        preparedStatement.setFloat(1, price);
-        preparedStatement.setString(2, code);
-        int rowsAffected = preparedStatement.executeUpdate();
-        return rowsAffected > 0;
-    }
 }

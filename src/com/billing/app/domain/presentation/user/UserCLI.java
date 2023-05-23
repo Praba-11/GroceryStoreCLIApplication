@@ -146,7 +146,7 @@ public class UserCLI {
             System.out.println("Incompatible argument. " + exception.getMessage());
         } catch (ObjectNullPointerException exception) {
             System.out.println("Unable to edit product. " + exception.getMessage());
-        } catch (CodeNotFoundException exception) {
+        } catch (CodeOrIDNotFoundException exception) {
             System.out.println("Invalid product id. " + exception.getMessage());
         } catch (ArrayIndexOutOfBoundsException exception) {
             System.out.println("Template mismatch. Please provide a valid command.");
@@ -171,7 +171,7 @@ public class UserCLI {
             System.out.print("Unable to delete user. ");
             String sqlMessage = userValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeNotFoundException exception) {
+        } catch (CodeOrIDNotFoundException exception) {
             System.out.println("Provided username not found. " + exception.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
