@@ -16,17 +16,18 @@ public class PurchaseServiceImplementation implements PurchaseService {
     PurchaseItemDAO purchaseItemDAO = new PurchaseItemDAOImplementation();
     PurchaseValidator purchaseValidator = new PurchaseValidator();
     ProductDAO productDAO = new ProductDAOImplementation();
-    List<PurchaseItem> listOfPurchaseItems = new ArrayList<>();
+    List<PurchaseItem> listOfPurchaseItems;
     public Purchase create(Purchase purchase) throws SQLException, CodeOrIDNotFoundException {
         if (purchaseValidator.valid(purchase)) {
 
             purchaseDAO.create(purchase);
             for (PurchaseItem purchaseItem : purchase.getListOfPurchaseItem()) {
+                listOfPurchaseItems = new ArrayList<>();
                 purchaseItem.setInvoice(purchase.getInvoice());
-                purchaseItem.setName(productDAO.getName(purchaseItem.getCode()));
+                purchaseItem.setName(productDAO.findByCode(purchaseItem.getCode()).getName());
 
                 Product product = productDAO.findByCode(purchaseItem.getCode());
-                product.setStock(productDAO.getStock(purchaseItem.getCode()) + purchaseItem.getQuantity());
+                product.setStock(productDAO.findByCode(purchaseItem.getCode()).getStock() + purchaseItem.getQuantity());
                 productDAO.edit(product);
 
                 purchaseItemDAO.create(purchaseItem);

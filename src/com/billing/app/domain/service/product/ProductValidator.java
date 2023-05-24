@@ -1,9 +1,16 @@
 package com.billing.app.domain.service.product;
 
+import com.billing.app.domain.database.ProductDAO;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.*;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class ProductValidator {
+    ProductDAO productDAO;
 
     public boolean validate(Product product) throws ObjectNullPointerException {
         if(product == null) {
@@ -24,4 +31,27 @@ public class ProductValidator {
         return true;
     }
 
+    public List validateList(String attribute, String searchText, int range, int page) throws InvalidArgumentException, SQLException {
+        List list = new ArrayList<>();
+        if (attribute == null && searchText == null && range == 0 && page == 0) {
+            attribute = "isdeleted";
+            searchText = "";
+            range = productDAO.count();
+        } else if (attribute == null && searchText == null && range > 0 && page == 0) {
+            attribute = "isdeleted";
+            searchText = "";
+        } else if (attribute == null && searchText == null && range > 0 && page > 0) {
+            attribute = "isdeleted";
+            searchText = "";
+            page = (page - 1) * range;
+        } else if (attribute != null && searchText != null && range == 0 && page == 0) {
+            range = productDAO.count();
+        } else if (attribute != null && searchText != null && range > 0 && page > 0) {
+            page = (page - 1) * range;
+        } else {
+            throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
+        }
+        list.addAll(Arrays.asList(range, page, attribute, searchText));
+        return list;
+    }
 }

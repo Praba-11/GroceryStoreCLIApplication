@@ -142,7 +142,6 @@ public class ProductCLI {
                     System.out.println("Template mismatch. Please provide a valid command.");
                 }
             }
-
         } catch (SQLException exception) {
             productValidator = new ProductValidator();
             System.out.print("Unable to edit product. ");

@@ -28,7 +28,7 @@ public class UserServiceImplementation implements UserService {
             if (userDAO.find(user.getId()) != null) {
                 return userDAO.edit(user);
             }
-            throw new CodeOrIDNotFoundException("Provided product id not present in user relation table.");
+            throw new CodeOrIDNotFoundException("Provided user id not created or not exists.");
         } catch (ObjectNullPointerException exception) {
             throw new ObjectNullPointerException("Error while editing product: " + exception.getMessage());
         }
@@ -38,7 +38,7 @@ public class UserServiceImplementation implements UserService {
         boolean isDeleted;
         isDeleted = userDAO.delete(username);
         if (!isDeleted) {
-            throw new CodeOrIDNotFoundException("(Username: " + username + ") not present in user relational table.");
+            throw new CodeOrIDNotFoundException("(Username: " + username + ") not not created or existing.");
         }
         return true;
     }
@@ -66,10 +66,6 @@ public class UserServiceImplementation implements UserService {
             } else {
                 throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
             }
-            System.out.println(range);
-            System.out.println(page);
-            System.out.println(attribute);
-            System.out.println(searchText);
             list = userDAO.list(range, page, attribute, searchText);
         }
         return list;

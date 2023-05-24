@@ -100,37 +100,4 @@ public interface ProductDAO {
      */
     int count() throws SQLException;
 
-    /**
-     * Interface for retrieving the price of a product from the database.
-     * This interface defines a method to retrieve the price of a product based on the provided product code.
-     * Implementations of this interface should handle the necessary database operations to fetch the price.
-     * If any SQLException occurs during the database operation, it will be thrown.
-     * @param code The product code used to identify the product in the database.
-     * @return The price of the product as a floating-point value.
-     * @throws SQLException If an error occurs during the database operation.
-     */
-    float getPrice(String code) throws SQLException;
-
-    /**
-     * Interface for retrieving the name of a product from the database.
-     * This interface defines a method to retrieve the name of a product based on the provided product code.
-     * Implementations of this interface should handle the necessary database operations to fetch the name.
-     * If any SQLException occurs during the database operation, it will be thrown.
-     * @param code The product code used to identify the product in the database.
-     * @return The name of the product as a String.
-     * @throws SQLException If an error occurs during the database operation.
-     */
-    String getName(String code) throws SQLException;
-
-    /**
-     * Interface for retrieving the stock quantity of a product.
-     * This interface defines a method to retrieve the stock quantity of a product based on the provided product code.
-     * Implementations of this interface should handle the necessary operations to fetch and return the stock quantity
-     * of the product from the database. If any SQLException occurs during the process, the respective exception will be thrown.
-     * @param code The product code for which to retrieve the stock quantity.
-     * @return The stock quantity of the product.
-     * @throws SQLException If an error occurs during the process of retrieving the stock quantity.
-     */
-    float getStock(String code) throws SQLException;
-
 }

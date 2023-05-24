@@ -25,11 +25,11 @@ public class SalesServiceImplementation implements SalesService {
         for (SalesItem salesItem : sales.getListOfSalesItem()) {
 
             salesItem.setInvoice(sales.getInvoice());
-            salesItem.setName(productDAO.getName(salesItem.getCode()));
-            salesItem.setCostPrice(productDAO.getPrice(salesItem.getCode()));
+            salesItem.setName(productDAO.findByCode(salesItem.getCode()).getName());
+            salesItem.setCostPrice(productDAO.findByCode(salesItem.getCode()).getPrice());
 
             Product product = productDAO.findByCode(salesItem.getCode());
-            float stock = productDAO.getStock(salesItem.getCode()) - salesItem.getQuantity();
+            float stock = productDAO.findByCode(salesItem.getCode()).getStock() - salesItem.getQuantity();
             if (stock > 0) {
                 product.setStock(stock);
             } else {

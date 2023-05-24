@@ -6,6 +6,7 @@ import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Main;
+import com.billing.app.domain.service.purchase.PurchaseHelp;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -21,6 +22,7 @@ public class PurchaseCLI {
     Scanner scanner = new Scanner(System.in);
     Main main = new Main();
     List<String> splitBySpaces;
+    PurchaseHelp purchaseHelp = new PurchaseHelp();
     PurchaseValidator purchaseValidator = new PurchaseValidator();
 
     public void execute(String purchaseCommand) {
@@ -161,7 +163,7 @@ public class PurchaseCLI {
         }
 
         if (listCommand.size() == 1 && listCommand.get(0).equals("help")) {
-//                    purchaseHelp.listPurchase();
+//                    purchaseHelp.list()
         } else {
             try {
                 List<Purchase> purchaseArray = purchaseController.list(listCommand);

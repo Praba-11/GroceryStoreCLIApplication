@@ -46,31 +46,18 @@ public class ProductServiceImplementation implements ProductService {
     }
 
     public List<Product> list(int range, int page, String attribute, String searchText) throws SQLException,  InvalidArgumentException {
-        List<Product> list;
+        List<Product> lists = null;
         if (attribute == null && searchText != null && range == 0 && page == 0) {
-            list = productDAO.list(searchText);
+            productDAO.list(searchText);
         } else {
-            if (attribute == null && searchText == null && range == 0 && page == 0) {
-                attribute = "isdeleted";
-                searchText = "";
-                range = productDAO.count();
-            } else if (attribute == null && searchText == null && range > 0 && page == 0) {
-                attribute = "isdeleted";
-                searchText = "";
-            } else if (attribute == null && searchText == null && range > 0 && page > 0) {
-                attribute = "isdeleted";
-                searchText = "";
-                page = (page - 1) * range;
-            } else if (attribute != null && searchText != null && range == 0 && page == 0) {
-                range = productDAO.count();
-            } else if (attribute != null && searchText != null && range > 0 && page > 0) {
-                page = (page - 1) * range;
-            } else {
-                throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
-            }
-            list = productDAO.list(range, page, attribute, searchText);
+            List list = productValidator.validateList(attribute, searchText, range, page);
+            int range1 = Integer.parseInt(list.get(0).toString());
+            int page1 = Integer.parseInt(list.get(0).toString());
+            String attribute1 = list.get(2).toString();
+            String searchText1 = list.get(3).toString();
+            lists = productDAO.list(range1, page1, attribute1, searchText1);
         }
-        return list;
+        return lists;
     }
 
     public Product stockUpdate(String code, float stock) throws SQLException {

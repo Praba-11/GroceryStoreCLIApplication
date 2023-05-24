@@ -4,6 +4,7 @@ import com.billing.app.domain.entity.User;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.presentation.Main;
+import com.billing.app.domain.presentation.product.ProductHelp;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -101,7 +102,7 @@ public class UserCLI {
         } catch (TemplateMismatchException exception) {
             System.out.println("Template mismatch. " + exception.getMessage());
         } catch (InvalidArgumentException exception) {
-            System.out.println("Invalid argument provided. " + exception.getMessage());
+            System.out.println("Incompatible argument provided. " + exception.getMessage());
         } catch (TypeMismatchException exception) {
             System.out.println("Type mismatch occurred at " + exception.getMessage());
         } catch (ObjectNullPointerException exception) {
@@ -115,27 +116,31 @@ public class UserCLI {
         try {
             String formattedInput = edit.replaceAll("\\s*:\\s*", ":");
             String[] keyValuePairs = formattedInput.split("\\s*,\\s*");
-            System.out.println(Arrays.toString(keyValuePairs));
-            List<String> pairs = new ArrayList<>(Arrays.asList(keyValuePairs));
-            LinkedHashMap<String, String> editCommand = new LinkedHashMap<>();
-            if (pairs.size() == 7) {
-                for (String pair : pairs) {
-                    String[] keyValue = pair.split(":");
-                    String key = keyValue[0].trim();
-                    String value = keyValue[1].trim();
-                    editCommand.put(key, value);
-                }
-                if (editCommand.size() == 3 && editCommand.get(2).equals("help")) {
-                    userHelp.editUser();
+            if (keyValuePairs.length == 1 && keyValuePairs[0].equals("help")) {
+                userHelp.editUser();
+            } else {
+                List<String> pairs = new ArrayList<>(Arrays.asList(keyValuePairs));
+                LinkedHashMap<String, String> editCommand = new LinkedHashMap<>();
+                if (pairs.size() == 7) {
+                    for (String pair : pairs) {
+                        String[] keyValue = pair.split(":");
+                        String key = keyValue[0].trim();
+                        String value = keyValue[1].trim();
+                        editCommand.put(key, value);
+                    }
+                    if (editCommand.size() == 3 && editCommand.get(2).equals("help")) {
+                        userHelp.editUser();
+                    } else {
+                        User userEdited = userController.edit(editCommand);
+                        System.out.println("User edited successfully.");
+                        System.out.println(userEdited);
+                    }
                 } else {
-                    User userEdited = userController.edit(editCommand);
-                    System.out.println("Product edited successfully.");
-                    System.out.println(userEdited);
+                    System.out.println("Template mismatch. Please provide a valid command.");
                 }
             }
-
         } catch (SQLException exception) {
-            System.out.print("Unable to edit product. ");
+            System.out.print("Unable to edit user. ");
             String sqlMessage = userValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
         } catch (TemplateMismatchException exception) {
@@ -145,9 +150,9 @@ public class UserCLI {
         } catch (InvalidArgumentException exception) {
             System.out.println("Incompatible argument. " + exception.getMessage());
         } catch (ObjectNullPointerException exception) {
-            System.out.println("Unable to edit product. " + exception.getMessage());
+            System.out.println("Unable to edit user. " + exception.getMessage());
         } catch (CodeOrIDNotFoundException exception) {
-            System.out.println("Invalid product id. " + exception.getMessage());
+            System.out.println("Invalid User id. " + exception.getMessage());
         } catch (ArrayIndexOutOfBoundsException exception) {
             System.out.println("Template mismatch. Please provide a valid command.");
         } catch (IllegalAccessException e) {
@@ -210,7 +215,7 @@ public class UserCLI {
             } catch (TemplateMismatchException exception) {
                 System.out.println("Template mismatch. " + exception.getMessage());
             } catch (SQLException exception) {
-                System.out.print("Unable to list product. ");
+                System.out.print("Unable to list user. ");
                 String sqlMessage = userValidator.validateSQLState(exception);
                 System.out.println(sqlMessage);
             } catch (ClassNotFoundException e) {

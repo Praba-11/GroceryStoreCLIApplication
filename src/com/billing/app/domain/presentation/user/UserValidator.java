@@ -32,7 +32,7 @@ public class UserValidator {
             throw new InvalidArgumentException("User name: " + userName + " is incompatible. Provide a user name of valid length.");
         }
         if (userName.trim().length() == 0) {
-            throw new InvalidArgumentException("User name cannot be empty. Please provide a valid product name.");
+            throw new InvalidArgumentException("User name cannot be empty. Please provide a valid user name.");
         }
         if (password.trim().length() == 0) {
             throw new InvalidArgumentException("Password cannot be empty. Please provide a valid password.");
@@ -41,16 +41,16 @@ public class UserValidator {
             throw new InvalidArgumentException("Invalid password. Please try again.");
         }
         if (firstName.length() < 3 || firstName.length() > 30) {
-            throw new InvalidArgumentException("First name: " + firstName + " is incompatible. Provide a user name of valid length.");
+            throw new InvalidArgumentException("First name: " + firstName + " is incompatible. Provide a first name of valid length.");
         }
         if (firstName.trim().length() == 0) {
-            throw new InvalidArgumentException("First name cannot be empty. Please provide a valid product name.");
+            throw new InvalidArgumentException("First name cannot be empty. Please provide a valid first name.");
         }
         if (lastName.length() < 3 || lastName.length() > 30) {
-            throw new InvalidArgumentException("Last name: " + lastName + " is incompatible. Provide a user name of valid length.");
+            throw new InvalidArgumentException("Last name: " + lastName + " is incompatible. Provide a last name of valid length.");
         }
         if (lastName.trim().length() == 0) {
-            throw new InvalidArgumentException("Last name cannot be empty. Please provide a valid product name.");
+            throw new InvalidArgumentException("Last name cannot be empty. Please provide a valid last name.");
         }
         try {
             if (phoneNumber.length() == 10) {
@@ -112,10 +112,10 @@ public class UserValidator {
         if (userMap.containsKey("firstname")) {
             String firstName = userMap.get("firstname");
             if (firstName.length() < 3 || firstName.length() > 30) {
-                throw new InvalidArgumentException("First name: " + firstName + " is incompatible. Provide a product code of valid length.");
+                throw new InvalidArgumentException("First name: " + firstName + " is incompatible. Provide a first name of valid length.");
             }
             if (firstName.trim().length() == 0) {
-                throw new InvalidArgumentException("First name cannot be empty. Please provide a valid product name.");
+                throw new InvalidArgumentException("First name cannot be empty. Please provide a valid first name.");
             }
         } else {
             throw new InvalidArgumentException("First name not entered.");
@@ -123,10 +123,10 @@ public class UserValidator {
         if (userMap.containsKey("lastname")) {
             String lastName = userMap.get("lastname");
             if (lastName.length() < 3 || lastName.length() > 30) {
-                throw new InvalidArgumentException("Last name: " + lastName + " is incompatible. Provide a product code of valid length.");
+                throw new InvalidArgumentException("Last name: " + lastName + " is incompatible. Provide a last name of valid length.");
             }
             if (lastName.trim().length() == 0) {
-                throw new InvalidArgumentException("Last name cannot be empty. Please provide a valid product name.");
+                throw new InvalidArgumentException("Last name cannot be empty. Please provide a valid last name.");
             }
         } else {
             throw new InvalidArgumentException("Last name not entered.");
@@ -217,7 +217,7 @@ public class UserValidator {
     public String validateSQLState(SQLException exception) {
         String sqlState = exception.getSQLState();
         if (sqlState.equals("23505"))
-            return "Provided product code already exists. \n" + exception.getMessage();
+            return "Provided username already exists. \n" + exception.getMessage();
         if (sqlState.equals("23503")) {
             return "Invalid unit provided, please ensure whether the unit is already created (or) present. \n" + exception.getMessage();
         }
