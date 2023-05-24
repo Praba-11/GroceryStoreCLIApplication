@@ -1,7 +1,7 @@
 package com.billing.app.domain.service.unit;
 
 import com.billing.app.domain.entity.Unit;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.ObjectNullPointerException;
 
 import java.sql.SQLException;
@@ -30,10 +30,10 @@ public interface UnitService {
      * @param unit The Unit object representing the unit to be edited.
      * @return The updated Unit object with the modified details.
      * @throws SQLException If an error occurs during the unit editing process.
-     * @throws CodeOrIDNotFoundException If the unit's code or ID is not found.
+     * @throws NotFoundException If the unit's code or ID is not found.
      * @throws ObjectNullPointerException If any required object, such as the unit object itself, is null.
      */
-    Unit edit(Unit unit) throws SQLException, CodeOrIDNotFoundException, ObjectNullPointerException;
+    Unit edit(Unit unit) throws SQLException, NotFoundException, ObjectNullPointerException;
 
 
     /**
@@ -44,9 +44,9 @@ public interface UnitService {
      * @param id The ID of the unit to be deleted.
      * @return A boolean indicating whether the deletion was successful or not.
      * @throws SQLException If an error occurs during the unit deletion process.
-     * @throws CodeOrIDNotFoundException If the unit's code or ID is not found.
+     * @throws NotFoundException If the unit's code or ID is not found.
      */
-    boolean delete(int id) throws SQLException, CodeOrIDNotFoundException;
+    boolean delete(int id) throws SQLException, NotFoundException;
 
 
     /**

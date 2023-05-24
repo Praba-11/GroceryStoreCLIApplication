@@ -4,7 +4,7 @@ import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.NegativeStockException;
 
@@ -17,7 +17,7 @@ public class SalesServiceImplementation implements SalesService {
     SalesDAO salesDAO = new SalesDAOImplementation();
     SalesItemDAO salesItemDAO = new SalesItemDAOImplementation();
 
-    public Sales create(Sales sales) throws SQLException, CodeOrIDNotFoundException, NegativeStockException {
+    public Sales create(Sales sales) throws SQLException, NotFoundException, NegativeStockException {
 
         float grandTotal = 0;
         List<SalesItem> listOfSalesItem = new ArrayList<>();
@@ -50,11 +50,11 @@ public class SalesServiceImplementation implements SalesService {
     }
 
 
-    public boolean delete(int invoice) throws CodeOrIDNotFoundException, SQLException {
+    public boolean delete(int invoice) throws NotFoundException, SQLException {
         boolean isDeleted;
         isDeleted = salesDAO.delete(invoice);
         if (!isDeleted) {
-            throw new CodeOrIDNotFoundException("(Invoice no: " + invoice + ") not present in sales relational table.");
+            throw new NotFoundException("(Invoice no: " + invoice + ") not present in sales relational table.");
         }
         return true;
     }

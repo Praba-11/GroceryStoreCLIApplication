@@ -3,7 +3,7 @@ package com.billing.app.domain.presentation.store;
 public class StoreHelp {
     public void createStore() {
         System.out.println("Create store using the following template.");
-        System.out.println("gst number, name, phonenumber, address\n");
+        System.out.println("name, phonenumber, address, gst number\n");
         System.out.println("name  - text, mandatory with 3 to 30 chars\n" +
                 "phone - number, mandatory, ten digits, digit start with 9/8/7/6\n" +
                 "address - text, mandatory\n" +

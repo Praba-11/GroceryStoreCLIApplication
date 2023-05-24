@@ -2,30 +2,32 @@ package com.billing.app.domain.presentation.product;
 
 public class ProductHelp {
     public void createProduct() {
-        System.out.println("Create product using following template");
-        System.out.println("code, name, unitcode, type, price, stock\n");
-        System.out.println("code - text, min - 2 - 6, mandatory\n" +
+        System.out.println("\nCreate product using following template:");
+        System.out.println(">> product create code, name, unitcode, type, price, stock   (or)");
+        System.out.println(">> product create :(enter)\n" +
+                "code, name, unitcode, type, price, stock\n");
+        System.out.println("Ensure the attributes are of provided template.\n" +
+                "code - text, min - 2 - 6, mandatory\n" +
                 "name - text, min 3 - 30 char, mandatory\n" +
                 "unitcode - text, kg/l/piece/combo, mandatory\n" +
                 "type - text, between enumerated values, mandatory \n" +
                 "price - number, mandatory\n" +
                 "stock - number\n");
-        System.out.println(">> product create code, name, unitcode, type, price, stock   (or)");
-        System.out.println(">> product create :enter\n" +
-                ">> code, name, unitcode, type, price, stock\n");
+
     }
 
     public void editProduct() {
-        System.out.println("Edit product using following template. Copy the product data from the list, edit the attribute values.");
-        System.out.println("code: <code>, name: <name-edited>, unitcode: <unitcode>,  type: <type>, price: <price>\n");
-        System.out.println("code - text, min - 2 - 6, mandatory\n" +
+        System.out.println("\nEdit product using following template. Copy the product data from the list, edit the attribute values.");
+        System.out.println(">> product edit id: <id>, code: <code>, name: <name-edited>, unitcode: <unitcode>,  type: <type>, price: <price>\n");
+        System.out.println(">> product edit :enter\n" +
+                ">> id: <id - 6>, name: <name-edited>, unitcode: <unitcode>,  type: <type>, price: <price>\n");
+        System.out.println("Ensure the attributes are of provided template.\n" +
+                "id - numeric, mandatory\n" +
+                "code - text, min - 2 - 6, mandatory\n" +
                 "name - text, min 3 - 30 char, mandatory\n" +
                 "unitcode - text, kg/l/piece/combo, mandatory\n" +
                 "type - text, between enumerated values, mandatory \n" +
                 "price - numeric, mandatory\n");
-        System.out.println(">> product edit id:<id - 6>, name: <name-edited>, unitcode: <unitcode>,  type: <type>, price: <price>   (or)");
-        System.out.println(">> product edit :enter\n" +
-                ">> id: <id - 6>, name: <name-edited>, unitcode: <unitcode>,  type: <type>, price: <price>\n");
     }
 
     public void deleteProduct() {

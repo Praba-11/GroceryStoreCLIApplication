@@ -1,5 +1,6 @@
 package com.billing.app.domain.presentation.store;
 
+import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Store;
 import com.billing.app.domain.exceptions.*;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
@@ -150,25 +151,20 @@ public class StoreCLI {
             String formattedInput = edit.replaceAll("\\s*:\\s*", ":");
             String[] keyValuePairs = formattedInput.split("\\s*,\\s*");
             ArrayList<String> pairs = new ArrayList<>(Arrays.asList(keyValuePairs));
-            System.out.println(pairs);
             LinkedHashMap<String, String> editCommand = new LinkedHashMap<>();
-            System.out.println(pairs.size());
 
-            if (pairs.size() == 4) {
+            if (pairs.size() == 5) {
                 for (String pair : pairs) {
                     String[] keyValue = pair.split(":");
                     String key = keyValue[0].trim();
                     String value = keyValue[1].trim();
                     editCommand.put(key, value);
                 }
-                if (editCommand.size() == 3 && editCommand.get(2).equals("help")) {
-                    storeHelp = new StoreHelp();
-                    storeHelp.editStore();
-                } else {
-                    Store storeEdited = storeController.edit(editCommand);
-                    System.out.println("Store edited successfully.");
-                    System.out.println(storeEdited);
-                }
+                Store storeEdited = storeController.edit(editCommand);
+                System.out.println("Store edited successfully.");
+                System.out.println("Edited store: " + storeEdited);
+            } else {
+                System.out.println("Template mismatch. Please provide a valid command for editing the product.");
             }
 
         } catch (SQLException exception) {

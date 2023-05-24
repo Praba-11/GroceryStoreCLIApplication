@@ -1,7 +1,7 @@
 package com.billing.app.domain.service.purchase;
 
 import com.billing.app.domain.entity.Purchase;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 
 import java.sql.SQLException;
@@ -17,9 +17,9 @@ public interface PurchaseService {
      * @param purchase The Purchase object representing the purchase to be created.
      * @return The created Purchase object with additional details, such as the generated purchase ID.
      * @throws SQLException If an error occurs during the purchase creation process.
-     * @throws CodeOrIDNotFoundException If the product code or ID specified in the purchase is not found.
+     * @throws NotFoundException If the product code or ID specified in the purchase is not found.
      */
-    Purchase create(Purchase purchase) throws SQLException, CodeOrIDNotFoundException;
+    Purchase create(Purchase purchase) throws SQLException, NotFoundException;
 
 
 
@@ -30,10 +30,10 @@ public interface PurchaseService {
      * If the invoice number is not found or if an SQLException occurs during the process, the respective exceptions will be thrown.
      * @param invoice The invoice number of the purchase to be deleted.
      * @return A boolean indicating whether the deletion was successful or not.
-     * @throws CodeOrIDNotFoundException If the purchase with the specified invoice number is not found.
+     * @throws NotFoundException If the purchase with the specified invoice number is not found.
      * @throws SQLException If an error occurs during the purchase deletion process.
      */
-    boolean delete(int invoice) throws CodeOrIDNotFoundException, SQLException;
+    boolean delete(int invoice) throws NotFoundException, SQLException;
 
 
 

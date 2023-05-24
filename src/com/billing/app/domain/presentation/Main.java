@@ -1,10 +1,12 @@
 package com.billing.app.domain.presentation;
 
+import com.billing.app.domain.exceptions.InvalidArgumentException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidArgumentException {
         CLI cli = new CLI();
         cli.execute();
     }

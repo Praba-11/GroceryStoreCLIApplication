@@ -12,33 +12,28 @@ public class UnitServiceImplementation implements UnitService {
     private UnitDAO unitDAO = new UnitDAOImplementation();
     UnitValidator unitValidator = new UnitValidator();
     public Unit create(Unit unit) throws SQLException, ObjectNullPointerException {
-        try {
-            unitValidator.validate(unit);
-            return unitDAO.create(unit);
-        } catch (ObjectNullPointerException exception) {
-            throw new ObjectNullPointerException("Error while creating unit: " + exception.getMessage());
-        }
+        unitValidator.validate(unit);
+        unitDAO.create(unit);
+        return unitDAO.getByCode(unit.getCode());
     }
 
     @Override
-    public Unit edit(Unit unit) throws SQLException, CodeOrIDNotFoundException, ObjectNullPointerException {
-
-        try {
-            unitValidator.validate(unit);
-            if (unitDAO.find(unit.getId()) != null) {
-                return unitDAO.edit(unit);
-            }
-            throw new CodeOrIDNotFoundException("Provided unit id not present in unit relation table.");
-        } catch (ObjectNullPointerException exception) {
-            throw new ObjectNullPointerException("Error while editing unit: " + exception.getMessage());
+    public Unit edit(Unit unit) throws SQLException, NotFoundException, ObjectNullPointerException {
+        unitValidator.validate(unit);
+        if (unitDAO.getById(unit.getId()) != null) {
+            unitDAO.edit(unit);
+            return unitDAO.getByCode(unit.getCode());
         }
+        throw new NotFoundException("Provided unit id not present in unit relation table.");
     }
 
-    public boolean delete(int id) throws SQLException, CodeOrIDNotFoundException {
+
+    public boolean delete(int id) throws SQLException, NotFoundException {
         boolean isDeleted;
         isDeleted = unitDAO.delete(id);
         if (!isDeleted) {
-            throw new CodeOrIDNotFoundException("(Id: " + id + ") not present in unit relational table.");
+            throw new NotFoundException("(Id: " + id + ") doesn't exist.\n" +
+                    "Please provide a valid id for deleting the unit.");
         }
         return true;
     }

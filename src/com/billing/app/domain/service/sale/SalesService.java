@@ -1,7 +1,7 @@
 package com.billing.app.domain.service.sale;
 
 import com.billing.app.domain.entity.Sales;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.NegativeStockException;
 
@@ -18,9 +18,9 @@ public interface SalesService {
      * @param sales The Sales object representing the sales record to be created.
      * @return The created Sales object with additional details, such as the generated sales ID.
      * @throws SQLException If an error occurs during the sales record creation process.
-     * @throws CodeOrIDNotFoundException If the product code or ID specified in the sales record is not found.
+     * @throws NotFoundException If the product code or ID specified in the sales record is not found.
      */
-    Sales create(Sales sales) throws SQLException, CodeOrIDNotFoundException, NegativeStockException;
+    Sales create(Sales sales) throws SQLException, NotFoundException, NegativeStockException;
 
 
     /**
@@ -30,10 +30,10 @@ public interface SalesService {
      * If the invoice number is not found or if an SQLException occurs during the process, the respective exceptions will be thrown.
      * @param invoice The invoice number of the sales record to be deleted.
      * @return A boolean indicating whether the deletion was successful or not.
-     * @throws CodeOrIDNotFoundException If the sales record with the specified invoice number is not found.
+     * @throws NotFoundException If the sales record with the specified invoice number is not found.
      * @throws SQLException If an error occurs during the sales record deletion process.
      */
-    boolean delete(int invoice) throws CodeOrIDNotFoundException, SQLException;
+    boolean delete(int invoice) throws NotFoundException, SQLException;
 
 
     /**

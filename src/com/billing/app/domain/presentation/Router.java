@@ -31,33 +31,45 @@ public class Router {
     Unit unit;
     public void admin(String command) throws SQLException {
         String[] splitCommand = command.trim().split("\\s+");
-        String module = splitCommand[0];
+        String module = splitCommand[0].trim();
         Store store = storeController.view();
         if (store != null) {
             switch (module) {
                 case "product" -> {
                     String productCommand = split(command);
-                    productCLI.execute(productCommand);
+                    if (productCommand != null) {
+                        productCLI.execute(productCommand);
+                    }
                 }
                 case "unit" -> {
                     String unitCommand = split(command);
-                    unitCLI.execute(unitCommand);
+                    if (unitCommand != null) {
+                        unitCLI.execute(unitCommand);
+                    }
                 }
                 case "store" -> {
                     String storeCommand = split(command);
-                    storeCLI.execute(storeCommand);
+                    if (storeCommand != null) {
+                        storeCLI.execute(storeCommand);
+                    }
                 }
                 case "user" -> {
                     String userCommand = split(command);
-                    userCLI.execute(userCommand);
+                    if (userCommand != null) {
+                        userCLI.execute(userCommand);
+                    }
                 }
                 case "purchase" -> {
                     String purchaseCommand = split(command);
-                    purchaseCLI.execute(purchaseCommand);
+                    if (purchaseCommand != null) {
+                        purchaseCLI.execute(purchaseCommand);
+                    }
                 }
                 case "sales" -> {
                     String salesCommand = split(command);
-                    salesCLI.execute(salesCommand);
+                    if (salesCommand != null) {
+                        salesCLI.execute(salesCommand);
+                    }
                 }
                 case "stock" -> {
                     splitBySpaces = listSplit(command);

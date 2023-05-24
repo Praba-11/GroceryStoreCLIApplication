@@ -13,10 +13,10 @@ public interface StoreDAO {
      * the provided store information into the database as a new entry.
      * If any SQLException occurs during the process, the respective exception will be thrown.
      * @param store The Store object representing the store information to create.
-     * @return true if the store entry is successfully created, false otherwise.
+     * @return The created store object with updated information, including any generated unique identifiers.
      * @throws SQLException If an error occurs during the process of creating the store entry.
      */
-    boolean create(Store store) throws SQLException;
+    Store create(Store store) throws SQLException;
 
 
     /**
@@ -27,10 +27,10 @@ public interface StoreDAO {
      the provided store information in the database.
      If any SQLException occurs during the process, the respective exception will be thrown.
      @param store The Store object representing the updated store information.
-     @return true if the store entry is successfully edited, false otherwise.
+     @return The edited store object with updated information, including any generated unique identifiers.
      @throws SQLException If an error occurs during the process of editing the store entry.
      */
-    boolean edit(Store store) throws SQLException;
+    Store edit(Store store) throws SQLException;
 
 
     /**

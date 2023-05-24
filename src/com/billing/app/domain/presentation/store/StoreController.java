@@ -29,7 +29,7 @@ public class StoreController {
     }
 
     public Store edit(Map<String, String> values) throws SQLException, ClassNotFoundException, TemplateMismatchException, TypeMismatchException, InvalidArgumentException {
-        int expectedLength = 4;
+        int expectedLength = 5;
         int actualLength = values.size();
         if (actualLength == expectedLength) {
             storeValidator.validateMap(values);
@@ -56,10 +56,11 @@ public class StoreController {
 
     private static Store setValues(List<String> values) {
         Store store = new Store();
-        store.setName(values.get(0));
-        store.setPhoneNumber(Long.parseLong(values.get(1)));
-        store.setAddress(values.get(2));
-        store.setGstNumber(values.get(3));
+        store.setId(Integer.parseInt(values.get(0)));
+        store.setName(values.get(1));
+        store.setPhoneNumber(Long.parseLong(values.get(2)));
+        store.setAddress(values.get(3));
+        store.setGstNumber(values.get(4));
         return store;
     }
 }

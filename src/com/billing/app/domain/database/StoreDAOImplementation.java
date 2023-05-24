@@ -10,35 +10,31 @@ public class StoreDAOImplementation implements StoreDAO {
     ConnectionDB connectionDB = new ConnectionDB();
     Store store;
     @Override
-    public boolean create(Store store) throws SQLException {
+    public Store create(Store store) throws SQLException {
 
-        // Storing Store details in Database table
         String query = "INSERT INTO store (gstnumber, name, phonenumber, address) VALUES (?, ?, ?, ?)" ;
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.setString(2, store.getName());
         preparedStatement.setLong(3, store.getPhoneNumber());
         preparedStatement.setString(4, store.getAddress());
         preparedStatement.setString(1, store.getGstNumber());
-        int rowsAffected = preparedStatement.executeUpdate();
+        preparedStatement.executeUpdate();
         preparedStatement.close();
-
-        return rowsAffected > 0;
+        return store;
     }
 
     @Override
-    public boolean edit(Store store) throws SQLException {
+    public Store edit(Store store) throws SQLException {
 
-        // Editing Store details in Database table
         String query = "UPDATE store SET gstnumber = ?, name = ?, phonenumber = ?, address = ? WHERE id = 1" ;
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         preparedStatement.setString(2, store.getName());
         preparedStatement.setLong(3, store.getPhoneNumber());
         preparedStatement.setString(4, store.getAddress());
         preparedStatement.setString(1, store.getGstNumber());
-        int rowsAffected = preparedStatement.executeUpdate();
+        preparedStatement.executeUpdate();
         preparedStatement.close();
-
-        return rowsAffected > 0;
+        return store;
     }
 
     @Override

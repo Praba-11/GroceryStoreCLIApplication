@@ -69,9 +69,21 @@ public class UnitDAOImplementation implements UnitDAO {
 
 
 
-    public Unit find(int id) throws SQLException {
+    public Unit getById(int id) throws SQLException {
         Unit unitFound = null;
         String query = "SELECT * FROM unit WHERE id = '" + id + "'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        unit = new Unit();
+        while (resultSet.next()) {
+            unitFound = setUnit(unit, resultSet);
+        }
+        return unitFound;
+    }
+
+    public Unit getByCode(String code) throws SQLException {
+        Unit unitFound = null;
+        String query = "SELECT * FROM unit WHERE code = '" + code + "'";
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
         unit = new Unit();

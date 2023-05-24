@@ -28,7 +28,7 @@ public class UserValidator {
         if (!isValidUserType(userType)) {
             throw new InvalidArgumentException("Incompatible user type. Please provide a valid user type.");
         }
-        if (userName.length() < 3 || userName.length() > 30) {
+        if (userName.trim().length() < 3 || userName.trim().length() > 30) {
             throw new InvalidArgumentException("User name: " + userName + " is incompatible. Provide a user name of valid length.");
         }
         if (userName.trim().length() == 0) {
@@ -40,20 +40,20 @@ public class UserValidator {
         if (!isValidPassword(password)) {
             throw new InvalidArgumentException("Invalid password. Please try again.");
         }
-        if (firstName.length() < 3 || firstName.length() > 30) {
+        if (firstName.trim().length() < 3 || firstName.trim().length() > 30) {
             throw new InvalidArgumentException("First name: " + firstName + " is incompatible. Provide a first name of valid length.");
         }
         if (firstName.trim().length() == 0) {
             throw new InvalidArgumentException("First name cannot be empty. Please provide a valid first name.");
         }
-        if (lastName.length() < 3 || lastName.length() > 30) {
+        if (lastName.trim().length() < 3 || lastName.trim().length() > 30) {
             throw new InvalidArgumentException("Last name: " + lastName + " is incompatible. Provide a last name of valid length.");
         }
         if (lastName.trim().length() == 0) {
             throw new InvalidArgumentException("Last name cannot be empty. Please provide a valid last name.");
         }
         try {
-            if (phoneNumber.length() == 10) {
+            if (phoneNumber.trim().length() == 10) {
                 long castedPhoneNumber = Long.parseLong(phoneNumber);
                 if (castedPhoneNumber < 0) {
                     throw new InvalidArgumentException("Incompatible phone number. Please provide a valid phone number.");
@@ -111,7 +111,7 @@ public class UserValidator {
         }
         if (userMap.containsKey("firstname")) {
             String firstName = userMap.get("firstname");
-            if (firstName.length() < 3 || firstName.length() > 30) {
+            if (firstName.trim().length() < 3 || firstName.trim().length() > 30) {
                 throw new InvalidArgumentException("First name: " + firstName + " is incompatible. Provide a first name of valid length.");
             }
             if (firstName.trim().length() == 0) {
@@ -122,7 +122,7 @@ public class UserValidator {
         }
         if (userMap.containsKey("lastname")) {
             String lastName = userMap.get("lastname");
-            if (lastName.length() < 3 || lastName.length() > 30) {
+            if (lastName.trim().length() < 3 || lastName.trim().length() > 30) {
                 throw new InvalidArgumentException("Last name: " + lastName + " is incompatible. Provide a last name of valid length.");
             }
             if (lastName.trim().length() == 0) {
@@ -208,7 +208,7 @@ public class UserValidator {
     }
 
     private boolean isValidUsername(String userName) {
-        if ((userName.length() < 3 || userName.length() > 30) && userName.trim().length() == 0) {
+        if ((userName.trim().length() < 3 || userName.trim().length() > 30) && userName.trim().length() == 0) {
             return false;
         }
         return true;

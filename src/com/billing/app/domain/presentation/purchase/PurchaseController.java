@@ -2,7 +2,7 @@ package com.billing.app.domain.presentation.purchase;
 
 import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.entity.PurchaseItem;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.service.purchase.PurchaseServiceImplementation;
@@ -25,7 +25,7 @@ public class PurchaseController {
     PurchaseService purchaseService = new PurchaseServiceImplementation();
     PurchaseValidator purchaseValidator = new PurchaseValidator();
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    public Purchase create(List<String> stringArrayList) throws ParseException, SQLException, CodeOrIDNotFoundException, TemplateMismatchException {
+    public Purchase create(List<String> stringArrayList) throws ParseException, SQLException, NotFoundException, TemplateMismatchException {
 
         List<String> create = new ArrayList<>(stringArrayList.subList(0, 2));
         List<String> purchaseItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
@@ -58,7 +58,7 @@ public class PurchaseController {
 
 
 
-    public boolean delete(String value) throws TemplateMismatchException, SQLException, CodeOrIDNotFoundException, ClassNotFoundException, InvalidArgumentException {
+    public boolean delete(String value) throws TemplateMismatchException, SQLException, NotFoundException, ClassNotFoundException, InvalidArgumentException {
         boolean flag = false;
         int invoice;
         try {

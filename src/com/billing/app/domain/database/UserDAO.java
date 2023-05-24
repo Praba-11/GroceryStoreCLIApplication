@@ -113,4 +113,7 @@ public interface UserDAO {
      * @throws SQLException If an error occurs during the process of user authentication and login.
      */
     User login(String username, String password) throws SQLException;
+
+
+    boolean adminExists() throws SQLException;
 }

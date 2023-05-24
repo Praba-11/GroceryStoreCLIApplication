@@ -2,7 +2,7 @@ package com.billing.app.domain.presentation.sale;
 
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.NegativeStockException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
@@ -28,7 +28,7 @@ public class SalesController {
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
 
-    public Sales create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, CodeOrIDNotFoundException, TemplateMismatchException, NegativeStockException {
+    public Sales create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, NotFoundException, TemplateMismatchException, NegativeStockException {
 
         List<String> create = new ArrayList<>(stringArrayList.subList(0, 2));
         List<String> salesItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
@@ -57,7 +57,7 @@ public class SalesController {
         return salesService.create(sales);
     }
 
-    public boolean delete(String value) throws TemplateMismatchException, SQLException, CodeOrIDNotFoundException, ClassNotFoundException, InvalidArgumentException {
+    public boolean delete(String value) throws TemplateMismatchException, SQLException, NotFoundException, ClassNotFoundException, InvalidArgumentException {
         boolean flag = false;
         int invoice;
         try {

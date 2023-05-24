@@ -21,24 +21,24 @@ public class UserServiceImplementation implements UserService {
         }
     }
 
-    public User edit(User user) throws CodeOrIDNotFoundException, ObjectNullPointerException, SQLException {
+    public User edit(User user) throws NotFoundException, ObjectNullPointerException, SQLException {
 
         try {
             userValidator.validate(user);
             if (userDAO.find(user.getId()) != null) {
                 return userDAO.edit(user);
             }
-            throw new CodeOrIDNotFoundException("Provided user id not created or not exists.");
+            throw new NotFoundException("Provided user id not created or not exists.");
         } catch (ObjectNullPointerException exception) {
             throw new ObjectNullPointerException("Error while editing product: " + exception.getMessage());
         }
     }
 
-    public boolean delete(String username) throws SQLException, CodeOrIDNotFoundException {
+    public boolean delete(String username) throws SQLException, NotFoundException {
         boolean isDeleted;
         isDeleted = userDAO.delete(username);
         if (!isDeleted) {
-            throw new CodeOrIDNotFoundException("(Username: " + username + ") not not created or existing.");
+            throw new NotFoundException("(Username: " + username + ") not not created or existing.");
         }
         return true;
     }
@@ -56,16 +56,33 @@ public class UserServiceImplementation implements UserService {
                 attribute = "isavailable";
                 searchText = "";
             } else if (attribute == null && searchText == null && range > 0 && page > 0) {
-                attribute = "isavailable";
-                searchText = "";
-                page = (page - 1) * range;
+                int calculatedLimit = (range * page) - range;
+                int calculatedPage = calculatedLimit / range;
+                if (calculatedLimit > userDAO.count()) {
+                    throw new InvalidArgumentException("Invalid argument provided. " +
+                            "(Number of pages for listing : " + calculatedPage + ")");
+                } else {
+                    attribute = "isdeleted";
+                    searchText = "";
+                    page = (page - 1) * range;
+                }
             } else if (attribute != null && searchText != null && range == 0 && page == 0) {
                 range = userDAO.count();
             } else if (attribute != null && searchText != null && range > 0 && page > 0) {
-                page = (page - 1) * range;
+                int calculatedLimit = (range * page) - range;
+                int calculatedPage = calculatedLimit / range;
+                if (calculatedLimit > userDAO.count()) {
+                    throw new InvalidArgumentException("Invalid argument provided. " +
+                            "(Number of pages for listing : " + calculatedPage + ")");
+                } else {
+                    attribute = "isdeleted";
+                    searchText = "";
+                    page = (page - 1) * range;
+                }
             } else {
                 throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
             }
+            System.out.println(range+page+attribute+searchText);
             list = userDAO.list(range, page, attribute, searchText);
         }
         return list;
@@ -75,5 +92,11 @@ public class UserServiceImplementation implements UserService {
         User loginUser;
         loginUser = userDAO.login(username, password);
         return loginUser;
+    }
+
+    public boolean adminExists() throws SQLException {
+        boolean flag;
+        flag = userDAO.adminExists();
+        return flag;
     }
 }

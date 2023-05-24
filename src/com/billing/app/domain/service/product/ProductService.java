@@ -1,7 +1,7 @@
 package com.billing.app.domain.service.product;
 
 import com.billing.app.domain.entity.Product;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.ObjectNullPointerException;
 
@@ -25,18 +25,18 @@ public interface ProductService {
      * @return The edited product with updated information
      * @throws SQLException If a database error occurs while accessing the data access layer
      * @throws ObjectNullPointerException If the product object or its field is null
-     * @throws CodeOrIDNotFoundException If the product id is not found in the system
+     * @throws NotFoundException If the product id is not found in the system
      */
-    Product edit(Product product) throws SQLException, ObjectNullPointerException, CodeOrIDNotFoundException;
+    Product edit(Product product) throws SQLException, ObjectNullPointerException, NotFoundException;
 
     /**
      * Deletes a product with the specified ID by forwarding the request to the data access layer.
      * @param id The identifier of the product to be deleted
      * @return {@code true} if the product is successfully deleted, {@code false} otherwise
      * @throws SQLException If a database error occurs while accessing the data access layer
-     * @throws CodeOrIDNotFoundException If the product with the specified ID is not found in the system
+     * @throws NotFoundException If the product with the specified ID is not found in the system
      */
-    boolean delete(int id) throws SQLException, CodeOrIDNotFoundException;
+    boolean delete(int id) throws SQLException, NotFoundException;
 
     /**
      * Retrieves a list of products based on the specified range, page, attribute, and search text.

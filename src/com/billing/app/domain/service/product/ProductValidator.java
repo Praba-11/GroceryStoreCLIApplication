@@ -1,6 +1,7 @@
 package com.billing.app.domain.service.product;
 
 import com.billing.app.domain.database.ProductDAO;
+import com.billing.app.domain.database.ProductDAOImplementation;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.exceptions.*;
 
@@ -10,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ProductValidator {
-    ProductDAO productDAO;
+    ProductDAO productDAO = new ProductDAOImplementation();
 
     public boolean validate(Product product) throws ObjectNullPointerException {
         if(product == null) {
@@ -41,15 +42,31 @@ public class ProductValidator {
             attribute = "isdeleted";
             searchText = "";
         } else if (attribute == null && searchText == null && range > 0 && page > 0) {
-            attribute = "isdeleted";
-            searchText = "";
-            page = (page - 1) * range;
+            int calculatedLimit = (range * page) - range;
+            int calculatedPage = calculatedLimit / range;
+            if (calculatedLimit > productDAO.count()) {
+                throw new InvalidArgumentException("Invalid argument provided. " +
+                        "(Number of pages for listing : " + calculatedPage + ")");
+            } else {
+                attribute = "isdeleted";
+                searchText = "";
+                page = (page - 1) * range;
+            }
         } else if (attribute != null && searchText != null && range == 0 && page == 0) {
             range = productDAO.count();
         } else if (attribute != null && searchText != null && range > 0 && page > 0) {
-            page = (page - 1) * range;
+            int calculatedLimit = (range * page) - range;
+            int calculatedPage = calculatedLimit / range;
+            if (calculatedLimit > productDAO.count()) {
+                throw new InvalidArgumentException("Invalid argument provided. " +
+                        "(Number of pages for listing : " + calculatedPage + ")");
+            } else {
+                page = (page - 1) * range;
+            }
+
         } else {
-            throw new InvalidArgumentException("Invalid argument provided. Please provide valid arguments as per template.");
+            throw new InvalidArgumentException("Invalid argument provided\n. " +
+                    "Please provide valid arguments as per template for listing the product.");
         }
         list.addAll(Arrays.asList(range, page, attribute, searchText));
         return list;

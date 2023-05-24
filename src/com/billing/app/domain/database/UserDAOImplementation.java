@@ -58,10 +58,10 @@ public class UserDAOImplementation implements UserDAO {
 
     public List<User> list(String searchText) throws SQLException {
 
-        String query = "SELECT * FROM users WHERE CAST(id AS TEXT) ILIKE '%" + searchText + "%' OR type ILIKE '%" +
+        String query = "SELECT * FROM users WHERE CAST(id AS TEXT) ILIKE '%" + searchText + "%' OR usertype ILIKE '%" +
                 searchText + "%' OR username ILIKE '%" + searchText + "%' OR password ILIKE '%" + searchText + "%' " +
                 "OR firstname ILIKE '%" + searchText + "%' OR lastname ILIKE '%" + searchText + "%' OR " +
-                "CAST(phonenumber AS TEXT) ILIKE '%" + searchText + "%' OR isavailable ILIKE '%" + searchText + "%'";
+                "CAST(phonenumber AS TEXT) ILIKE '%" + searchText + "%' OR CAST(isavailable AS TEXT) ILIKE '%" + searchText + "%'";
 
         Statement statement = connectionDB.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -103,6 +103,17 @@ public class UserDAOImplementation implements UserDAO {
             userfound = setUser(user, resultSet);
         }
         return userfound;
+    }
+
+    public boolean adminExists() throws SQLException {
+        int flag = 0;
+        String query = "SELECT COUNT(*) FROM users WHERE usertype = 'Administrator'";
+        Statement statement = connectionDB.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            flag = resultSet.getInt(1);
+        }
+        return flag != 0;
     }
 
     private PreparedStatement setQuery(PreparedStatement preparedStatement, User user) throws SQLException {

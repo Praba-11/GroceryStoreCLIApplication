@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProductCLI {
-    ProductValidator productValidator;
+    ProductValidator productValidator = new ProductValidator();
     ProductHelp productHelp = new ProductHelp();
     Main main = new Main();
     List<String> splitBySpaces;
@@ -20,6 +20,7 @@ public class ProductCLI {
     Scanner scanner = new Scanner(System.in);
 
     public void execute(String productCommand) {
+
         splitBySpaces = main.splitBySpaces(productCommand);
         String action = splitBySpaces.get(0);
         switch (action) {
@@ -87,7 +88,6 @@ public class ProductCLI {
             String[] created = create.trim().split(regex);
             List<String> createCommand = Arrays.asList(created);
             if (createCommand.size() == 1 && createCommand.get(0).equals("help")) {
-                productHelp = new ProductHelp();
                 productHelp.createProduct();
             } else {
                 Product productCreated = null;
@@ -131,15 +131,11 @@ public class ProductCLI {
                         String value = keyValue[1].trim();
                         editCommand.put(key, value);
                     }
-                    if (editCommand.size() == 1 && editCommand.get(0).equals("help")) {
-                        productHelp.editProduct();
-                    } else {
-                        Product productEdited = productController.edit(editCommand);
-                        System.out.println("Product edited successfully.");
-                        System.out.println(productEdited);
-                    }
+                    Product productEdited = productController.edit(editCommand);
+                    System.out.println("Product edited successfully.");
+                    System.out.println("Edited product: " + productEdited);
                 } else {
-                    System.out.println("Template mismatch. Please provide a valid command.");
+                    System.out.println("Template mismatch. Please provide a valid command for editing the product.");
                 }
             }
         } catch (SQLException exception) {
@@ -157,8 +153,8 @@ public class ProductCLI {
             System.out.println("Incompatible argument. " + exception.getMessage());
         } catch (ObjectNullPointerException exception) {
             System.out.println("Unable to edit product. " + exception.getMessage());
-        } catch (CodeOrIDNotFoundException exception) {
-            System.out.println("Invalid product id. " + exception.getMessage());
+        } catch (NotFoundException exception) {
+            System.out.println("Invalid product for editing\n. " + exception.getMessage());
         } catch (ArrayIndexOutOfBoundsException exception) {
             System.out.println("Template mismatch. Please provide a valid command.");
         }
@@ -171,14 +167,17 @@ public class ProductCLI {
             } else {
                 boolean isDeleted = false;
                 isDeleted = productController.delete(delete);
-                System.out.println(isDeleted);
-                System.out.println("Product ID: '" + delete + "' deleted successfully.");
+                if (isDeleted) {
+                    System.out.println("Product ID: '" + delete + "' deleted successfully.");
+                } else {
+                    System.out.println("Product ID: '" + delete + "' deletion unsuccessful.");
+                }
             }
         } catch (SQLException exception) {
             System.out.print("Unable to delete product. ");
             String sqlMessage = productValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeOrIDNotFoundException exception) {
+        } catch (NotFoundException exception) {
             System.out.println("Provided Id not found. " + exception.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -203,12 +202,16 @@ public class ProductCLI {
         } else {
             try {
                 List<Product> productArray = productController.list(listCommand);
-                System.out.println("List returned successfully.");
-                for (Product product : productArray) {
-                    String output = String.format("id: %-4d, code: %-12s, name: %-22s, unitcode: %-14s, type: %-15s, price: %-15.2f, stock: %-15.2f, isdeleted: %b",
-                            product.getId(), product.getCode(), product.getName(), product.getUnitCode(),
-                            product.getType(), product.getPrice(), product.getStock(), product.isDeleted());
-                    System.out.println(output);
+                if (!productArray.isEmpty()) {
+                    System.out.println("Products are enlisted as follows.");
+                    for (Product product : productArray) {
+                        String output = String.format("id: %-4d, code: %-12s, name: %-22s, unitcode: %-14s, type: %-15s, price: %-15.2f, stock: %-15.2f, isdeleted: %b",
+                                product.getId(), product.getCode(), product.getName(), product.getUnitCode(),
+                                product.getType(), product.getPrice(), product.getStock(), product.isDeleted());
+                        System.out.println(output);
+                    }
+                } else {
+                    System.out.println("No Products to list here. Provided command matches no existing products.");
                 }
             } catch (InvalidArgumentException exception) {
                 System.out.println("Incompatible argument. " + exception.getMessage());

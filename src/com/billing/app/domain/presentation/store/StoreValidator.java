@@ -80,7 +80,7 @@ public class StoreValidator {
         if (storeMap.containsKey("phonenumber")) {
             try {
                 String phoneNumber = storeMap.get("phonenumber");
-                if (phoneNumber.length() != 10) {
+                if (phoneNumber.length() == 10) {
                     long castedPhoneNumber = Long.parseLong(phoneNumber);
                     if (castedPhoneNumber < 0) {
                         throw new InvalidArgumentException("Incompatible phone number. Please provide a valid number.");

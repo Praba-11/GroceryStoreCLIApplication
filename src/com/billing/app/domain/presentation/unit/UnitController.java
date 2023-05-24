@@ -34,7 +34,7 @@ public class UnitController {
     }
 
 
-    public Unit edit(Map<String, String> values) throws SQLException, NullPointerException, TemplateMismatchException, TypeMismatchException, InvalidArgumentException, ObjectNullPointerException, CodeOrIDNotFoundException {
+    public Unit edit(Map<String, String> values) throws SQLException, NullPointerException, TemplateMismatchException, TypeMismatchException, InvalidArgumentException, ObjectNullPointerException, NotFoundException {
 
         int expectedLength = 5;
         int actualLength = values.size();
@@ -42,14 +42,13 @@ public class UnitController {
             unitValidator.validateMap(values);
             valueList = new ArrayList<>(values.values());
             unit = setValues(valueList, true);
-            System.out.println(unit);
         } else {
             throw new TemplateMismatchException("Invalid argument length. Expected: " + expectedLength + ", Actual: " + actualLength);
         }
         return unitService.edit(unit);
     }
 
-        public boolean delete (String values) throws SQLException, CodeOrIDNotFoundException, InvalidArgumentException {
+        public boolean delete (String values) throws SQLException, NotFoundException, InvalidArgumentException {
             boolean flag = false;
             int id;
             try {

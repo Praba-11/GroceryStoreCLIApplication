@@ -67,7 +67,20 @@ public interface UnitDAO {
      * @return The Unit object representing the found unit entry, or null if no matching entry is found.
      * @throws SQLException If an error occurs during the process of finding the unit entry.
      */
-    Unit find(int id) throws SQLException;
+    Unit getById(int id) throws SQLException;
+
+
+    /**
+     * Interface for finding a unit entry by code.
+     * This interface defines a method to find and retrieve a unit entry from the database based on the provided code.
+     * Implementations of this interface should handle the necessary operations to fetch
+     * and return the unit entry with the matching code from the database.
+     * If any SQLException occurs during the process, the respective exception will be thrown.
+     * @param code The code of the unit entry to find.
+     * @return The Unit object representing the found unit entry, or null if no matching entry is found.
+     * @throws SQLException If an error occurs during the process of finding the unit entry.
+     */
+    Unit getByCode(String code) throws SQLException;
 
 
     /**

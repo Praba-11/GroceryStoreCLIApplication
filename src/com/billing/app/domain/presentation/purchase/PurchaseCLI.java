@@ -2,7 +2,7 @@ package com.billing.app.domain.presentation.purchase;
 
 import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.entity.PurchaseItem;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
 import com.billing.app.domain.presentation.Main;
@@ -89,7 +89,7 @@ public class PurchaseCLI {
             System.out.print("Unable to purchase products. ");
             String sqlMessage = purchaseValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeOrIDNotFoundException exception) {
+        } catch (NotFoundException exception) {
             System.out.println("Invalid product code. " + exception.getMessage());
         } catch (TemplateMismatchException exception) {
             System.out.println("Template mismatch. " + exception.getMessage());
@@ -141,7 +141,7 @@ public class PurchaseCLI {
             System.out.print("Unable to delete purchase. ");
             String sqlMessage = purchaseValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeOrIDNotFoundException exception) {
+        } catch (NotFoundException exception) {
             System.out.println("Provided invoice not found. " + exception.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);

@@ -11,7 +11,10 @@ public class UnitValidator {
     public String validateSQLState(SQLException exception) {
         String sqlState = exception.getSQLState();
         if (sqlState.equals("23505")) {
-            return "Provided unit code already exists. \n" + exception.getMessage();
+            return "Provided unit code already exists. Cannot create duplicate unit.";
+        } else if (sqlState.equals("23503")) {
+            return "Product already exists belonging to this unit code.\n" +
+                    "If you are willing to delete this unit, make sure there are no Products of this unit.";
         } else {
             throw new RuntimeException(exception);
         }

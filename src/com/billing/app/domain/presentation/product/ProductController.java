@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class ProductController {
     private List<String> valueList;
-    private List<String> keyList;
     private Product product;
     private ProductService productService = new ProductServiceImplementation();
     private ProductValidator productValidator = new ProductValidator();
@@ -38,7 +37,7 @@ public class ProductController {
 
     public Product edit(Map<String, String> values) throws SQLException, ClassNotFoundException, NullPointerException,
             TemplateMismatchException, TypeMismatchException, InvalidArgumentException, ObjectNullPointerException,
-            CodeOrIDNotFoundException {
+            NotFoundException {
 
         int expectedLength = 7;
         int actualLength = values.size();
@@ -56,7 +55,7 @@ public class ProductController {
 
 
 
-    public boolean delete(String value) throws SQLException, ClassNotFoundException, CodeOrIDNotFoundException, InvalidArgumentException {
+    public boolean delete(String value) throws SQLException, ClassNotFoundException, NotFoundException, InvalidArgumentException {
         boolean flag = false;
         int id;
         try {

@@ -29,10 +29,10 @@ public interface UserService {
      * @param user The User object representing the user to be edited.
      * @return The updated User object with the modified details.
      * @throws SQLException If an error occurs during the user editing process.
-     * @throws CodeOrIDNotFoundException If the user's code or ID is not found.
+     * @throws NotFoundException If the user's code or ID is not found.
      * @throws ObjectNullPointerException If any required object, such as the user object itself, is null.
      */
-    User edit(User user) throws SQLException, CodeOrIDNotFoundException, ObjectNullPointerException;
+    User edit(User user) throws SQLException, NotFoundException, ObjectNullPointerException;
 
     /**
      * Service layer interface for deleting a user.
@@ -42,9 +42,9 @@ public interface UserService {
      * @param username The username of the user to be deleted.
      * @return A boolean indicating whether the deletion was successful or not.
      * @throws SQLException If an error occurs during the user deletion process.
-     * @throws CodeOrIDNotFoundException If the user's code or ID is not found.
+     * @throws NotFoundException If the user's code or ID is not found.
      */
-    boolean delete(String username) throws SQLException, CodeOrIDNotFoundException;
+    boolean delete(String username) throws SQLException, NotFoundException;
 
 
     /**
@@ -74,4 +74,6 @@ public interface UserService {
      * @throws SQLException If an error occurs during the user finding process.
      */
     User find(String username, String password) throws SQLException;
+
+    boolean adminExists() throws SQLException;
 }

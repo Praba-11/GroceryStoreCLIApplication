@@ -2,7 +2,7 @@ package com.billing.app.domain.presentation.sale;
 
 import com.billing.app.domain.entity.Sales;
 import com.billing.app.domain.entity.SalesItem;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 import com.billing.app.domain.exceptions.NegativeStockException;
 import com.billing.app.domain.exceptions.TemplateMismatchException;
@@ -84,7 +84,7 @@ public class SalesCLI {
             bill(sales);
         } catch (SQLException exception) {
             System.out.println("Cannot sell products." + exception.getMessage());
-        } catch (CodeOrIDNotFoundException exception) {
+        } catch (NotFoundException exception) {
             System.out.println("Invalid product code. " + exception.getMessage());
         } catch (TemplateMismatchException exception) {
             System.out.println("Template mismatch. " + exception.getMessage());
@@ -140,7 +140,7 @@ public class SalesCLI {
             System.out.print("Unable to delete sales. ");
             String sqlMessage = salesValidator.validateSQLState(exception);
             System.out.println(sqlMessage);
-        } catch (CodeOrIDNotFoundException exception) {
+        } catch (NotFoundException exception) {
             System.out.println("Provided invoice not found. " + exception.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);

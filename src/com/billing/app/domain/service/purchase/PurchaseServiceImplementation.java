@@ -4,7 +4,7 @@ import com.billing.app.domain.database.*;
 import com.billing.app.domain.entity.Product;
 import com.billing.app.domain.entity.Purchase;
 import com.billing.app.domain.entity.PurchaseItem;
-import com.billing.app.domain.exceptions.CodeOrIDNotFoundException;
+import com.billing.app.domain.exceptions.NotFoundException;
 import com.billing.app.domain.exceptions.InvalidArgumentException;
 
 import java.sql.SQLException;
@@ -17,7 +17,7 @@ public class PurchaseServiceImplementation implements PurchaseService {
     PurchaseValidator purchaseValidator = new PurchaseValidator();
     ProductDAO productDAO = new ProductDAOImplementation();
     List<PurchaseItem> listOfPurchaseItems;
-    public Purchase create(Purchase purchase) throws SQLException, CodeOrIDNotFoundException {
+    public Purchase create(Purchase purchase) throws SQLException, NotFoundException {
         if (purchaseValidator.valid(purchase)) {
 
             purchaseDAO.create(purchase);
@@ -38,11 +38,11 @@ public class PurchaseServiceImplementation implements PurchaseService {
         return purchase;
     }
 
-    public boolean delete(int invoice) throws CodeOrIDNotFoundException, SQLException {
+    public boolean delete(int invoice) throws NotFoundException, SQLException {
         boolean isDeleted;
         isDeleted = purchaseDAO.delete(invoice);
         if (!isDeleted) {
-            throw new CodeOrIDNotFoundException("(Invoice no: " + invoice + ") not present in purchase relational table.");
+            throw new NotFoundException("(Invoice no: " + invoice + ") not present in purchase relational table.");
         }
         return true;
     }

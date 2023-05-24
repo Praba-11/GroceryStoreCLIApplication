@@ -30,7 +30,7 @@ public class UserController {
     }
 
     public User edit(Map<String, String> values) throws TypeMismatchException, InvalidArgumentException,
-            TemplateMismatchException, ObjectNullPointerException, SQLException, CodeOrIDNotFoundException, IllegalAccessException {
+            TemplateMismatchException, ObjectNullPointerException, SQLException, NotFoundException, IllegalAccessException {
         int expectedLength = 7;
         int actualLength = values.size();
         if (actualLength == expectedLength) {
@@ -43,7 +43,7 @@ public class UserController {
         return userService.edit(user);
     }
 
-    public boolean delete(String username) throws SQLException, ClassNotFoundException, CodeOrIDNotFoundException, InvalidArgumentException {
+    public boolean delete(String username) throws SQLException, ClassNotFoundException, NotFoundException, InvalidArgumentException {
         boolean flag = false;
         flag = userService.delete(username);
         return flag;
@@ -87,5 +87,15 @@ public class UserController {
         userValidator.validateLogin(username, password);
         loginUser = userService.find(username, password);
         return loginUser;
+    }
+
+    public boolean adminExists() throws InvalidArgumentException {
+        try {
+            boolean flag = false;
+            flag = userService.adminExists();
+            return flag;
+        } catch (SQLException exception) {
+            throw new InvalidArgumentException("Anonymous error experienced.");
+        }
     }
 }
