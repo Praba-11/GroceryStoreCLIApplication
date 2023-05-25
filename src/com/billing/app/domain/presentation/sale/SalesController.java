@@ -28,11 +28,9 @@ public class SalesController {
     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
 
-    public Sales create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, NotFoundException, TemplateMismatchException, NegativeStockException {
+    public Sales create(List<String> stringArrayList) throws ParseException, SQLException, ClassNotFoundException, NotFoundException, TemplateMismatchException, NegativeStockException, InvalidArgumentException {
 
-        List<String> create = new ArrayList<>(stringArrayList.subList(0, 2));
-        List<String> salesItemDetails = new ArrayList<>(stringArrayList.subList(2, stringArrayList.size()));
-
+        List<String> salesItemDetails = new ArrayList<>(stringArrayList.subList(1, stringArrayList.size()));
 
         sales = new Sales();
         salesItems = new ArrayList<>();
@@ -50,8 +48,7 @@ public class SalesController {
         } else {
             throw new TemplateMismatchException("Incompatible purchase item details. Please provide according to the template.");
         }
-        sales.setDate(new Date(format.parse(create.get(1)).getTime()));
-        sales.setInvoice(Integer.parseInt(create.get(0)));
+        sales.setDate(new Date(format.parse(stringArrayList.get(0)).getTime()));
         sales.setListOfSalesItem(salesItems);
         sales.setGrandTotal(grandTotal);
         return salesService.create(sales);

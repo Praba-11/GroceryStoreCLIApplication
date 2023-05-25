@@ -11,6 +11,7 @@ import com.billing.app.domain.presentation.Main;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -94,25 +95,22 @@ public class SalesCLI {
             System.out.println("Incompatible Stock. " + e.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
+        } catch (InvalidArgumentException e) {
+            System.out.println("Cannot perform sales. " + e.getMessage());
         }
     }
 
-    private List<String> separator(String purchaseCommand) {
-        List<String> purchase = null;
-        String modifiedInput = purchaseCommand.replaceAll("\\s", "");
-        Pattern pattern = Pattern.compile("^(\\d+,\\d{2}-\\d{2}-\\d{4}),(\\[.+\\])$");
-        Matcher matcher = pattern.matcher(modifiedInput);
-        if (matcher.find()) {
-            String part1 = matcher.group(1);
-            String part2 = matcher.group(2);
-            part2 = part2.substring(1, part2.length() - 1);
-            purchase = new ArrayList<>(List.of(part1.split(",")));
-            List<String> elementsList = new ArrayList<>(List.of(part2.split("\\],\\[")));
-            for (String element : elementsList) {
-                purchase.addAll(List.of(element.split(",")));
-            }
-        }
-        return purchase;
+    private List<String> separator(String salesCommand) {
+        List<String> sales = new ArrayList<>();
+        int bracketIndex = salesCommand.indexOf('[');
+        String date = salesCommand.substring(0, bracketIndex).trim();
+        String commaSeparatedList = salesCommand.substring(bracketIndex).trim();
+        String output = date.replaceAll(",\\s*", "");
+        sales.add(output);
+        String withoutBrackets = commaSeparatedList.replaceAll("\\[|\\]", "");
+        String[] splitParts = withoutBrackets.split(",\\s*");
+        sales.addAll(List.of(splitParts));
+        return sales;
     }
 
 

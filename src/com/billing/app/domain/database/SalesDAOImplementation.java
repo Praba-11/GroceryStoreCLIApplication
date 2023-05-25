@@ -14,7 +14,7 @@ public class SalesDAOImplementation implements SalesDAO {
     List<Sales> salesList;
     ConnectionDB connectionDB = new ConnectionDB();
     public Sales create(Sales sales) throws SQLException {
-        String query = "INSERT INTO sales (invoice_id, sales_date, grand_total) VALUES (?, ?, ?)";
+        String query = "INSERT INTO sales (sales_date, grand_total) VALUES (?, ?)";
         PreparedStatement preparedStatement = connectionDB.getConnection().prepareStatement(query);
         PreparedStatement statement = setQuery(preparedStatement, sales);
         statement.executeUpdate();
@@ -86,9 +86,8 @@ public class SalesDAOImplementation implements SalesDAO {
 
 
     private PreparedStatement setQuery(PreparedStatement preparedStatement, Sales sales) throws SQLException {
-        preparedStatement.setInt(1, sales.getInvoice());
-        preparedStatement.setDate(2, sales.getDate());
-        preparedStatement.setFloat(3, sales.getGrandTotal());
+        preparedStatement.setDate(1, sales.getDate());
+        preparedStatement.setFloat(2, sales.getGrandTotal());
         return preparedStatement;
     }
 

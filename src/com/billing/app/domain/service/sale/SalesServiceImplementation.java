@@ -17,16 +17,19 @@ public class SalesServiceImplementation implements SalesService {
     SalesDAO salesDAO = new SalesDAOImplementation();
     SalesItemDAO salesItemDAO = new SalesItemDAOImplementation();
 
-    public Sales create(Sales sales) throws SQLException, NotFoundException, NegativeStockException {
+    public Sales create(Sales sales) throws SQLException, NotFoundException, NegativeStockException, InvalidArgumentException {
 
         float grandTotal = 0;
         List<SalesItem> listOfSalesItem = new ArrayList<>();
         salesDAO.create(sales);
         for (SalesItem salesItem : sales.getListOfSalesItem()) {
-
-            salesItem.setInvoice(sales.getInvoice());
-            salesItem.setName(productDAO.findByCode(salesItem.getCode()).getName());
-            salesItem.setCostPrice(productDAO.findByCode(salesItem.getCode()).getPrice());
+            if (productDAO.findByCode(salesItem.getCode()) != null) {
+                salesItem.setInvoice(sales.getInvoice());
+                salesItem.setName(productDAO.findByCode(salesItem.getCode()).getName());
+                salesItem.setCostPrice(productDAO.findByCode(salesItem.getCode()).getPrice());
+            } else {
+                throw new InvalidArgumentException("Provided product details for sales doesn't exist.");
+            }
 
             Product product = productDAO.findByCode(salesItem.getCode());
             float stock = productDAO.findByCode(salesItem.getCode()).getStock() - salesItem.getQuantity();

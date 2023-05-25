@@ -120,6 +120,7 @@ public class PurchaseCLI {
     private void purchaser(String create) {
         List<String> purchaseDetails;
         purchaseDetails = separator(create);
+        System.out.println(purchaseDetails);
         if (purchaseDetails != null) {
             purchase(purchaseDetails);
         } else {

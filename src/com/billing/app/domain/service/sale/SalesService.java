@@ -20,7 +20,7 @@ public interface SalesService {
      * @throws SQLException If an error occurs during the sales record creation process.
      * @throws NotFoundException If the product code or ID specified in the sales record is not found.
      */
-    Sales create(Sales sales) throws SQLException, NotFoundException, NegativeStockException;
+    Sales create(Sales sales) throws SQLException, NotFoundException, NegativeStockException, InvalidArgumentException;
 
 
     /**
