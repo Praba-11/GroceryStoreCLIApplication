@@ -23,7 +23,7 @@ public class SalesServiceImplementation implements SalesService {
         List<SalesItem> listOfSalesItem = new ArrayList<>();
         salesDAO.create(sales);
         for (SalesItem salesItem : sales.getListOfSalesItem()) {
-            if (productDAO.findByCode(salesItem.getCode()) != null) {
+            if (productDAO.findByCode(salesItem.getCode()) != null || !productDAO.findByCode(salesItem.getCode()).isDeleted()) {
                 salesItem.setInvoice(sales.getInvoice());
                 salesItem.setName(productDAO.findByCode(salesItem.getCode()).getName());
                 salesItem.setCostPrice(productDAO.findByCode(salesItem.getCode()).getPrice());
